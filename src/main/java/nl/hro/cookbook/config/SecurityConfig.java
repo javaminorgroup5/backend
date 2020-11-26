@@ -21,7 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final String USER_ID_PATH = "/users/{id}/**";
+    private static final String USER_ID_PATH = "/users/**";
     private static final String ADMIN_PATH = "/admin/**";
     private static final String H2_CONSOLE_PATH = "/h2-console/**";
 
@@ -56,8 +56,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
                 .antMatchers(H2_CONSOLE_PATH).permitAll()
                 .antMatchers(ADMIN_PATH).hasRole(Role.ADMIN.name())
-                .antMatchers(HttpMethod.GET, USER_ID_PATH).access("@guard.checkReadAccess(authentication,#id)")
-                .antMatchers(USER_ID_PATH).access("@guard.checkWriteAccess(authentication,#id)")
+//                .antMatchers(HttpMethod.GET, USER_ID_PATH).access("@guard.checkReadAccess(authentication,#id)")
+//                .antMatchers(USER_ID_PATH).access("@guard.checkWriteAccess(authentication,#id)")
                 .anyRequest().authenticated()
             .and()
                 .httpBasic()
