@@ -24,6 +24,11 @@ public class UserController {
     private final UserMapper userMapper;
     private final AddressMapper addressMapper;
 
+    @GetMapping("/login")
+    public HttpStatus login() {
+        return HttpStatus.OK;
+    }
+
     @GetMapping()
     public Collection<UserDTO> getAllUsers() {
         return userService.findAllUsers().stream()
