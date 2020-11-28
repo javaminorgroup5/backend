@@ -21,7 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final String USER_ID_PATH = "/users/**";
+    private static final String USER_ID_PATH = "/users/{id}/**";
     private static final String ADMIN_PATH = "/admin/**";
     private static final String H2_CONSOLE_PATH = "/h2-console/**";
 
