@@ -10,14 +10,12 @@ import javax.validation.constraints.Positive;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddressDTO {
+public class ProfileDTO {
 
     @NotNull
-    private String city;
+    private String profileName;
 
     @NotNull
-    private String street;
+    private String profilePicture;
 
-    @Positive
-    private int houseNumber;
 }

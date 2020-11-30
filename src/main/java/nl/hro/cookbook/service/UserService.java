@@ -2,8 +2,8 @@ package nl.hro.cookbook.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nl.hro.cookbook.model.domain.Profile;
 import nl.hro.cookbook.model.domain.User;
-import nl.hro.cookbook.model.domain.Address;
 import nl.hro.cookbook.model.exception.ResourceNotFoundException;
 import nl.hro.cookbook.repository.UserRepository;
 import nl.hro.cookbook.security.Role;
@@ -14,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -35,33 +34,28 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("No user exists for id: %d", userId), User.class));
     }
 
-    @Transactional(readOnly = false)
-    public void updateAddress(final long userId, final Address newAddress) {
-        final User user = findUserById(userId);
-        user.setAddress(newAddress);
+    @Transactional()
+    public void createUser(User user) {
         userRepository.save(user);
     }
 
-    @Transactional(readOnly = false)
-    public void addFriends(final long userId, final Collection<Long> newFriends) {
-        final Collection<User> friends = newFriends.stream()
-                .map(this::findUserById)
-                .collect(Collectors.toList());
-
-        final User user = findUserById(userId);
-        user.getFriends().addAll(friends);
-
-        userRepository.save(user);
+    public Optional<User> findUserByUsername(String username) {
+        return userRepository.findUserByUsername(username);
     }
 
+    @Transactional()
+    public void updateProfile(final long userId, final Profile newProfile) {
+        final User user = findUserById(userId);
+        user.setProfile(newProfile);
+        userRepository.save(user);
+    }
 
 //    This is a pretty hacky way to have a user available on startup.
 //    This is fine for a demo, but don't do this in real code.
     @PostConstruct
     public void init() {
-        final User initialUser1 = new User(0, "dion", passwordEncoder.encode("quintor"), Role.ADMIN, new Address("Den Bosch", "Havensingel", 1), Collections.emptyList()); // no friends :(
-        final User initialUser2 = new User(0, "geoffrey", passwordEncoder.encode("quintor"), Role.COMMUNITY_MANAGER, new Address("Den Haag", "Lange Vijverberg", 4), Collections.singletonList(initialUser1)); // yay a friend :)
-
+        final User initialUser1 = new User(0L, "dion", passwordEncoder.encode("quintor"), Role.ADMIN, new Profile("Top Gun", "test.png")); // no friends :(
+        final User initialUser2 = new User(1L, "geoffrey", passwordEncoder.encode("quintor"), Role.COMMUNITY_MANAGER, new Profile("Maverick", "test2.png"));
         userRepository.saveAll(Arrays.asList(initialUser1, initialUser2));
 
     }

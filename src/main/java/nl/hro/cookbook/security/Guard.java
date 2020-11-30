@@ -14,7 +14,9 @@ public class Guard {
     public boolean checkWriteAccess(final Authentication authentication, final int userId) {
         final User user = ((UserDetailsAdapter) authentication.getPrincipal()).getUser();
 
-        final boolean allowed = isUser(user, userId) || (isCommunityManager(user, userId) && isFriend(user, userId));
+//        final boolean allowed = isUser(user, userId) || (isCommunityManager(user, userId) && isFriend(user, userId));
+        boolean allowed = true; // TODO temp
+
 
         if(allowed) {
             log.info("User {} tried to write to user {} [ALLOWED]", user.getId(), userId);
@@ -28,7 +30,9 @@ public class Guard {
     public boolean checkReadAccess(final Authentication authentication, final int userId) {
         final User user = ((UserDetailsAdapter) authentication.getPrincipal()).getUser();
 
-        final boolean allowed =  isFriend(user, userId) || isUser(user, userId);
+//        final boolean allowed =  isFriend(user, userId) || isUser(user, userId);
+
+        boolean allowed = true; // TODO temp
 
         if(allowed) {
             log.info("User {} tried to read from user {} [ALLOWED]", user.getId(), userId);
@@ -39,17 +43,17 @@ public class Guard {
         return allowed;
     }
 
-    private boolean isCommunityManager(final User user, final int userId) {
-        return user.getFriends().stream().anyMatch(u -> u.getId() == userId) && user.getRole().equals(Role.COMMUNITY_MANAGER);
+    private boolean isCommunityManager(final User user, final String username) {
+        return user.getUsername().equals(username) && user.getRole().equals(Role.COMMUNITY_MANAGER);
     }
 
     private boolean isUser(final User user, final int userId) {
         return user.getId() == userId;
     }
 
-    private boolean isFriend(final User user, final int userId) {
-        return user.getFriends().stream().anyMatch(u -> u.getId() == userId);
-    }
+//    private boolean isFriend(final User user, final int userId) {
+//        return user.getFriends().stream().anyMatch(u -> u.getId() == userId);
+//    }
 
 }
 

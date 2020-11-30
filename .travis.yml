@@ -2,5 +2,9 @@ language: java
 sudo: false
 script: mvn clean verify
 
+env:
+  global:
+    - CODECOV_TOKEN="d9ec0293-34e7-4781-b9ca-83bbae901c96"
+
 after_success:
   - bash <(curl -s https://codecov.io/bash)
