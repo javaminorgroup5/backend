@@ -24,6 +24,7 @@ public class UserController {
     private final UserMapper userMapper;
     private final AddressMapper addressMapper;
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/login")
     public HttpStatus login() {
         return HttpStatus.OK;
