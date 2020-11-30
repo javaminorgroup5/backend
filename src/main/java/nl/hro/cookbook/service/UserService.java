@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -33,7 +34,16 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("No user exists for id: %d", userId), User.class));
     }
 
-    @Transactional(readOnly = false)
+    @Transactional()
+    public void createUser(User user) {
+        userRepository.save(user);
+    }
+
+    public Optional<User> findUserByUsername(String username) {
+        return userRepository.findUserByUsername(username);
+    }
+
+    @Transactional()
     public void updateProfile(final long userId, final Profile newProfile) {
         final User user = findUserById(userId);
         user.setProfile(newProfile);

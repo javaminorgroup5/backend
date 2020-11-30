@@ -15,7 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
-@EqualsAndHashCode(exclude = "friends")
+@EqualsAndHashCode(exclude = "role")
 @Getter
 @Setter
 public class User {
@@ -32,5 +32,4 @@ public class User {
 
     @Embedded
     private Profile profile;
-
 }
