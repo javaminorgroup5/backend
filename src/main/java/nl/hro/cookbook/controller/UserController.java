@@ -1,11 +1,10 @@
 package nl.hro.cookbook.controller;
 
 import lombok.RequiredArgsConstructor;
-import nl.hro.cookbook.model.dto.AddressDTO;
-import nl.hro.cookbook.model.dto.FriendDTO;
+import nl.hro.cookbook.model.dto.ProfileDTO;
+import nl.hro.cookbook.model.mapper.ProfileMapper;
 import nl.hro.cookbook.service.UserService;
 import nl.hro.cookbook.model.mapper.UserMapper;
-import nl.hro.cookbook.model.mapper.AddressMapper;
 import nl.hro.cookbook.model.dto.UserDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,13 +17,14 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = {"/users", "/admin/users"},produces = MediaType.APPLICATION_JSON_VALUE)
+@CrossOrigin(origins = "*")
 public class UserController {
 
     private final UserService userService;
     private final UserMapper userMapper;
-    private final AddressMapper addressMapper;
+    private final ProfileMapper profileMapper;
 
-    @CrossOrigin(origins = "*")
+
     @GetMapping("/login")
     public HttpStatus login() {
         return HttpStatus.OK;
@@ -37,33 +37,15 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/{id}")
-    public UserDTO getUser(@PathVariable("id") final long id) {
-        return userMapper.toDTO(userService.findUserById(id));
+    @GetMapping("/{id}/profile")
+    public ProfileDTO getUserProfile(@PathVariable("id") final long id) {
+        return profileMapper.toDTO(userService.findUserById(id).getProfile());
     }
 
-    @GetMapping("/{id}/address")
-    public AddressDTO getUserAddress(@PathVariable("id") final long id) {
-        return addressMapper.toDTO(userService.findUserById(id).getAddress());
-    }
-
-    @PutMapping("/{id}/address")
+    @PutMapping("/{id}/profile")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateAddress(@PathVariable("id") final long id, @Valid @RequestBody final AddressDTO addressDTO) {
-        userService.updateAddress(id, addressMapper.toModel(addressDTO));
+    public void updateProfile(@PathVariable("id") final long id, @Valid @RequestBody final ProfileDTO profileDTO) {
+        userService.updateProfile(id, profileMapper.toModel(profileDTO));
     }
 
-    @GetMapping("/{id}/friends")
-    public Collection<UserDTO> getUserFriends(@PathVariable("id") final long id) {
-        return userService.findUserById(id)
-                .getFriends().stream()
-                .map(userMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    @PostMapping("/{id}/friends")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void addFriends(@PathVariable("id") final long id, @Valid @RequestBody Collection<FriendDTO> friendDTOS) {
-        userService.addFriends(id, friendDTOS.stream().map(FriendDTO::getUserId).collect(Collectors.toList()));
-    }
 }

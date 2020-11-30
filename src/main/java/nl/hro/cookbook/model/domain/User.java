@@ -9,7 +9,6 @@ import lombok.Setter;
 import nl.hro.cookbook.security.Role;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 @Data
 @Entity
@@ -32,9 +31,6 @@ public class User {
     private Role role;
 
     @Embedded
-    private Address address;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Collection<User> friends;
+    private Profile profile;
 
 }
