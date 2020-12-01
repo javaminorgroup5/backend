@@ -56,7 +56,7 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping()
+    @PostMapping("/create")
     public void createUser(@RequestBody final User user) {
         userService.createUser(user);
     }
