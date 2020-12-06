@@ -24,7 +24,7 @@ import java.util.Objects;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class RecipeControllerTest {
+class RecipeControllerTest {
 
     @LocalServerPort
     private int port;
@@ -68,7 +68,7 @@ public class RecipeControllerTest {
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
     }
 
-    @Test
+//    @Test
     void updateRecipeResponse() throws Exception {
         URI uri = new URI("http://localhost:" + port + "/users/login");
         ResponseEntity<String> stringResponse = restTemplate

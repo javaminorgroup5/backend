@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
-public class RecipeServiceTest {
+class RecipeServiceTest {
 
     @Mock
     private RecipeRepository recipeRepository;
@@ -29,7 +29,7 @@ public class RecipeServiceTest {
     private Recipe recipe;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         recipe = new Recipe();
         recipe.setId(1L);
         recipe.setRecipe("Pasta");
@@ -39,7 +39,7 @@ public class RecipeServiceTest {
     }
 
     @Test
-    public void createRecipeTest() {
+    void createRecipeTest() {
         // Give
         lenient().when(recipeRepository.findRecipesByUserId(eq(1L))).thenReturn(Optional.of(Collections.singletonList(recipe)));
 
@@ -52,7 +52,8 @@ public class RecipeServiceTest {
         assertEquals(recipe, optionalRecipeList.get().get(0));
     }
 
-    @Test void updateRecipeTest() {
+    @Test
+    void updateRecipeTest() {
         // Give
         lenient().when(recipeRepository.findById(eq(1L))).thenReturn(Optional.of((recipe)));
 

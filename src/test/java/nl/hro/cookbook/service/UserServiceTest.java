@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
@@ -27,7 +27,7 @@ public class UserServiceTest {
     private UserService userServiceTest;
 
     @Test
-    public void createUserTest() {
+    void createUserTest() {
         // Given
         User user = new User();
         user.setUsername("john");
@@ -45,7 +45,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void updateUserProfileTest() {
+    void updateUserProfileTest() {
         // Given
         User user = new User();
         user.setId(1);
