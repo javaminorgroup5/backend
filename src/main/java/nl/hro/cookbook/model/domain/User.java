@@ -33,15 +33,4 @@ public class User {
 
     @Embedded
     private Profile profile;
-
-    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Recipe> recipes;
-
-    public User(long id, String username, String password, Role role, Profile profile) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.role = role;
-        this.profile = profile;
-    }
 }

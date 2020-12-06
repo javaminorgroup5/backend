@@ -18,6 +18,8 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static nl.hro.cookbook.service.UserService.getLoginInUser;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = {"/users", "/admin/users"},produces = MediaType.APPLICATION_JSON_VALUE)
@@ -28,25 +30,12 @@ public class UserController {
     private final UserMapper userMapper;
     private final ProfileMapper profileMapper;
 
-
     @GetMapping("/login")
     public String login() {
-
-        UserDetails userDetails = (UserDetails) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
+        UserDetails userDetails = getLoginInUser();
         String username = userDetails.getUsername();
         Optional<User> userFound = userService.findUserByUsername(username);
-
-        boolean test = userFound.isPresent();
-
-        if (test) {
-            return String.valueOf(userFound.get().getId());
-        }
-
-        return HttpStatus.NO_CONTENT.getReasonPhrase();
-
+        return userFound.map(user -> String.valueOf(user.getId())).orElseGet(HttpStatus.NO_CONTENT::getReasonPhrase);
     }
 
     @GetMapping()
