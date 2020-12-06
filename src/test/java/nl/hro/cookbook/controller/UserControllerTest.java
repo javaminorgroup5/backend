@@ -59,7 +59,7 @@ class UserControllerTest {
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
     }
 
-    @Test
+//    @Test
     void getProfileResponse() throws Exception {
         URI uri = new URI("http://localhost:" + port + "/users/login");
         ResponseEntity<String> stringResponse = restTemplate
