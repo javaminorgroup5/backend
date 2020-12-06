@@ -5,6 +5,7 @@ import nl.hro.cookbook.model.domain.Recipe;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.security.Role;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -48,8 +49,7 @@ public class RecipeControllerTest {
         recipe = new Recipe(1L, "Test", "test", "test", user.getId());
     }
 
-//    @Test
-    // TODO fix test
+    @Test
     void createRecipeResponse() throws Exception {
         URI uri = new URI("http://localhost:" + port + "/users/login");
         ResponseEntity<String> stringResponse = restTemplate
@@ -61,10 +61,10 @@ public class RecipeControllerTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Recipe> request =
                 new HttpEntity<>(recipe, headers);
-        uri = new URI("http://localhost:" + port + "/recipe/create/" + user.getId());
-        ResponseEntity<Recipe> response = restTemplate
+        uri = new URI("http://localhost:" + port + "/recipe/create/" + stringResponse.getBody());
+        ResponseEntity<Long> response = restTemplate
                 .withBasicAuth("test", "test")
-                .postForEntity(uri, request, Recipe.class);
+                .postForEntity(uri, request, Long.class);
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
     }
 

@@ -36,7 +36,7 @@ public class RecipeController {
         User user = userService.findUserById(userId);
         recipe.setUserId(user.getId());
         recipeService.createRecipe(recipe);
-        return ResponseEntity.badRequest().body(recipe.getId());
+        return ResponseEntity.ok(recipe.getId());
     }
 
     @GetMapping("/{recipe_id}/user/{user_id}")
