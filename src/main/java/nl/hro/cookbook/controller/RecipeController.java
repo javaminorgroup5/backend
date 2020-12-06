@@ -49,11 +49,14 @@ public class RecipeController {
         return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
     }
 
-    // TODO
     @PutMapping("/{recipe_id}/user/{user_id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateProfRecipe(@PathVariable("recipe_id") final long recipeId, @PathVariable("user_id") final long userId, @RequestBody Recipe recipe) {
-        recipeService.updateRecipe(userId, recipe);
+    public ResponseEntity updateProfRecipe(@PathVariable("recipe_id") final long recipeId, @PathVariable("user_id") final long userId, @RequestBody Recipe recipe) {
+        User user = userService.findUserById(userId);
+        if (user.getId() == recipe.getUserId()) {
+            return ResponseEntity.ok(recipe);
+        }
+        recipeService.updateRecipe(recipeId, recipe);
+        return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
     }
 
 }

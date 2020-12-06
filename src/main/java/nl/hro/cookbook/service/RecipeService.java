@@ -40,8 +40,16 @@ public class RecipeService {
 
     @Transactional()
     public void updateRecipe(final long recipeId, final Recipe updateRecipe) {
-//        Recipe recipe = findRecipeById(recipeId);
-        // TODO
-        recipeRepository.save(updateRecipe);
+        Recipe recipe = findRecipeById(recipeId);
+        if (!updateRecipe.getRecipe().isEmpty()) {
+            recipe.setRecipe(updateRecipe.getRecipe());
+        }
+        if (!updateRecipe.getDescription().isEmpty()) {
+            recipe.setDescription(updateRecipe.getDescription());
+        }
+        if (!updateRecipe.getPicture().isEmpty()) {
+            recipe.setPicture(updateRecipe.getPicture());
+        }
+        recipeRepository.save(recipe);
     }
 }
