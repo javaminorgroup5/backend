@@ -11,6 +11,8 @@ import javax.persistence.Embeddable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Profile {
+
     private String profileName;
     private String profilePicture;
+
 }

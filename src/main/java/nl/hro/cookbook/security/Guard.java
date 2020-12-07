@@ -51,9 +51,5 @@ public class Guard {
         return user.getId() == userId;
     }
 
-//    private boolean isFriend(final User user, final int userId) {
-//        return user.getFriends().stream().anyMatch(u -> u.getId() == userId);
-//    }
-
 }
 
