@@ -3,7 +3,7 @@ package nl.hro.cookbook.controller;
 import lombok.RequiredArgsConstructor;
 import nl.hro.cookbook.model.domain.Group;
 import nl.hro.cookbook.model.domain.User;
-import nl.hro.cookbook.model.dto.GroupDto;
+import nl.hro.cookbook.model.dto.GroupDTO;
 import nl.hro.cookbook.model.mapper.GroupMapper;
 import nl.hro.cookbook.service.GroupService;
 import nl.hro.cookbook.service.UserService;
@@ -25,7 +25,7 @@ public class GroupController {
     private final GroupMapper groupMapper;
 
     @GetMapping()
-    public Collection<GroupDto> getAllGroups() {
+    public Collection<GroupDTO> getAllGroups() {
         return groupService.findAllGroup().stream()
                 .map(groupMapper::toDTO)
                 .collect(Collectors.toList());
@@ -42,7 +42,7 @@ public class GroupController {
     @GetMapping("/{group_id}/user/{user_id}")
     public ResponseEntity getGroup(@PathVariable("group_id") final long groupId, @PathVariable("user_id") final long userId) {
         User user = userService.findUserById(userId);
-        GroupDto group = groupMapper.toDTO(groupService.findGroupById(groupId));
+        GroupDTO group = groupMapper.toDTO(groupService.findGroupById(groupId));
         if (user.getId() == group.getUserId()) {
             return ResponseEntity.ok(group);
         }
