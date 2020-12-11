@@ -8,9 +8,14 @@ import nl.hro.cookbook.repository.RecipeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 
 @Slf4j
 @Service
@@ -38,18 +43,19 @@ public class RecipeService {
         return recipeRepository.findRecipesByUserId(userId);
     }
 
-    @Transactional()
-    public void updateRecipe(final long recipeId, final Recipe updateRecipe) {
-        Recipe recipe = findRecipeById(recipeId);
-        if (!updateRecipe.getRecipe().isEmpty()) {
-            recipe.setRecipe(updateRecipe.getRecipe());
-        }
-        if (!updateRecipe.getDescription().isEmpty()) {
-            recipe.setDescription(updateRecipe.getDescription());
-        }
-        if (!updateRecipe.getPicture().isEmpty()) {
-            recipe.setPicture(updateRecipe.getPicture());
-        }
-        recipeRepository.save(recipe);
-    }
+//    @Transactional()
+//    public void updateRecipe(final long recipeId, final Recipe updateRecipe) {
+//        Recipe recipe = findRecipeById(recipeId);
+//        if (!updateRecipe.getRecipe().isEmpty()) {
+//            recipe.setRecipe(updateRecipe.getRecipe());
+//        }
+//        if (!updateRecipe.getDescription().isEmpty()) {
+//            recipe.setDescription(updateRecipe.getDescription());
+//        }
+//        if (!updateRecipe.getPicture().isEmpty()) {
+//            recipe.setPicture(updateRecipe.getPicture());
+//        }
+//        recipeRepository.save(recipe);
+//    }
+
 }
