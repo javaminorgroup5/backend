@@ -38,19 +38,16 @@ public class RecipeController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/create/{user_id}")
+    @PostMapping(value = "/create/{user_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity createRecipe(@PathVariable("user_id") final long userId,
                                        @RequestPart("recipe") RecipeDto recipeDTO,
                                        @RequestPart("file") MultipartFile file) throws IOException {
         User user = userService.findUserById(userId);
         Recipe recipe = recipeMapper.toModel(recipeDTO);
-        RecipeImage recipeImage =
-                new RecipeImage(file.getName(),
-                        file.getName(),
+        RecipeImage recipeImage = new RecipeImage(file.getOriginalFilename(), file.getName(),
                         commonService.compressBytes(file.getBytes()));
         recipe.setRecipeImage(recipeImage);
         recipe.setUserId(user.getId());
-        System.out.println(recipe);
         recipeService.createRecipe(recipe);
         return ResponseEntity.ok(recipe.getId());
     }
