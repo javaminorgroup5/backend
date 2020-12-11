@@ -6,12 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @Entity
@@ -31,5 +28,8 @@ public class Group {
     private String description;
 
     private Long userId;
+    @Column
+    @ElementCollection(targetClass=Profile.class)
+    private List<Profile> profiles;
 
 }

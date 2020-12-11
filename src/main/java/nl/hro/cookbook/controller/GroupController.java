@@ -39,6 +39,11 @@ public class GroupController {
         return ResponseEntity.ok(group.getId());
     }
 
+    @PostMapping("/{group_id}/join")
+    public void joinGroup(@PathVariable("group_id") final long groupId, @RequestBody Long userId) {
+        groupService.joinGroup(groupId, userId);
+    }
+
     @GetMapping("/{group_id}/user/{user_id}")
     public ResponseEntity getGroup(@PathVariable("group_id") final long groupId, @PathVariable("user_id") final long userId) {
         User user = userService.findUserById(userId);
