@@ -8,14 +8,9 @@ import nl.hro.cookbook.repository.RecipeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.zip.DataFormatException;
-import java.util.zip.Deflater;
-import java.util.zip.Inflater;
 
 @Slf4j
 @Service
@@ -25,8 +20,8 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
 
-    public Collection<Recipe> findAllRecipe() {
-        return recipeRepository.findAll();
+    public List<Recipe> findRecipesByUserId(long userId) {
+            return recipeRepository.findRecipesByUserId(userId).orElse(Collections.emptyList());
     }
 
     public Recipe findRecipeById(final long recipeId) {
@@ -39,8 +34,9 @@ public class RecipeService {
         recipeRepository.save(recipe);
     }
 
-    public Optional<List<Recipe>> findRecipesByUserId(Long userId) {
-        return recipeRepository.findRecipesByUserId(userId);
+    @Transactional()
+    public void deleteById(Long id) {
+        recipeRepository.deleteById(id);
     }
 
     @Transactional()

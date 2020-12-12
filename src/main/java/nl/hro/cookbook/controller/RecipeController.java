@@ -18,8 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,9 +30,9 @@ public class RecipeController {
     private final RecipeMapper recipeMapper;
     private final CommonService commonService;
 
-    @GetMapping()
-    public Collection<Recipe> getAllRecipes() {
-        Collection<Recipe> recipes = recipeService.findAllRecipe();
+    @GetMapping("/{user_id}")
+    public Collection<Recipe> getAllByUserIdRecipes(@PathVariable("user_id") final long userId) {
+        Collection<Recipe> recipes = recipeService.findRecipesByUserId(userId);
         for (Recipe recipe : recipes) {
             recipe.getRecipeImage().setPicByte(commonService.decompressBytes(recipe.getRecipeImage().getPicByte()));
         }
@@ -49,7 +47,6 @@ public class RecipeController {
         Recipe recipe = recipeMapper.toModel(recipeDTO);
         RecipeImage recipeImage = new RecipeImage(file.getOriginalFilename(), file.getName(),
                         commonService.compressBytes(file.getBytes()));
-        System.out.println(recipeImage);
         recipe.setRecipeImage(recipeImage);
         recipe.setUserId(user.getId());
         recipeService.createRecipe(recipe);
@@ -68,12 +65,23 @@ public class RecipeController {
     }
 
     @PutMapping("/{recipe_id}/user/{user_id}")
-    public ResponseEntity updateProfRecipe(@PathVariable("recipe_id") final long recipeId, @PathVariable("user_id") final long userId, @RequestBody Recipe recipe) {
+    public ResponseEntity updateRecipe(@PathVariable("recipe_id") final long recipeId, @PathVariable("user_id") final long userId, @RequestBody Recipe recipe) {
         User user = userService.findUserById(userId);
         if (user.getId() == recipe.getUserId()) {
             return ResponseEntity.ok(recipe);
         }
         recipeService.updateRecipe(recipeId, recipe);
+        return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/{recipe_id}/user/{user_id}")
+    public ResponseEntity deleteRecipe(@PathVariable("recipe_id") final long recipeId, @PathVariable("user_id") final long userId) {
+        User user = userService.findUserById(userId);
+        Recipe recipe = recipeService.findRecipeById(recipeId);
+        if (user.getId() == recipe.getUserId()) {
+            recipeService.deleteById(recipeId);
+            return ResponseEntity.ok("recipe deleted");
+        }
         return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
     }
 }
