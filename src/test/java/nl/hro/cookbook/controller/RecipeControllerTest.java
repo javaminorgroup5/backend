@@ -48,7 +48,7 @@
 //        ResponseEntity<User> response = restTemplate
 //                .postForEntity(uri, request, User.class);
 //        assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
-//        recipe = new Recipe(1L, "Test", "test", "test", user.getId(), new RecipeImage());
+//        recipe = new Recipe(1L, "Test", "test", user.getId(), new RecipeImage());
 //    }
 //
 //    @Test
