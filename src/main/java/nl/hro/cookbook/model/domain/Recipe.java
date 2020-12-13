@@ -23,10 +23,15 @@ public class Recipe {
     private Long id;
 
     @NotNull
+    private String title;
+
+    @NotNull
     private String recipe;
 
+    @NotNull
     private String description;
 
+    @NotNull
     private Long userId;
 
     @Embedded
@@ -36,6 +41,7 @@ public class Recipe {
     public String toString() {
         return "Recipe{" +
                 "id=" + id +
+                ", title='" + title + '\'' +
                 ", recipe='" + recipe + '\'' +
                 ", description='" + description + '\'' +
                 ", userId=" + userId +

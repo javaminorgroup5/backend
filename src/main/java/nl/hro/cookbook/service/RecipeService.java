@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -42,6 +41,9 @@ public class RecipeService {
     @Transactional()
     public void updateRecipe(final long recipeId, final Recipe updateRecipe) {
         Recipe recipe = findRecipeById(recipeId);
+        if (!recipe.getTitle().isEmpty()) {
+            recipe.setTitle(updateRecipe.getTitle());
+        }
         if (!updateRecipe.getRecipe().isEmpty()) {
             recipe.setRecipe(updateRecipe.getRecipe());
         }
