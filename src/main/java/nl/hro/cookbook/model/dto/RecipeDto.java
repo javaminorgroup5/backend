@@ -8,13 +8,10 @@ import lombok.NoArgsConstructor;
 public class RecipeDto {
 
     private Long id;
-
+    private String title;
     private String recipe;
-
     private String description;
-
-    private String picture;
-
     private Long userId;
+    private RecipeImageDTO recipeImageDTO;
 
 }

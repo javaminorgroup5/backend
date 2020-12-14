@@ -6,11 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -27,13 +23,29 @@ public class Recipe {
     private Long id;
 
     @NotNull
+    private String title;
+
+    @NotNull
     private String recipe;
 
+    @NotNull
     private String description;
 
-    private String picture;
-
+    @NotNull
     private Long userId;
 
+    @Embedded
+    RecipeImage recipeImage;
 
+    @Override
+    public String toString() {
+        return "Recipe{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", recipe='" + recipe + '\'' +
+                ", description='" + description + '\'' +
+                ", userId=" + userId +
+                ", recipeImage=" + recipeImage +
+                '}';
+    }
 }
