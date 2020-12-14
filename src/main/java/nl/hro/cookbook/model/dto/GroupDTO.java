@@ -4,9 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nl.hro.cookbook.model.domain.Profile;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -20,6 +18,6 @@ public class GroupDTO {
 
     private Long userId;
 
-    private Set<Profile> profiles;
+    private List<Profile> profiles;
 
 }

@@ -37,8 +37,8 @@ public class GroupController {
         groupService.joinGroup(groupId, userId);
     }
 
-    @DeleteMapping("/{group_id}")
-    public void deleteGroup(@PathVariable("group_id") final long groupId, @RequestBody Long userId) {
+    @DeleteMapping("/{group_id}/{user_id}")
+    public void deleteGroup(@PathVariable("group_id") final long groupId, @PathVariable("user_id") final long userId) {
         groupService.deleteById(groupId, userId);
     }
 
