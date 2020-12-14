@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import javax.naming.AuthenticationException;
 import java.util.*;
 
 @Slf4j
@@ -45,6 +46,17 @@ public class GroupService {
     @Transactional()
     public void createGroup(Group group) {
         groupRepository.save(group);
+    }
+
+    @Transactional()
+    public void deleteById(Long id, long userId) {
+        Optional<Group> group = groupRepository.findById(id);
+
+        if (group != null) {
+            if (group.get().getUserId() == userId) {
+                groupRepository.deleteById(id);
+            }
+        }
     }
 
     public Optional<List<Group>> findGroupsByUserId(Long userId) {
