@@ -9,6 +9,7 @@ import lombok.Setter;
 import nl.hro.cookbook.security.Role;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @Entity

@@ -24,6 +24,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String USER_ID_PATH = "/users/{id}/**";
     private static final String ADMIN_PATH = "/admin/**";
     private static final String H2_CONSOLE_PATH = "/h2-console/**";
+    private static final String CREATE_USER_PATH = "/users/create";
+    private static final String IMAGE_PATH = "/image/**";
 
     private final UserDetailService userDetailService;
 
@@ -55,7 +57,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .cors()
             .and()
             .authorizeRequests()
+                .antMatchers(CREATE_USER_PATH).permitAll()
                 .antMatchers(H2_CONSOLE_PATH).permitAll()
+                .antMatchers(IMAGE_PATH).permitAll()
                 .antMatchers(ADMIN_PATH).hasRole(Role.ADMIN.name())
 //                .antMatchers(HttpMethod.GET, USER_ID_PATH).access("@guard.checkReadAccess(authentication,#id)")
 //                .antMatchers(USER_ID_PATH).access("@guard.checkWriteAccess(authentication,#id)")

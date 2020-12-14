@@ -14,7 +14,7 @@ public class Guard {
     public boolean checkWriteAccess(final Authentication authentication, final int userId) {
         final User user = ((UserDetailsAdapter) authentication.getPrincipal()).getUser();
 
-//        final boolean allowed = isUser(user, userId) || (isCommunityManager(user, userId) && isFriend(user, userId));
+//        final boolean allowed = isUser(user, recipeId) || (isCommunityManager(user, recipeId) && isFriend(user, recipeId));
         boolean allowed = true; // TODO temp
 
 
@@ -30,7 +30,7 @@ public class Guard {
     public boolean checkReadAccess(final Authentication authentication, final int userId) {
         final User user = ((UserDetailsAdapter) authentication.getPrincipal()).getUser();
 
-//        final boolean allowed =  isFriend(user, userId) || isUser(user, userId);
+//        final boolean allowed =  isFriend(user, recipeId) || isUser(user, recipeId);
 
         boolean allowed = true; // TODO temp
 
@@ -50,10 +50,6 @@ public class Guard {
     private boolean isUser(final User user, final int userId) {
         return user.getId() == userId;
     }
-
-//    private boolean isFriend(final User user, final int userId) {
-//        return user.getFriends().stream().anyMatch(u -> u.getId() == userId);
-//    }
 
 }
 
