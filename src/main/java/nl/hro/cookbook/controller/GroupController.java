@@ -31,6 +31,16 @@ public class GroupController {
                 .collect(Collectors.toList());
     }
 
+
+    @GetMapping("/{group_id}")
+    public ResponseEntity getGroupById(@PathVariable("group_id") final long groupId) {
+        GroupDTO group = groupMapper.toDTO(groupService.findGroupById(groupId));
+        if (group != null) {
+            return ResponseEntity.ok(group);
+        }
+        return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
+    }
+
     @PostMapping("/create/{user_id}")
     public ResponseEntity createGroup(@PathVariable("user_id") final long userId, @RequestBody Group group) {
         User user = userService.findUserById(userId);
