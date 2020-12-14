@@ -64,12 +64,16 @@ public class RecipeController {
         return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/{recipe_id}/user/{user_id}")
-    public ResponseEntity updateRecipe(@PathVariable("recipe_id") final long recipeId, @PathVariable("user_id") final long userId, @RequestBody Recipe recipe) {
+    @PutMapping(value = "/{recipe_id}/user/{user_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity updateRecipe(@PathVariable("recipe_id") final long recipeId,
+                                       @PathVariable("user_id") final long userId,
+                                       @RequestPart Recipe recipe,
+                                       @RequestPart("file") MultipartFile file) throws IOException {
         User user = userService.findUserById(userId);
-        if (user.getId() == recipe.getUserId()) {
-            return ResponseEntity.ok(recipe);
-        }
+        RecipeImage recipeImage = new RecipeImage(file.getOriginalFilename(), file.getName(),
+                commonService.compressBytes(file.getBytes()));
+        recipe.setRecipeImage(recipeImage);
+        recipe.setUserId(user.getId());
         recipeService.updateRecipe(recipeId, recipe);
         return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
     }
