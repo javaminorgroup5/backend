@@ -58,8 +58,8 @@ public class UserService {
 //    This is fine for a demo, but don't do this in real code.
     @PostConstruct
     public void init() {
-        final User initialUser1 = new User(0L, "dion", passwordEncoder.encode("quintor"), Role.ADMIN, new Profile("Top Gun", "test.png"));
-        final User initialUser2 = new User(1L, "geoffrey", passwordEncoder.encode("quintor"), Role.COMMUNITY_MANAGER, new Profile("Maverick", "test2.png"));
+        final User initialUser1 = new User(1L, "dion", passwordEncoder.encode("quintor"), Role.ADMIN, new Profile("Top Gun", "test.png"));
+        final User initialUser2 = new User(2L, "geoffrey", passwordEncoder.encode("quintor"), Role.COMMUNITY_MANAGER, new Profile("Maverick", "test2.png"));
         userRepository.saveAll(Arrays.asList(initialUser1, initialUser2));
 
     }
