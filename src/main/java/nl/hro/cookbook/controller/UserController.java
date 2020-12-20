@@ -1,19 +1,23 @@
 package nl.hro.cookbook.controller;
 
 import lombok.RequiredArgsConstructor;
+import nl.hro.cookbook.model.domain.Profile;
+import nl.hro.cookbook.model.domain.ProfileImage;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.dto.ProfileDTO;
 import nl.hro.cookbook.model.mapper.ProfileMapper;
+import nl.hro.cookbook.service.CommonService;
 import nl.hro.cookbook.service.UserService;
 import nl.hro.cookbook.model.mapper.UserMapper;
 import nl.hro.cookbook.model.dto.UserDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,6 +33,7 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
     private final ProfileMapper profileMapper;
+    private final CommonService commonService;
 
     @GetMapping("/login")
     public String login() {
@@ -45,20 +50,25 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/create")
-    public void createUser(@RequestBody final User user) {
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void createUser(@RequestPart User user,
+                           @RequestPart("file") MultipartFile file) throws IOException {
+        ProfileImage profileImage = new ProfileImage(file.getOriginalFilename(), file.getName(),
+                commonService.compressBytes(file.getBytes()));
+        user.getProfile().setProfileImage(profileImage);
         userService.createUser(user);
     }
 
     @GetMapping("/{id}/profile")
     public ProfileDTO getProfile(@PathVariable("id") final long id) {
-        return profileMapper.toDTO(userService.findUserById(id).getProfile());
+        User user = userService.findUserById(id);
+        user.getProfile().getProfileImage().setPicByte(commonService.decompressBytes(user.getProfile().getProfileImage().getPicByte()));
+        return profileMapper.toDTO(user.getProfile());
     }
 
     @PutMapping("/{id}/profile")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateProfile(@PathVariable("id") final long id, @Valid @RequestBody final ProfileDTO profileDTO) {
-        userService.updateProfile(id, profileMapper.toModel(profileDTO));
+    public void updateProfile(@PathVariable("id") final long id, @Valid @RequestBody final Profile profile) {
+        userService.updateProfile(id, profile);
     }
 
 }

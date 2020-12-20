@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 
 @Data
 @Embeddable
@@ -13,6 +14,15 @@ import javax.persistence.Embeddable;
 public class Profile {
 
     private String profileName;
-    private String profilePicture;
 
+    @Embedded
+    ProfileImage profileImage;
+
+    @Override
+    public String toString() {
+        return "Profile{" +
+                "profileName='" + profileName + '\'' +
+                ", profileImage=" + profileImage +
+                '}';
+    }
 }

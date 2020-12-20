@@ -65,17 +65,21 @@ public class RecipeController {
     }
 
     @PutMapping(value = "/{recipe_id}/user/{user_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity updateRecipe(@PathVariable("recipe_id") final long recipeId,
+    public void updateRecipe(@PathVariable("recipe_id") final long recipeId,
                                        @PathVariable("user_id") final long userId,
-                                       @RequestPart Recipe recipe,
-                                       @RequestPart("file") MultipartFile file) throws IOException {
-        User user = userService.findUserById(userId);
-        RecipeImage recipeImage = new RecipeImage(file.getOriginalFilename(), file.getName(),
-                commonService.compressBytes(file.getBytes()));
-        recipe.setRecipeImage(recipeImage);
-        recipe.setUserId(user.getId());
+                                       @RequestPart(value = "recipe", required = false) RecipeDto recipeDto,
+                                       @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+        userService.findUserById(userId);
+        Recipe recipe = null;
+        if(recipeDto != null) {
+            recipe = recipeMapper.toModel(recipeDto);
+        }
+        if (file != null || recipe != null) {
+            RecipeImage recipeImage = new RecipeImage(file.getOriginalFilename(), file.getName(),
+                    commonService.compressBytes(file.getBytes()));
+            recipe.setRecipeImage(recipeImage);
+        }
         recipeService.updateRecipe(recipeId, recipe);
-        return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{recipe_id}/user/{user_id}")
