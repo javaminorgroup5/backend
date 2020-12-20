@@ -117,7 +117,6 @@ class RecipeControllerTest {
         ResponseEntity<Long> response1 = restTemplate
                 .withBasicAuth("test", "test")
                 .postForEntity(uri, request1, Long.class);
-        System.out.println(response1.getBody());
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
         // get
@@ -130,7 +129,6 @@ class RecipeControllerTest {
 
         // update
         uri = new URI("http://localhost:" + port + "/recipe/" + recipeResponse.getBody().getId() + "/user/" + stringResponse.getBody());
-        System.out.println(stringResponse.getBody());
         headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);

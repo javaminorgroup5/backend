@@ -74,7 +74,7 @@ public class RecipeController {
         if(recipeDto != null) {
             recipe = recipeMapper.toModel(recipeDto);
         }
-        if (file != null || recipe != null) {
+        if (file != null && recipe != null) {
             RecipeImage recipeImage = new RecipeImage(file.getOriginalFilename(), file.getName(),
                     commonService.compressBytes(file.getBytes()));
             recipe.setRecipeImage(recipeImage);
