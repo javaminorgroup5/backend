@@ -53,6 +53,7 @@ class UserServiceTest {
         user.setPassword("password");
         Profile profile = new Profile();
         profile.setProfileName("Tom");
+        user.setProfile(profile);
         lenient().when(userRepository.findById(eq(1L))).thenReturn(Optional.of(user));
         userServiceTest.createUser(user);
 

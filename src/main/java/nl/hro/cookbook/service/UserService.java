@@ -55,13 +55,16 @@ public class UserService {
     @Transactional()
     public void updateProfile(final long userId, final Profile newProfile) {
         User user = findUserById(userId);
+        if (user == null) {
+            return;
+        }
         ProfileImage profileImage = newProfile.getProfileImage();
         if (profileImage != null) {
             byte[] picByte = profileImage.getPicByte();
             user.getProfile().getProfileImage().setPicByte(picByte);
         }
         String profileName = newProfile.getProfileName();
-        if (!profileName.isEmpty()) {
+        if (profileName != null && user.getProfile() != null) {
             user.getProfile().setProfileName(profileName);
         }
         user.setProfile(user.getProfile());
