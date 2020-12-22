@@ -38,7 +38,6 @@ class RecipeControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-
     @Test
     void createRecipeResponse() throws Exception {
         HttpHeaders headers = new HttpHeaders();

@@ -75,14 +75,11 @@ public class UserService {
 //    This is fine for a demo, but don't do this in real code.
     @PostConstruct
     public void init() throws Exception {
-
         ResourceLoader resourceLoader = new DefaultResourceLoader();
         Resource resource = resourceLoader.getResource("classpath:download.jpeg");
         ProfileImage profileImage = new ProfileImage("test.jpg", "file", commonService.compressBytes(Files.readAllBytes(resource.getFile().toPath())));
-        final User initialUser1 = new User(1L, "dion", passwordEncoder.encode("quintor"),
-                Role.ADMIN, new Profile("Top", profileImage));
-        final User initialUser2 =
-                new User(2L, "geoffrey", passwordEncoder.encode("quintor"), Role.COMMUNITY_MANAGER, new Profile("Maverick", profileImage));
+        final User initialUser1 = new User(1L, "dion", passwordEncoder.encode("quintor"), Role.ADMIN, new Profile("Top", profileImage));
+        final User initialUser2 = new User(2L, "geoffrey", passwordEncoder.encode("quintor"), Role.COMMUNITY_MANAGER, new Profile("Maverick", profileImage));
         userRepository.saveAll(Arrays.asList(initialUser1, initialUser2));
     }
 

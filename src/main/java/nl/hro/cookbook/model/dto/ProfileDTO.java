@@ -8,15 +8,11 @@ import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
 @Data
-@Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProfileDTO {
 
-    @NotNull
     private String profileName;
-
-    @NotNull
     private ProfileImageDTO profileImageDTO;
 
 }
