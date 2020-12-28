@@ -4,18 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class ProfileDTO {
 
-    @NotNull
     private String profileName;
-
-    @NotNull
-    private String profilePicture;
+    private ProfileImageDTO profileImageDTO;
 
 }

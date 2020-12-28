@@ -1,10 +1,12 @@
 package nl.hro.cookbook.model.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class RecipeDto {
 
     private Long id;

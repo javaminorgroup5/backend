@@ -31,7 +31,6 @@ public class GroupController {
                 .collect(Collectors.toList());
     }
 
-
     @GetMapping("/{group_id}")
     public ResponseEntity getGroupById(@PathVariable("group_id") final long groupId) {
         GroupDTO group = groupMapper.toDTO(groupService.findGroupById(groupId));

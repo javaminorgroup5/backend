@@ -28,9 +28,8 @@ public class CommonService {
         try {
             outputStream.close();
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
-        System.out.println("Compressed RecipeImage Byte Size - " + outputStream.toByteArray().length);
         return outputStream.toByteArray();
     }
 
@@ -49,6 +48,7 @@ public class CommonService {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         } catch (DataFormatException e) {
+            e.printStackTrace();
         }
         return outputStream.toByteArray();
     }

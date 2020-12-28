@@ -41,13 +41,16 @@ public class RecipeService {
     @Transactional()
     public void updateRecipe(final long recipeId, final Recipe updateRecipe) {
         Recipe recipe = findRecipeById(recipeId);
-        if (!recipe.getTitle().isEmpty()) {
+        if (recipe == null || updateRecipe == null) {
+            return;
+        }
+        if (updateRecipe.getTitle() != null) {
             recipe.setTitle(updateRecipe.getTitle());
         }
-        if (!updateRecipe.getRecipe().isEmpty()) {
+        if (updateRecipe.getRecipe() != null) {
             recipe.setRecipe(updateRecipe.getRecipe());
         }
-        if (!updateRecipe.getDescription().isEmpty()) {
+        if (updateRecipe.getDescription() != null) {
             recipe.setDescription(updateRecipe.getDescription());
         }
         if (updateRecipe.getRecipeImage() != null) {
