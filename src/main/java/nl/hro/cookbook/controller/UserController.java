@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static nl.hro.cookbook.service.UserService.getLoginInUser;
+import static nl.hro.cookbook.service.UserService.getLogedInInUser;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,7 +37,7 @@ public class UserController {
 
     @GetMapping("/login")
     public String login() {
-        UserDetails userDetails = getLoginInUser();
+        UserDetails userDetails = getLogedInInUser();
         String username = userDetails.getUsername();
         Optional<User> userFound = userService.findUserByUsername(username);
         return userFound.map(user -> String.valueOf(user.getId())).orElseGet(HttpStatus.NO_CONTENT::getReasonPhrase);
