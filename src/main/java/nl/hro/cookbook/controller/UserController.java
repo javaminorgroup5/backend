@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static nl.hro.cookbook.service.UserService.getLoginInUser;
+import static nl.hro.cookbook.service.UserService.getLoggedInUser;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,7 +37,7 @@ public class UserController {
 
     @GetMapping("/login")
     public String login() {
-        UserDetails userDetails = getLoginInUser();
+        UserDetails userDetails = getLoggedInUser();
         String username = userDetails.getUsername();
         Optional<User> userFound = userService.findUserByUsername(username);
         return userFound.map(user -> String.valueOf(user.getId())).orElseGet(HttpStatus.NO_CONTENT::getReasonPhrase);
@@ -69,8 +69,15 @@ public class UserController {
         return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/{id}/profile")
-    public void updateProfile(@PathVariable("id") final long id, @Valid @RequestBody final Profile profile) {
+    @PutMapping(value = "/{id}/profile",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void updateProfile(@PathVariable("id") final long id,
+                              @Valid @RequestPart(value = "profile", required = false) final Profile profile,
+                              @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+        if (file != null) {
+            ProfileImage profileImage = new ProfileImage(file.getOriginalFilename(), file.getName(),
+                    commonService.compressBytes(file.getBytes()));
+            profile.setProfileImage(profileImage);
+        }
         userService.updateProfile(id, profile);
     }
 

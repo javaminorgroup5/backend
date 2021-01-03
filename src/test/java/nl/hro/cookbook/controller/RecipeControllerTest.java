@@ -21,7 +21,6 @@ import org.springframework.util.MultiValueMap;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Objects;
-
 import static nl.hro.cookbook.controller.ImageHelper.createTempFileResource;
 import static org.assertj.core.api.Assertions.assertThat;
 
