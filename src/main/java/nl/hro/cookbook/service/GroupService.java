@@ -90,4 +90,13 @@ public class GroupService {
     }
 
 
+
+    @Transactional()
+    public void updateGroup(final long groupId, final Group updateGroup) {
+        Group group = findGroupById(groupId);
+        if (group == null || updateGroup == null) {
+            return;
+        }
+        groupRepository.save(group);
+    }
 }
