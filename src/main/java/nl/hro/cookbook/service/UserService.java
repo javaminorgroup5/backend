@@ -74,7 +74,7 @@ public class UserService {
         recipeRepository.saveAll(testDataService.getRecipes());
     }
 
-    public static UserDetails getLogedInInUser() {
+    public static UserDetails getLoggedInUser() {
         return (UserDetails) SecurityContextHolder
                 .getContext()
                 .getAuthentication()
