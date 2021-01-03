@@ -33,21 +33,14 @@ public class RecipeController {
     @GetMapping("/{user_id}")
     public Collection<Recipe> getAllByUserIdRecipes(@PathVariable("user_id") final long userId) {
         Collection<Recipe> recipes = recipeService.findRecipesByUserId(userId);
-        for (Recipe recipe : recipes) {
-            recipe.getRecipeImage().setPicByte(commonService.decompressBytes(recipe.getRecipeImage().getPicByte()));
-        }
         return recipes;
     }
 
-    @PostMapping(value = "/create/{user_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/create/{user_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity createRecipe(@PathVariable("user_id") final long userId,
-                                       @RequestPart("recipe") RecipeDto recipeDTO,
-                                       @RequestPart("file") MultipartFile file) throws IOException {
+                                       @RequestBody RecipeDto recipeDTO) throws IOException {
         User user = userService.findUserById(userId);
         Recipe recipe = recipeMapper.toModel(recipeDTO);
-        RecipeImage recipeImage = new RecipeImage(file.getOriginalFilename(), file.getName(),
-                        commonService.compressBytes(file.getBytes()));
-        recipe.setRecipeImage(recipeImage);
         recipe.setUserId(user.getId());
         recipeService.createRecipe(recipe);
         return ResponseEntity.ok(recipe.getId());
@@ -57,22 +50,18 @@ public class RecipeController {
     public ResponseEntity getRecipe(@PathVariable("recipe_id") final long recipeId, @PathVariable("user_id") final long userId) {
         User user = userService.findUserById(userId);
         Recipe recipe = recipeService.findRecipeById(recipeId);
-        recipe.getRecipeImage().setPicByte(commonService.decompressBytes(recipe.getRecipeImage().getPicByte()));
+
         if (user.getId() == recipe.getUserId()) {
             return ResponseEntity.ok(recipe);
         }
         return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping(value = "/{recipe_id}/user/{user_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/{recipe_id}/user/{user_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity updateRecipe(@PathVariable("recipe_id") final long recipeId,
                                        @PathVariable("user_id") final long userId,
-                                       @RequestPart Recipe recipe,
-                                       @RequestPart("file") MultipartFile file) throws IOException {
+                                       @RequestBody Recipe recipe) throws IOException {
         User user = userService.findUserById(userId);
-        RecipeImage recipeImage = new RecipeImage(file.getOriginalFilename(), file.getName(),
-                commonService.compressBytes(file.getBytes()));
-        recipe.setRecipeImage(recipeImage);
         recipe.setUserId(user.getId());
         recipeService.updateRecipe(recipeId, recipe);
         return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);

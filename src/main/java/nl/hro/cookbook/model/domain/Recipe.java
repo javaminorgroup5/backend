@@ -35,7 +35,7 @@ public class Recipe {
     private Long userId;
 
     @Embedded
-    RecipeImage recipeImage;
+    private String recipeImage;
 
     @Override
     public String toString() {

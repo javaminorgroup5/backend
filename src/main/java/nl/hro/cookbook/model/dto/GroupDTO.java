@@ -20,4 +20,5 @@ public class GroupDTO {
 
     private List<Profile> profiles;
 
+    private List<String> inviteTokens;
 }

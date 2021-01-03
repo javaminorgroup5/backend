@@ -31,10 +31,20 @@ public class GroupController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/{group_id}/invite")
+    public ResponseEntity generateGroupInvite(@PathVariable("group_id") final long groupId) {
+        String inviteToken = groupService.generateGroupInvite(groupId);
+
+        if (inviteToken != null) {
+            return ResponseEntity.ok(groupService.generateGroupInvite(groupId));
+        } else {
+            return ResponseEntity.badRequest().body(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PostMapping("/{group_id}/join")
-    public void joinGroup(@PathVariable("group_id") final long groupId, @RequestBody Long userId) {
-        groupService.joinGroup(groupId, userId);
+    public void joinGroup(@PathVariable("group_id") final long groupId, @RequestBody Long userId, @RequestBody String inviteToken) {
+        groupService.joinGroup(groupId, userId, inviteToken);
     }
 
     @DeleteMapping("/{group_id}/{user_id}")

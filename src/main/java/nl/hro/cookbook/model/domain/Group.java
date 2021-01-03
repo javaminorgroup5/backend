@@ -32,4 +32,7 @@ public class Group {
     @ElementCollection(targetClass=Profile.class)
     private List<Profile> profiles;
 
+    @Column
+    @ElementCollection(targetClass=String.class)
+    private List<String> inviteTokens;
 }
