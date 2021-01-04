@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Lob;
 import java.util.Arrays;
 
 @Data
@@ -18,7 +19,8 @@ public class ProfileImage {
 
     private String type;
 
-    @Column(name = "picByte", length = 100000000)
+    @Lob
+    @Column(name = "picByte", length = 1000000)
     private byte[] picByte;
 
     @Override
