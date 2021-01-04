@@ -31,6 +31,10 @@ public class Group {
     @ElementCollection(targetClass=Profile.class)
     private List<Profile> profiles;
 
+    @ManyToMany
+    @JoinTable
+    List<User> enrolledUsers;
+
     @Embedded
     private GroupImage groupImage;
 
