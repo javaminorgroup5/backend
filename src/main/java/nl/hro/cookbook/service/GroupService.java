@@ -92,9 +92,9 @@ public class GroupService {
             String inviteTokenDB = invite.getToken();
 
             if (inviteTokenDB.equals(inviteToken)) {
-                List<Profile> profiles = group.getProfiles();
-                profiles.add(user.getProfile());
-                group.setProfiles(profiles);
+                List<User> users = group.getEnrolledUsers();
+                users.add(user);
+                group.setEnrolledUsers(users);
                 groupRepository.save(group);
             }
         }
