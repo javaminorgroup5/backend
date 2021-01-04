@@ -22,7 +22,7 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String groupName;
 
     private String description;
 
@@ -34,5 +34,8 @@ public class Group {
     @ManyToMany
     @JoinTable
     List<User> enrolledUsers;
+
+    @Embedded
+    private GroupImage groupImage;
 
 }
