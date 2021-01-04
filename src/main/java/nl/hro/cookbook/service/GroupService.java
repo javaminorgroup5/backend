@@ -4,15 +4,22 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.hro.cookbook.model.domain.Group;
+import nl.hro.cookbook.model.domain.GroupImage;
 import nl.hro.cookbook.model.domain.Profile;
+import nl.hro.cookbook.model.domain.ProfileImage;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.exception.ResourceNotFoundException;
 import nl.hro.cookbook.repository.GroupRepository;
 import nl.hro.cookbook.repository.UserRepository;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 
 @Slf4j
@@ -22,8 +29,8 @@ import java.util.*;
 public class GroupService {
 
     private final GroupRepository groupRepository;
-    private final UserRepository userRepository;
     private final UserService userService;
+    private final CommonService commonService;
 
     public List<Group> findAllGroup() {
         return groupRepository.findAll();
