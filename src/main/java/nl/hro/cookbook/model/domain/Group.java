@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -23,7 +22,7 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String groupName;
 
     private String description;
 
@@ -31,5 +30,8 @@ public class Group {
     @Column
     @ElementCollection(targetClass=Profile.class)
     private List<Profile> profiles;
+
+    @Embedded
+    private GroupImage groupImage;
 
 }

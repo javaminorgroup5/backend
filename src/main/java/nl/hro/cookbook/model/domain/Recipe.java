@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 @Entity
@@ -26,9 +27,11 @@ public class Recipe {
     private String title;
 
     @NotNull
+    @Size(min = 1, max = 10000)
     private String recipe;
 
     @NotNull
+    @Size(min = 1, max = 10000)
     private String description;
 
     @NotNull
