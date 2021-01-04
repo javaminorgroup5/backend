@@ -102,6 +102,11 @@ public class GroupController {
             group = groupMapper.toModel(groupDTO);
         }
         groupService.updateGroup(groupId, group);
-
     }
+
+    @DeleteMapping("/{group_id}/{user_id}")
+    public void deleteGroup(@PathVariable("group_id") final long groupId, @PathVariable("user_id") final long userId) {
+        groupService.deleteById(groupId, userId);
+    }
+
 }

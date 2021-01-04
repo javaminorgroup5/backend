@@ -71,6 +71,17 @@ public class GroupService {
         return userIDs;
     }
 
+    @Transactional()
+    public void deleteById(Long id, long userId) {
+        Optional<Group> group = groupRepository.findById(id);
+
+        if (group != null) {
+            if (group.get().getUserId() == userId) {
+                groupRepository.deleteById(id);
+            }
+        }
+    }
+
     @Transactional
     public void joinGroup(final long groupId, long userId, String inviteToken) {
         final User user = userService.findUserById(userId);
