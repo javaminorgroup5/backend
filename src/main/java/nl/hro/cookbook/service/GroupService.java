@@ -73,4 +73,14 @@ public class GroupService {
         final Group initialGroup4 = new Group(4L, "Italiaanse keukengroep", "De Italiaanse keuken omvat de inheemse kookkunst van het Italiaanse schiereiland. Deze keuken is zeer gevarieerd en seizoensgebonden.", 2L, new ArrayList<>(), groupImage);
         groupRepository.saveAll(Arrays.asList(initialGroup1, initialGroup2, initialGroup3, initialGroup4));
     }
+
+    @Transactional()
+    public void updateGroup(final long groupId, final Group updateGroup) {
+        Group group = findGroupById(groupId);
+        if (group == null || updateGroup == null) {
+            return;
+        }
+        groupRepository.save(group);
+    }
 }
+
