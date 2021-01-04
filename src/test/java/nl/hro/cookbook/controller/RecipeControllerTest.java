@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
 import static nl.hro.cookbook.controller.ImageHelper.createTempFileResource;
@@ -46,7 +47,7 @@ class RecipeControllerTest {
                 = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
         user = new User(12L, "test1", "test", Role.COMMUNITY_MANAGER,
-                new Profile("Top Gun", null));
+                new Profile("Top Gun", null), new ArrayList<>());
         body.add("user", user);
         HttpEntity<MultiValueMap<String, Object>> request =
                 new HttpEntity<>(body,  headers);
@@ -86,7 +87,7 @@ class RecipeControllerTest {
                 = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
         user = new User(12L, "test", "test", Role.COMMUNITY_MANAGER,
-                new Profile("Top Gun", null));
+                new Profile("Top Gun", null), new ArrayList<>());
         body.add("user", user);
         HttpEntity<MultiValueMap<String, Object>> request =
                 new HttpEntity<>(body,  headers);

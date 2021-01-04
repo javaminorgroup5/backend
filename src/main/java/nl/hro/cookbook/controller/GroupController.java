@@ -53,6 +53,11 @@ public class GroupController {
         groupService.joinGroup(groupId, userId);
     }
 
+    @PostMapping("/{group_id}/enroll")
+    public void enrollInGroup(@PathVariable("group_id") final long groupId, @RequestBody Long userId) {
+        groupService.enrollInGroup(groupId, userId);
+    }
+
     @GetMapping("/{group_id}/user/{user_id}")
     public ResponseEntity getGroup(@PathVariable("group_id") final long groupId, @PathVariable("user_id") final long userId) {
         User user = userService.findUserById(userId);
@@ -61,5 +66,10 @@ public class GroupController {
             return ResponseEntity.ok(group);
         }
         return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{group_id}/enrolled")
+    public ResponseEntity getEnrolledUsersForGroup(@PathVariable("group_id") final long groupId) {
+        return ResponseEntity.ok(groupService.findEnrolledUsersForGroup(groupId));
     }
 }

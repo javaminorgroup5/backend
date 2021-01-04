@@ -9,6 +9,7 @@ import lombok.Setter;
 import nl.hro.cookbook.security.Role;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -44,4 +45,7 @@ public class User {
                 ", profile=" + profile +
                 '}';
     }
+
+    @ManyToMany(mappedBy = "enrolledUsers")
+    List<Group> enrolledGroups;
 }

@@ -1,11 +1,7 @@
 package nl.hro.cookbook.service;
 
 import lombok.RequiredArgsConstructor;
-import nl.hro.cookbook.model.domain.Profile;
-import nl.hro.cookbook.model.domain.ProfileImage;
-import nl.hro.cookbook.model.domain.Recipe;
-import nl.hro.cookbook.model.domain.RecipeImage;
-import nl.hro.cookbook.model.domain.User;
+import nl.hro.cookbook.model.domain.*;
 import nl.hro.cookbook.security.Role;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
@@ -15,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,9 +29,9 @@ public class TestDataService {
         Resource resource = resourceLoader.getResource("classpath:download.jpeg");
         ProfileImage profileImage = new ProfileImage("test.jpg", "file", commonService.compressBytes(Files.readAllBytes(resource.getFile().toPath())));
 
-        final User initialUser1 = new User(1L, "dion", passwordEncoder.encode("quintor"), Role.ADMIN, new Profile("Top", profileImage));
-        final User initialUser2 = new User(2L, "geoffrey", passwordEncoder.encode("quintor"), Role.COMMUNITY_MANAGER, new Profile("Maverick", profileImage));
-        final User initialUser3 = new User(3L, "testuser", passwordEncoder.encode("testpassword"), Role.COMMUNITY_MANAGER, new Profile("Random guy", profileImage));
+        final User initialUser1 = new User(1L, "dion", passwordEncoder.encode("quintor"), Role.ADMIN, new Profile("Top", profileImage), new ArrayList<>());
+        final User initialUser2 = new User(2L, "geoffrey", passwordEncoder.encode("quintor"), Role.COMMUNITY_MANAGER, new Profile("Maverick", profileImage), new ArrayList<>());
+        final User initialUser3 = new User(3L, "testuser", passwordEncoder.encode("testpassword"), Role.COMMUNITY_MANAGER, new Profile("Random guy", profileImage), new ArrayList<>());
 
 
         return Arrays.asList(initialUser1, initialUser2, initialUser3);
