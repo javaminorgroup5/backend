@@ -8,6 +8,7 @@ import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.exception.ResourceNotFoundException;
 import nl.hro.cookbook.repository.RecipeRepository;
 import nl.hro.cookbook.repository.UserRepository;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -39,13 +41,18 @@ public class UserService {
     }
 
     @Transactional()
-    public void createUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+    public void createUser(User user) throws IOException {
+        boolean valid = EmailValidator.getInstance().isValid(user.getEmail());
+        if (valid) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            userRepository.save(user);
+        } else {
+            throw new IOException("Invalid email address");
+        }
     }
 
     public Optional<User> findUserByUsername(String username) {
-        return userRepository.findUserByUsername(username);
+        return userRepository.findUserByEmail(username);
     }
 
     @Transactional()
