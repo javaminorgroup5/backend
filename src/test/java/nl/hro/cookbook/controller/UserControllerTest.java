@@ -3,6 +3,7 @@ package nl.hro.cookbook.controller;
 import nl.hro.cookbook.model.domain.Profile;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.security.Role;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +13,7 @@ import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
@@ -120,12 +122,17 @@ class UserControllerTest {
 
         // update profile
         uri = new URI("http://localhost:" + port + "/users/" + idResponse.getBody() + "/profile");
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers = createHeaders("test3", "test");
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         Profile profile = new Profile();
         profile.setProfileName("Maverick");
-        HttpEntity<Profile> request1 =
-                new HttpEntity<>(profile, headers);
-        restTemplate.withBasicAuth("test3", "test").put(uri, request1);
+        MultiValueMap<String, Object> body1
+                = new LinkedMultiValueMap<>();
+        body1.add("profile", profile);
+        HttpEntity<MultiValueMap<String, Object>> request1 =
+                new HttpEntity<>(body1,  headers);
+        ResponseEntity<Void> exchange = restTemplate.exchange(uri, HttpMethod.PUT, request1, Void.class);
 
         // get updated profile
         ResponseEntity<Profile> profileResponseUpdated = restTemplate
@@ -133,6 +140,16 @@ class UserControllerTest {
                 .getForEntity(uri,  Profile.class);
         assertThat(profileResponseUpdated.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
         assertThat(Objects.requireNonNull(profileResponseUpdated.getBody()).getProfileName()).isEqualTo("Maverick");
+    }
+
+    private HttpHeaders createHeaders(String username, String password){
+        return new HttpHeaders() {{
+            String auth = username + ":" + password;
+            byte[] encodedAuth = Base64.encodeBase64(
+                    auth.getBytes(Charset.forName("US-ASCII")) );
+            String authHeader = "Basic " + new String( encodedAuth );
+            set( "Authorization", authHeader );
+        }};
     }
 
 }
