@@ -64,6 +64,16 @@ public class RecipeController {
         return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/{recipe_id}/share")
+    public ResponseEntity getSharedRecipe(@PathVariable("recipe_id") final long recipeId) {
+        Recipe recipe = recipeService.findRecipeById(recipeId);
+        recipe.getRecipeImage().setPicByte(commonService.decompressBytes(recipe.getRecipeImage().getPicByte()));
+        if (recipe.getDescription() != null) {
+            return ResponseEntity.ok(recipe);
+        }
+        return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
+    }
+
     @PutMapping(value = "/{recipe_id}/user/{user_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void updateRecipe(@PathVariable("recipe_id") final long recipeId,
                                        @PathVariable("user_id") final long userId,
