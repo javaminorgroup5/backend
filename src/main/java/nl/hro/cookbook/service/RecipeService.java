@@ -7,6 +7,7 @@ import net.bytebuddy.utility.RandomString;
 import nl.hro.cookbook.model.domain.*;
 import nl.hro.cookbook.model.exception.ResourceNotFoundException;
 import nl.hro.cookbook.repository.RecipeRepository;
+import nl.hro.cookbook.repository.ShareLinkRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
@@ -23,6 +24,7 @@ import java.util.Optional;
 public class RecipeService {
 
     private final RecipeRepository recipeRepository;
+    private final ShareLinkRepository shareLinkRepository;
     private final CommonService commonService;
 
     public List<Recipe> findRecipesByUserId(long userId) {
@@ -44,6 +46,7 @@ public class RecipeService {
             List<ShareLink> shareLinks = recipe.getShareLinks();
             shareLinks.add(shareLink);
             recipe.setShareLinks(shareLinks);
+            shareLinkRepository.save(shareLink);
             recipeRepository.save(recipe);
             return shareLink;
         } else {
@@ -57,7 +60,6 @@ public class RecipeService {
 
         if (recipeById.isPresent()) {
             Recipe recipe = recipeById.get();
-            recipe.getRecipeImage().setPicByte(commonService.decompressBytes(recipe.getRecipeImage().getPicByte()));
             List<ShareLink> shareLinks = recipe.getShareLinks();
 
             for (ShareLink shareLinkIterated : shareLinks) {
@@ -65,8 +67,6 @@ public class RecipeService {
 
                 if (shareLinkDB.equals(shareLink)) {
                     return recipe;
-                } else {
-                    throw new AuthenticationException("Invalid share link");
                 }
             }
         }

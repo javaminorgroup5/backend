@@ -77,6 +77,7 @@ public class RecipeController {
     @GetMapping("/{recipe_id}/share/{share_link}")
     public ResponseEntity getRecipeByShareLink(@PathVariable("recipe_id") final long recipeId, @PathVariable("share_link") final String share_link) throws NotFoundException, AuthenticationException {
         Recipe recipe = recipeService.findRecipeByShareLink(recipeId, share_link);
+        recipe.getRecipeImage().setPicByte(commonService.decompressBytes(recipe.getRecipeImage().getPicByte()));
 
         return ResponseEntity.ok(recipe);
     }
