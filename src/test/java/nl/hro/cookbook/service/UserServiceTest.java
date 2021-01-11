@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.io.IOException;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,30 +29,30 @@ class UserServiceTest {
     private UserService userServiceTest;
 
     @Test
-    void createUserTest() {
+    void createUserTest() throws IOException {
         // Given
         User user = new User();
-        user.setUsername("john");
-        user.setPassword("password");
-        lenient().when(userRepository.findUserByUsername(eq("john"))).thenReturn(Optional.of(user));
+        user.setEmail("john@test.nl");
+        user.setPassword(passwordEncoder.encode("password"));
+        lenient().when(userRepository.findUserByEmail(eq("john@test.nl"))).thenReturn(Optional.of(user));
 
         // When
         userServiceTest.createUser(user);
 
         // Then
-        Optional<User> userOptional = userRepository.findUserByUsername("john");
+        Optional<User> userOptional = userRepository.findUserByEmail("john@test.nl");
         assertTrue(userOptional.isPresent());
         assertEquals(user, userOptional.get());
 
     }
 
     @Test
-    void updateUserProfileTest() {
+    void updateUserProfileTest() throws IOException {
         // Given
         User user = new User();
         user.setId(1);
-        user.setUsername("john");
-        user.setPassword("password");
+        user.setEmail("john@test.nl");
+        user.setPassword(passwordEncoder.encode("password"));
         Profile profile = new Profile();
         profile.setProfileName("Tom");
         user.setProfile(profile);

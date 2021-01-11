@@ -28,7 +28,7 @@ class TestDataServiceTest {
     void testGetUsers() throws IOException {
         List<User> result = testDataService.getUsers();
         assertEquals(1L, result.get(0).getId());
-        assertEquals("dion", result.get(0).getUsername());
+        assertEquals("dion@quintor.nl", result.get(0).getEmail());
     }
 
     @Test

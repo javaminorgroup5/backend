@@ -44,7 +44,7 @@ public class Guard {
     }
 
     private boolean isCommunityManager(final User user, final String username) {
-        return user.getUsername().equals(username) && user.getRole().equals(Role.COMMUNITY_MANAGER);
+        return user.getEmail().equals(username) && user.getRole().equals(Role.COMMUNITY_MANAGER);
     }
 
     private boolean isUser(final User user, final int userId) {

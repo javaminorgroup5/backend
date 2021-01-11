@@ -29,9 +29,9 @@ public class TestDataService {
         Resource resource = resourceLoader.getResource("classpath:download.jpeg");
         ProfileImage profileImage = new ProfileImage("test.jpg", "file", commonService.compressBytes(Files.readAllBytes(resource.getFile().toPath())));
 
-        final User initialUser1 = new User(1L, "dion", passwordEncoder.encode("quintor"), Role.ADMIN, new Profile("Top", profileImage), new ArrayList<>());
-        final User initialUser2 = new User(2L, "geoffrey", passwordEncoder.encode("quintor"), Role.COMMUNITY_MANAGER, new Profile("Maverick", profileImage), new ArrayList<>());
-        final User initialUser3 = new User(3L, "testuser", passwordEncoder.encode("testpassword"), Role.COMMUNITY_MANAGER, new Profile("Random guy", profileImage), new ArrayList<>());
+        final User initialUser1 = new User(1L, "dion@quintor.nl", passwordEncoder.encode("quintor"), Role.ADMIN, new Profile("DionRecipeGuy45", profileImage), new ArrayList<>());
+        final User initialUser2 = new User(2L, "geoffrey@quintor.nl", passwordEncoder.encode("quintor"), Role.COMMUNITY_MANAGER, new Profile("Maverick12", profileImage), new ArrayList<>());
+        final User initialUser3 = new User(3L, "testuser@test.nl", passwordEncoder.encode("testpassword"), Role.COMMUNITY_MANAGER, new Profile("TheRecipeTester492", profileImage), new ArrayList<>());
 
 
         return Arrays.asList(initialUser1, initialUser2, initialUser3);
