@@ -72,4 +72,6 @@ public class GroupController {
     public ResponseEntity getEnrolledUsersForGroup(@PathVariable("group_id") final long groupId) {
         return ResponseEntity.ok(groupService.findEnrolledUsersForGroup(groupId));
     }
+
+
 }

@@ -81,4 +81,8 @@ public class UserController {
         userService.updateProfile(id, profile);
     }
 
+    @GetMapping("/{id}/enrolled")
+    public ResponseEntity getEnrolledGroupsForUser(@PathVariable("id") final long id) {
+        return ResponseEntity.ok(userService.getEnrolledGroupsForUser(id));
+    }
 }

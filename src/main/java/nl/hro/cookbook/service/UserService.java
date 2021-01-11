@@ -2,6 +2,7 @@ package nl.hro.cookbook.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nl.hro.cookbook.model.domain.Group;
 import nl.hro.cookbook.model.domain.Profile;
 import nl.hro.cookbook.model.domain.ProfileImage;
 import nl.hro.cookbook.model.domain.User;
@@ -15,8 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -79,5 +79,17 @@ public class UserService {
                 .getContext()
                 .getAuthentication()
                 .getPrincipal();
+    }
+
+    public List<String> getEnrolledGroupsForUser(long userId) {
+        List<String> groupIds = new ArrayList<>();
+        User user = findUserById(userId);
+
+        for (Iterator<Group> i = user.getEnrolledGroups().iterator(); i.hasNext(); ) {
+            Group item = i.next();
+            String groupId = item.getName();
+            groupIds.add(groupId);
+        }
+        return groupIds;
     }
 }
