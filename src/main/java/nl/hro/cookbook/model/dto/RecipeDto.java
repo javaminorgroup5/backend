@@ -3,6 +3,10 @@ package nl.hro.cookbook.model.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nl.hro.cookbook.model.domain.Invite;
+import nl.hro.cookbook.model.domain.ShareLink;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -15,5 +19,6 @@ public class RecipeDto {
     private String description;
     private Long userId;
     private RecipeImageDTO recipeImageDTO;
+    private List<ShareLink> shareLinks;
 
 }

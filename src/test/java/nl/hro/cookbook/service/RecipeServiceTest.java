@@ -1,5 +1,6 @@
 package nl.hro.cookbook.service;
 
+import javassist.NotFoundException;
 import nl.hro.cookbook.model.domain.Recipe;
 import nl.hro.cookbook.repository.RecipeRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +53,7 @@ class RecipeServiceTest {
     }
 
     @Test
-    void updateRecipeTest() {
+    void updateRecipeTest() throws NotFoundException {
         // Give
         lenient().when(recipeRepository.findById(eq(1L))).thenReturn(Optional.of((recipe)));
 
