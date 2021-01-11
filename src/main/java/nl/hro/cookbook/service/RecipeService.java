@@ -44,13 +44,13 @@ public class RecipeService {
         if (recipe == null || updateRecipe == null) {
             return;
         }
-        if (updateRecipe.getTitle() != null) {
+        if (updateRecipe.getTitle() != null && !updateRecipe.getTitle().isEmpty()) {
             recipe.setTitle(updateRecipe.getTitle());
         }
-        if (updateRecipe.getRecipe() != null) {
+        if (updateRecipe.getRecipe() != null && !updateRecipe.getRecipe().isEmpty()) {
             recipe.setRecipe(updateRecipe.getRecipe());
         }
-        if (updateRecipe.getDescription() != null) {
+        if (updateRecipe.getDescription() != null && !updateRecipe.getDescription().isEmpty()) {
             recipe.setDescription(updateRecipe.getDescription());
         }
         if (updateRecipe.getRecipeImage() != null) {
