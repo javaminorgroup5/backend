@@ -34,7 +34,7 @@ class UserServiceTest {
         User user = new User();
         user.setEmail("john@test.nl");
         user.setPassword(passwordEncoder.encode("password"));
-        lenient().when(userRepository.findUserByEmail(eq("john"))).thenReturn(Optional.of(user));
+        lenient().when(userRepository.findUserByEmail(eq("john@test.nl"))).thenReturn(Optional.of(user));
 
         // When
         userServiceTest.createUser(user);
