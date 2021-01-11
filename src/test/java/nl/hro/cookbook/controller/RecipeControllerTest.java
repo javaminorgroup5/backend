@@ -46,7 +46,7 @@ class RecipeControllerTest {
         MultiValueMap<String, Object> body
                 = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
-        user = new User(12L, "test1", "test", Role.COMMUNITY_MANAGER,
+        user = new User(12L, "test1@email.com", "test", Role.COMMUNITY_MANAGER,
                 new Profile("Top Gun", null), new ArrayList<>());
         body.add("user", user);
         HttpEntity<MultiValueMap<String, Object>> request =
@@ -59,7 +59,7 @@ class RecipeControllerTest {
         recipe = new RecipeDto(1L, "Test", "test", "Eat it raw!", user.getId(), new RecipeImageDTO());
         uri = new URI("http://localhost:" + port + "/users/login");
         ResponseEntity<String> stringResponse = restTemplate
-                .withBasicAuth("test1", "test")
+                .withBasicAuth("test1@email.com", "test")
                 .getForEntity(uri,  String.class);
         assertThat(stringResponse.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
@@ -73,7 +73,7 @@ class RecipeControllerTest {
                 new HttpEntity<>(body,  headers);
         uri = new URI("http://localhost:" + port + "/recipe/create/" + stringResponse.getBody());
         ResponseEntity<Long> response1 = restTemplate
-                .withBasicAuth("test1", "test")
+                .withBasicAuth("test1@email.com", "test")
                 .postForEntity(uri, request1, Long.class);
         assertThat(response1.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
     }
@@ -86,7 +86,7 @@ class RecipeControllerTest {
         MultiValueMap<String, Object> body
                 = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
-        user = new User(12L, "test", "test", Role.COMMUNITY_MANAGER,
+        user = new User(12L, "test@email.com", "test", Role.COMMUNITY_MANAGER,
                 new Profile("Top Gun", null), new ArrayList<>());
         body.add("user", user);
         HttpEntity<MultiValueMap<String, Object>> request =
@@ -99,7 +99,7 @@ class RecipeControllerTest {
 
         uri = new URI("http://localhost:" + port + "/users/login");
         ResponseEntity<String> stringResponse = restTemplate
-                .withBasicAuth("test", "test")
+                .withBasicAuth("test@email.com", "test")
                 .getForEntity(uri,  String.class);
         assertThat(stringResponse.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
@@ -114,14 +114,14 @@ class RecipeControllerTest {
                 new HttpEntity<>(body,  headers);
         uri = new URI("http://localhost:" + port + "/recipe/create/" + stringResponse.getBody());
         ResponseEntity<Long> response1 = restTemplate
-                .withBasicAuth("test", "test")
+                .withBasicAuth("test@email.com", "test")
                 .postForEntity(uri, request1, Long.class);
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
         // get
         uri = new URI("http://localhost:" + port + "/recipe/" + recipe.getId() + "/user/" + stringResponse.getBody());
         ResponseEntity<Recipe> recipeResponse = restTemplate
-                .withBasicAuth("test", "test")
+                .withBasicAuth("test@email.com", "test")
                 .getForEntity(uri,  Recipe.class);
         assertThat(recipeResponse.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
         assertThat(Objects.requireNonNull(recipeResponse.getBody()).getRecipe()).isEqualTo("test");
@@ -138,10 +138,10 @@ class RecipeControllerTest {
         body1.add("recipe", recipe);
         body1.add("file", null);
         request = new HttpEntity<>(body1, headers);
-        restTemplate.withBasicAuth("test", "test").put(uri, request);
+        restTemplate.withBasicAuth("test@email.com", "test").put(uri, request);
 
         ResponseEntity<Recipe> recipeResponse2 = restTemplate
-                .withBasicAuth("test", "test")
+                .withBasicAuth("test@email.com", "test")
                 .getForEntity(uri,  Recipe.class);
         assertThat(recipeResponse2.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
         assertThat(Objects.requireNonNull(recipeResponse2.getBody()).getRecipe()).isEqualTo("Something with duck");
