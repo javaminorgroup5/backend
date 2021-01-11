@@ -40,7 +40,7 @@ class UserControllerTest {
         MultiValueMap<String, Object> body
                 = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
-        user = new User(12L, "test1@emal.com", "test", Role.COMMUNITY_MANAGER,
+        user = new User(12L, "test1@email.com", "test", Role.COMMUNITY_MANAGER,
                 new Profile("Top Gun", null), new ArrayList<>());
         body.add("user", user);
         HttpEntity<MultiValueMap<String, Object>> request =
@@ -60,7 +60,7 @@ class UserControllerTest {
         MultiValueMap<String, Object> body
                 = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
-        user = new User(12L, "test2@emal.com", "test", Role.COMMUNITY_MANAGER,
+        user = new User(12L, "test2@email.com", "test", Role.COMMUNITY_MANAGER,
                 new Profile("Top Gun", null), new ArrayList<>());
         body.add("user", user);
         HttpEntity<MultiValueMap<String, Object>> request =
@@ -73,14 +73,14 @@ class UserControllerTest {
         // login
         uri = new URI("http://localhost:" + port + "/users/login");
         ResponseEntity<String> idResponse = restTemplate
-                .withBasicAuth("test2@emal.com", "test")
+                .withBasicAuth("test2@email.com", "test")
                 .getForEntity(uri,  String.class);
         assertThat(idResponse.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
         // get profile
         uri = new URI("http://localhost:" + port + "/users/" + idResponse.getBody() +"/profile");
         ResponseEntity<Profile> profileResponse = restTemplate
-                .withBasicAuth("test2@emal.com", "test")
+                .withBasicAuth("test2@email.com", "test")
                 .getForEntity(uri,  Profile.class);
         assertThat(profileResponse.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
         assertThat(Objects.requireNonNull(profileResponse.getBody()).getProfileName()).isEqualTo("Top Gun");
@@ -95,7 +95,7 @@ class UserControllerTest {
         MultiValueMap<String, Object> body
                 = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
-        user = new User(12L, "test3@emal.com", "test", Role.COMMUNITY_MANAGER,
+        user = new User(12L, "test3@email.com", "test", Role.COMMUNITY_MANAGER,
                 new Profile("Top Gun", null), new ArrayList<>());
         body.add("user", user);
         HttpEntity<MultiValueMap<String, Object>> request =
@@ -108,21 +108,21 @@ class UserControllerTest {
         // login
         uri = new URI("http://localhost:" + port + "/users/login");
         ResponseEntity<String> idResponse = restTemplate
-                .withBasicAuth("test3@emal.com", "test")
+                .withBasicAuth("test3@email.com", "test")
                 .getForEntity(uri,  String.class);
         assertThat(idResponse.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
         // get profile
         uri = new URI("http://localhost:" + port + "/users/" + idResponse.getBody() +"/profile");
         ResponseEntity<Profile> profileResponse = restTemplate
-                .withBasicAuth("test3@emal.com", "test")
+                .withBasicAuth("test3@email.com", "test")
                 .getForEntity(uri,  Profile.class);
         assertThat(profileResponse.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
         assertThat(Objects.requireNonNull(profileResponse.getBody()).getProfileName()).isEqualTo("Top Gun");
 
         // update profile
         uri = new URI("http://localhost:" + port + "/users/" + idResponse.getBody() + "/profile");
-        headers = createHeaders("test3@emal.com", "test");
+        headers = createHeaders("test3@email.com", "test");
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         Profile profile = new Profile();
@@ -136,7 +136,7 @@ class UserControllerTest {
 
         // get updated profile
         ResponseEntity<Profile> profileResponseUpdated = restTemplate
-                .withBasicAuth("test3@emal.com", "test")
+                .withBasicAuth("test3@email.com", "test")
                 .getForEntity(uri,  Profile.class);
         assertThat(profileResponseUpdated.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
         assertThat(Objects.requireNonNull(profileResponseUpdated.getBody()).getProfileName()).isEqualTo("Maverick");
