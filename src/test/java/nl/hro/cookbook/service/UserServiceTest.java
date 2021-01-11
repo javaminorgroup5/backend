@@ -32,7 +32,7 @@ class UserServiceTest {
     void createUserTest() throws IOException {
         // Given
         User user = new User();
-        user.setEmail("john");
+        user.setEmail("john@test.nl");
         user.setPassword(passwordEncoder.encode("password"));
         lenient().when(userRepository.findUserByEmail(eq("john"))).thenReturn(Optional.of(user));
 
@@ -40,7 +40,7 @@ class UserServiceTest {
         userServiceTest.createUser(user);
 
         // Then
-        Optional<User> userOptional = userRepository.findUserByEmail("john");
+        Optional<User> userOptional = userRepository.findUserByEmail("john@test.nl");
         assertTrue(userOptional.isPresent());
         assertEquals(user, userOptional.get());
 
@@ -51,7 +51,7 @@ class UserServiceTest {
         // Given
         User user = new User();
         user.setId(1);
-        user.setEmail("john");
+        user.setEmail("john@test.nl");
         user.setPassword(passwordEncoder.encode("password"));
         Profile profile = new Profile();
         profile.setProfileName("Tom");
