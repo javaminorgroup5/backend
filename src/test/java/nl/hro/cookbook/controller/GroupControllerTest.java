@@ -5,8 +5,6 @@ import nl.hro.cookbook.model.domain.GroupImage;
 import nl.hro.cookbook.model.domain.Message;
 import nl.hro.cookbook.model.domain.Profile;
 import nl.hro.cookbook.model.domain.User;
-import nl.hro.cookbook.model.dto.RecipeDto;
-import nl.hro.cookbook.model.dto.RecipeImageDTO;
 import nl.hro.cookbook.security.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,9 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,14 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -143,16 +131,13 @@ class GroupControllerTest {
         assertThat(response1.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
         headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        body = new LinkedMultiValueMap<>();
-        body.add("message", messages.get(0));
-        HttpEntity<MultiValueMap<String, Object>> request2 =
-                new HttpEntity<>(body,  headers);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Message> request2 =
+                new HttpEntity<>(messages.get(0),  headers);
         URI uri2 = new URI("http://localhost:" + port + "/group/"+ groups.get(0).getId() + "/feed");
         ResponseEntity response2 = restTemplate
                 .withBasicAuth("test1@email.com", "test")
-                .postForEntity(uri2, request1, Void.class);
+                .postForEntity(uri2, request2, Void.class);
         assertThat(response2.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
     }
 }
