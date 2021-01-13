@@ -20,6 +20,7 @@ import java.util.List;
 public class TestDataService {
 
     private final PasswordEncoder passwordEncoder;
+    private final CommonService commonService;
 
     public List<User> getUsers() throws IOException {
 
@@ -147,4 +148,22 @@ public class TestDataService {
         return Arrays.asList(recipe, recipe1, recipe2);
     }
 
+    public List<Group> getGroups() throws IOException {
+        ResourceLoader resourceLoader = new DefaultResourceLoader();
+        Resource resource = resourceLoader.getResource("classpath:group.jpg");
+        GroupImage groupImage = new GroupImage("group.jpg", "file", commonService.compressBytes(Files.readAllBytes(resource.getFile().toPath())));
+        final Group initialGroup1 = new Group(1L, "PastaGroep", "Leuke pasta groep", 1L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
+        final Group initialGroup2 = new Group(2L, "RodeSauzen", "Roder dan rood", 1L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
+        final Group initialGroup3 = new Group(3L, "Bloemkoollovers", "Bloemkool is een groente die hoort bij het geslacht kool uit de kruisbloemenfamilie (Brassicaceae). De botanische naam voor bloemkool is Brassica oleracea convar. ", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
+        final Group initialGroup4 = new Group(4L, "Italiaanse keukengroep", "De Italiaanse keuken omvat de inheemse kookkunst van het Italiaanse schiereiland. Deze keuken is zeer gevarieerd en seizoensgebonden.", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
+        final Group initialGroup5 = new Group(5L, "Marokkaanse keuken", "Couscous Habibi", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
+        return Arrays.asList(initialGroup1, initialGroup2, initialGroup3, initialGroup4, initialGroup5);
+    }
+
+    public List<Message> getFeeds() {
+        final Message message1 = new Message(1L, "This is my first message", 3L);
+        final Message message2 = new Message(1L, "This is my second message", 3L);
+        final Message message3 = new Message(1L, "This is my third message", 3L);
+        return Arrays.asList(message1, message2, message3);
+    }
 }

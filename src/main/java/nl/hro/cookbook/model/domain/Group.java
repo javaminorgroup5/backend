@@ -27,17 +27,22 @@ public class Group {
     private String description;
 
     private Long userId;
+
     @Column
     @ElementCollection(targetClass=Profile.class)
     private List<Profile> profiles;
 
     @OneToMany
     @JoinTable
-    List<Invite> invites;
+    private List<Invite> invites;
+
+    @OneToMany
+    @JoinTable
+    private List<Message> feed;
 
     @ManyToMany
     @JoinTable
-    List<User> enrolledUsers;
+    private List<User> enrolledUsers;
 
     @Embedded
     private GroupImage groupImage;
