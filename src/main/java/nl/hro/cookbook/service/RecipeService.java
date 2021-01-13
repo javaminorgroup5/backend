@@ -10,7 +10,6 @@ import nl.hro.cookbook.repository.RecipeRepository;
 import nl.hro.cookbook.repository.ShareLinkRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 
 import javax.naming.AuthenticationException;
 import java.util.Collections;
@@ -25,7 +24,6 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final ShareLinkRepository shareLinkRepository;
-    private final CommonService commonService;
 
     public List<Recipe> findRecipesByUserId(long userId) {
             return recipeRepository.findRecipesByUserId(userId).orElse(Collections.emptyList());
@@ -55,16 +53,13 @@ public class RecipeService {
     }
 
     @Transactional
-    public Recipe findRecipeByShareLink(final long recipeId, final String shareLink) throws NotFoundException, AuthenticationException {
+    public Recipe findRecipeByShareLink(final long recipeId, final String shareLink) throws NotFoundException {
         Optional<Recipe> recipeById = recipeRepository.findById(recipeId);
-
         if (recipeById.isPresent()) {
             Recipe recipe = recipeById.get();
             List<ShareLink> shareLinks = recipe.getShareLinks();
-
             for (ShareLink shareLinkIterated : shareLinks) {
                 String shareLinkDB = shareLinkIterated.getShareLink();
-
                 if (shareLinkDB.equals(shareLink)) {
                     return recipe;
                 }
