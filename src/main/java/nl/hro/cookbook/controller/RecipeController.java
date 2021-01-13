@@ -5,11 +5,9 @@ import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import nl.hro.cookbook.model.domain.Recipe;
 import nl.hro.cookbook.model.domain.RecipeImage;
-import nl.hro.cookbook.model.domain.ShareLink;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.dto.RecipeDto;
 import nl.hro.cookbook.model.mapper.RecipeMapper;
-
 import nl.hro.cookbook.service.CommonService;
 import nl.hro.cookbook.service.RecipeService;
 import nl.hro.cookbook.service.UserService;
@@ -18,11 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.naming.AuthenticationException;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

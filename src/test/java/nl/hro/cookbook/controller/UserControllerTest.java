@@ -133,6 +133,7 @@ class UserControllerTest {
         HttpEntity<MultiValueMap<String, Object>> request1 =
                 new HttpEntity<>(body1,  headers);
         ResponseEntity<Void> exchange = restTemplate.exchange(uri, HttpMethod.PUT, request1, Void.class);
+        assertThat(exchange.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
         // get updated profile
         ResponseEntity<Profile> profileResponseUpdated = restTemplate

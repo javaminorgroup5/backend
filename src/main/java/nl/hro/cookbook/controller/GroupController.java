@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import nl.hro.cookbook.model.domain.Group;
 import nl.hro.cookbook.model.domain.GroupImage;
+import nl.hro.cookbook.model.domain.Message;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.dto.GroupDTO;
 import nl.hro.cookbook.model.mapper.GroupMapper;
@@ -15,9 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -83,13 +84,32 @@ public class GroupController {
         if (user.getId() == group.getUserId()) {
             return ResponseEntity.ok(group);
         }
-        return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
+        return ResponseEntity.badRequest().body(HttpStatus.NOT_FOUND);
     }
 
 
     @GetMapping("/{group_id}/enrolled")
     public ResponseEntity getEnrolledUsersForGroup(@PathVariable("group_id") final long groupId) {
-        return ResponseEntity.ok(groupService.findEnrolledUsersForGroup(groupId));
+        List<String> enrolledUsersForGroup = groupService.findEnrolledUsersForGroup(groupId);
+        if (enrolledUsersForGroup.isEmpty()) {
+            return ResponseEntity.badRequest().body(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(enrolledUsersForGroup);
+    }
+
+    @PostMapping("/{group_id}/feed")
+    public ResponseEntity addTMessageGroupFeed(@PathVariable("group_id") final long groupId, @RequestBody Message message) {
+        groupService.addMessageToFeed(groupId, message);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{group_id}/feed")
+    public ResponseEntity getFeedByForGroup(@PathVariable("group_id") final long groupId) {
+        List<Message> feedByGroupId = groupService.findFeedByGroupId(groupId);
+        if (feedByGroupId.isEmpty()) {
+            return ResponseEntity.badRequest().body(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(feedByGroupId);
     }
 
     @PutMapping(value = "/{group_id}/user/{user_id}")
@@ -108,5 +128,4 @@ public class GroupController {
     public void deleteGroup(@PathVariable("group_id") final long groupId, @PathVariable("user_id") final long userId) {
         groupService.deleteById(groupId, userId);
     }
-
 }
