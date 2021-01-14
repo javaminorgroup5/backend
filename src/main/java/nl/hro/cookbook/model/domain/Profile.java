@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Embeddable
@@ -15,6 +16,7 @@ import javax.persistence.Embedded;
 @ToString
 public class Profile {
 
+    @NotNull
     private String profileName;
 
     @Embedded
