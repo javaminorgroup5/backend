@@ -3,6 +3,7 @@ package nl.hro.cookbook.model.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -13,6 +14,7 @@ import java.util.Arrays;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class ProfileImage {
 
     private String name;
@@ -22,13 +24,4 @@ public class ProfileImage {
     @Lob
     @Column(name = "picByte", length = 1000000)
     private byte[] picByte;
-
-    @Override
-    public String toString() {
-        return "ProfileImage{" +
-                "name='" + name + '\'' +
-                ", type='" + type + '\'' +
-                ", picByte=" + Arrays.toString(picByte) +
-                '}';
-    }
 }

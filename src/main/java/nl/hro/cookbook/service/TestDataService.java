@@ -144,7 +144,7 @@ public class TestDataService {
                         "\n" +
                         "",
                 "Heerlijke snelle romige kipragout, die tevens ook heel makkelijk vegetarisch te maken is, in pasteibakjes",
-                2L, recipeImage2, new ArrayList<>());
+                3L, recipeImage2, new ArrayList<>());
         return Arrays.asList(recipe, recipe1, recipe2);
     }
 
