@@ -45,6 +45,6 @@ public class Group {
     private List<User> enrolledUsers;
 
     @Embedded
-    private GroupImage groupImage;
+    private Image image;
 
 }

@@ -4,7 +4,7 @@ import nl.hro.cookbook.model.domain.Profile;
 import nl.hro.cookbook.model.domain.Recipe;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.dto.RecipeDto;
-import nl.hro.cookbook.model.dto.RecipeImageDTO;
+import nl.hro.cookbook.model.dto.ImageDTO;
 import nl.hro.cookbook.security.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,6 @@ import org.springframework.util.MultiValueMap;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Objects;
 import static nl.hro.cookbook.controller.ImageHelper.createTempFileResource;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -56,7 +55,7 @@ class RecipeControllerTest {
                 .postForEntity(uri, request, Void.class);
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
-        recipe = new RecipeDto(1L, "Test", "test", "Eat it raw!", user.getId(), new RecipeImageDTO(), new ArrayList<>());
+        recipe = new RecipeDto(1L, "Test", "test", "Eat it raw!", user.getId(), new ImageDTO(), new ArrayList<>());
         uri = new URI("http://localhost:" + port + "/users/login");
         ResponseEntity<String> stringResponse = restTemplate
                 .withBasicAuth("test1@email.com", "test")
@@ -95,7 +94,7 @@ class RecipeControllerTest {
         ResponseEntity response = restTemplate
                 .postForEntity(uri, request, Void.class);
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
-        recipe = new RecipeDto(1L, "Test", "test", "Eat it raw!", user.getId(), new RecipeImageDTO(), new ArrayList<>());
+        recipe = new RecipeDto(1L, "Test", "test", "Eat it raw!", user.getId(), new ImageDTO(), new ArrayList<>());
 
         uri = new URI("http://localhost:" + port + "/users/login");
         ResponseEntity<String> stringResponse = restTemplate

@@ -28,7 +28,7 @@ public class TestDataService {
         ResourceLoader resourceLoader = new DefaultResourceLoader();
 
         Resource resource = resourceLoader.getResource("classpath:download.jpeg");
-        ProfileImage profileImage = new ProfileImage("test.jpg", "file", commonService.compressBytes(Files.readAllBytes(resource.getFile().toPath())));
+        Image profileImage = new Image("test.jpg", "file", commonService.compressBytes(Files.readAllBytes(resource.getFile().toPath())));
 
         final User initialUser1 = new User(1L, "dion@quintor.nl", passwordEncoder.encode("quintor"), Role.ADMIN, new Profile("DionRecipeGuy45", profileImage), new ArrayList<>());
         final User initialUser2 = new User(2L, "geoffrey@quintor.nl", passwordEncoder.encode("quintor"), Role.COMMUNITY_MANAGER, new Profile("Maverick12", profileImage), new ArrayList<>());
@@ -44,13 +44,13 @@ public class TestDataService {
         ResourceLoader resourceLoader = new DefaultResourceLoader();
 
         Resource resource1 = resourceLoader.getResource("classpath:tom-rijst-met-kip.jpg");
-        RecipeImage recipeImage = new RecipeImage("gerecht1.jpg", "file", commonService.compressBytes(Files.readAllBytes(resource1.getFile().toPath())));
+        Image recipeImage = new Image("gerecht1.jpg", "file", commonService.compressBytes(Files.readAllBytes(resource1.getFile().toPath())));
 
         Resource resource2 =resourceLoader.getResource("classpath:kerst-ovenschotel.jpg");
-        RecipeImage recipeImage1 = new RecipeImage("gerecht2.jpg", "file", commonService.compressBytes(Files.readAllBytes(resource2.getFile().toPath())));
+        Image recipeImage1 = new Image("gerecht2.jpg", "file", commonService.compressBytes(Files.readAllBytes(resource2.getFile().toPath())));
 
         Resource resource3 =resourceLoader.getResource("classpath:kipragout-1.jpg");
-        RecipeImage recipeImage2 = new RecipeImage("gerecht3.jpg", "file", commonService.compressBytes(Files.readAllBytes(resource3.getFile().toPath())));
+        Image recipeImage2 = new Image("gerecht3.jpg", "file", commonService.compressBytes(Files.readAllBytes(resource3.getFile().toPath())));
 
         Recipe recipe = new Recipe("Budget recept: tomatenrijst met kip" ,
                 "Voor dit recept gebruik ik snelkookrijst, deze is extra snel klaar. " +
@@ -151,13 +151,13 @@ public class TestDataService {
     public List<Group> getGroups() throws IOException {
         ResourceLoader resourceLoader = new DefaultResourceLoader();
         Resource resource = resourceLoader.getResource("classpath:group.jpg");
-        GroupImage groupImage = new GroupImage("group.jpg", "file", commonService.compressBytes(Files.readAllBytes(resource.getFile().toPath())));
-        final Group initialGroup1 = new Group(1L, "PastaGroep", "Leuke pasta groep", 1L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
-        final Group initialGroup2 = new Group(2L, "RodeSauzen", "Roder dan rood", 1L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
-        final Group initialGroup3 = new Group(3L, "Bloemkoollovers", "Bloemkool is een groente die hoort bij het geslacht kool uit de kruisbloemenfamilie (Brassicaceae). De botanische naam voor bloemkool is Brassica oleracea convar. ", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
-        final Group initialGroup4 = new Group(4L, "Italiaanse keukengroep", "De Italiaanse keuken omvat de inheemse kookkunst van het Italiaanse schiereiland. Deze keuken is zeer gevarieerd en seizoensgebonden.", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
-        final Group initialGroup5 = new Group(5L, "Marokkaanse keuken", "Couscous Habibi", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
-        final Group initialGroup6 = new Group(6L, "RamsayItes", "Koken net Gordan Ramsay! ", 3L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
+        Image image = new Image("group.jpg", "file", commonService.compressBytes(Files.readAllBytes(resource.getFile().toPath())));
+        final Group initialGroup1 = new Group(1L, "PastaGroep", "Leuke pasta groep", 1L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
+        final Group initialGroup2 = new Group(2L, "RodeSauzen", "Roder dan rood", 1L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
+        final Group initialGroup3 = new Group(3L, "Bloemkoollovers", "Bloemkool is een groente die hoort bij het geslacht kool uit de kruisbloemenfamilie (Brassicaceae). De botanische naam voor bloemkool is Brassica oleracea convar. ", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
+        final Group initialGroup4 = new Group(4L, "Italiaanse keukengroep", "De Italiaanse keuken omvat de inheemse kookkunst van het Italiaanse schiereiland. Deze keuken is zeer gevarieerd en seizoensgebonden.", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
+        final Group initialGroup5 = new Group(5L, "Marokkaanse keuken", "Couscous Habibi", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
+        final Group initialGroup6 = new Group(6L, "RamsayItes", "Koken net Gordan Ramsay! ", 3L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
         return Arrays.asList(initialGroup1, initialGroup2, initialGroup3, initialGroup4, initialGroup5, initialGroup6);
     }
 

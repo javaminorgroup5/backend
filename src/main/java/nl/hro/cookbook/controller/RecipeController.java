@@ -3,8 +3,8 @@ package nl.hro.cookbook.controller;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import nl.hro.cookbook.model.domain.Image;
 import nl.hro.cookbook.model.domain.Recipe;
-import nl.hro.cookbook.model.domain.RecipeImage;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.dto.RecipeDto;
 import nl.hro.cookbook.model.mapper.RecipeMapper;
@@ -35,7 +35,7 @@ public class RecipeController {
     public Collection<Recipe> getAllByUserIdRecipes(@PathVariable("user_id") final long userId) {
         Collection<Recipe> recipes = recipeService.findRecipesByUserId(userId);
         for (Recipe recipe : recipes) {
-            recipe.getRecipeImage().setPicByte(commonService.decompressBytes(recipe.getRecipeImage().getPicByte()));
+            recipe.getImage().setPicByte(commonService.decompressBytes(recipe.getImage().getPicByte()));
         }
         return recipes;
     }
@@ -46,9 +46,9 @@ public class RecipeController {
                                        @RequestPart("file") MultipartFile file) throws IOException {
         User user = userService.findUserById(userId);
         Recipe recipe = recipeMapper.toModel(recipeDTO);
-        RecipeImage recipeImage = new RecipeImage(file.getOriginalFilename(), file.getName(),
+        Image recipeImage = new Image(file.getOriginalFilename(), file.getName(),
                         commonService.compressBytes(file.getBytes()));
-        recipe.setRecipeImage(recipeImage);
+        recipe.setImage(recipeImage);
         recipe.setUserId(user.getId());
         recipeService.createRecipe(recipe);
         return ResponseEntity.ok(recipe.getId());
@@ -58,7 +58,7 @@ public class RecipeController {
     public ResponseEntity getRecipe(@PathVariable("recipe_id") final long recipeId, @PathVariable("user_id") final long userId) {
         User user = userService.findUserById(userId);
         Recipe recipe = recipeService.findRecipeById(recipeId);
-        recipe.getRecipeImage().setPicByte(commonService.decompressBytes(recipe.getRecipeImage().getPicByte()));
+        recipe.getImage().setPicByte(commonService.decompressBytes(recipe.getImage().getPicByte()));
         if (user.getId() == recipe.getUserId()) {
             return ResponseEntity.ok(recipe);
         }
@@ -71,9 +71,9 @@ public class RecipeController {
     }
 
     @GetMapping("/{recipe_id}/share/{share_link}")
-    public ResponseEntity getRecipeByShareLink(@PathVariable("recipe_id") final long recipeId, @PathVariable("share_link") final String share_link) throws NotFoundException, AuthenticationException {
+    public ResponseEntity getRecipeByShareLink(@PathVariable("recipe_id") final long recipeId, @PathVariable("share_link") final String share_link) throws NotFoundException {
         Recipe recipe = recipeService.findRecipeByShareLink(recipeId, share_link);
-        recipe.getRecipeImage().setPicByte(commonService.decompressBytes(recipe.getRecipeImage().getPicByte()));
+        recipe.getImage().setPicByte(commonService.decompressBytes(recipe.getImage().getPicByte()));
 
         return ResponseEntity.ok(recipe);
     }
@@ -89,9 +89,9 @@ public class RecipeController {
             recipe = recipeMapper.toModel(recipeDto);
         }
         if (file != null && recipe != null) {
-            RecipeImage recipeImage = new RecipeImage(file.getOriginalFilename(), file.getName(),
+            Image recipeImage = new Image(file.getOriginalFilename(), file.getName(),
                     commonService.compressBytes(file.getBytes()));
-            recipe.setRecipeImage(recipeImage);
+            recipe.setImage(recipeImage);
         }
         recipeService.updateRecipe(recipeId, recipe);
     }

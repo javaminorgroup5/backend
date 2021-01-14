@@ -3,7 +3,7 @@ package nl.hro.cookbook.controller;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import nl.hro.cookbook.model.domain.Group;
-import nl.hro.cookbook.model.domain.GroupImage;
+import nl.hro.cookbook.model.domain.Image;
 import nl.hro.cookbook.model.domain.Message;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.dto.GroupDTO;
@@ -45,7 +45,7 @@ public class GroupController {
     public ResponseEntity getGroupById(@PathVariable("group_id") final long groupId) {
         Group group = groupService.findGroupById(groupId);
         if (group != null) {
-            group.getGroupImage().setPicByte(commonService.decompressBytes(group.getGroupImage().getPicByte()));
+            group.getImage().setPicByte(commonService.decompressBytes(group.getImage().getPicByte()));
             return ResponseEntity.ok(group);
         }
         return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
@@ -55,11 +55,11 @@ public class GroupController {
     public ResponseEntity createGroup(@PathVariable("user_id") final long userId,
                                       @RequestPart Group group,
                                       @RequestPart("file") MultipartFile file) throws IOException {
-        GroupImage groupImage = new GroupImage(file.getOriginalFilename(), file.getName(),
+        Image image = new Image(file.getOriginalFilename(), file.getName(),
                 commonService.compressBytes(file.getBytes()));
         User user = userService.findUserById(userId);
         group.setUserId(user.getId());
-        group.setGroupImage(groupImage);
+        group.setImage(image);
         groupService.createGroup(group);
         return ResponseEntity.ok(group.getId());
     }

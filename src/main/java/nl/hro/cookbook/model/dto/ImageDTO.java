@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ProfileImageDTO {
+public class ImageDTO {
 
     private String name;
     private String type;

@@ -14,7 +14,7 @@ import java.util.Arrays;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class GroupImage {
+public class Image {
 
     private String name;
 

@@ -18,5 +18,5 @@ public class Profile {
     private String profileName;
 
     @Embedded
-    ProfileImage profileImage;
+    Image image;
 }

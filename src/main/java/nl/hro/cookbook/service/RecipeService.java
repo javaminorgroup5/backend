@@ -93,8 +93,8 @@ public class RecipeService {
         if (updateRecipe.getDescription() != null && !updateRecipe.getDescription().isEmpty()) {
             recipe.setDescription(updateRecipe.getDescription());
         }
-        if (updateRecipe.getRecipeImage() != null) {
-            recipe.setRecipeImage(updateRecipe.getRecipeImage());
+        if (updateRecipe.getImage() != null) {
+            recipe.setImage(updateRecipe.getImage());
         }
         recipeRepository.save(recipe);
     }

@@ -37,7 +37,7 @@ public class Recipe extends BaseEntity {
     private Long userId;
 
     @Embedded
-    RecipeImage recipeImage;
+    Image image;
 
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @OneToMany
