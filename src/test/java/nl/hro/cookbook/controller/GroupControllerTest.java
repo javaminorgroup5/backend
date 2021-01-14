@@ -12,16 +12,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,9 +43,9 @@ class GroupControllerTest {
 
     @BeforeEach
     void setUp() {
-        final Message message1 = new Message(1L, "This is my first message", 12L);
-        final Message message2 = new Message(2L, "This is my second message", 12L);
-        final Message message3 = new Message(3L, "This is my third message", 12L);
+        final Message message1 = new Message("This is my first message", 12L);
+        final Message message2 = new Message("This is my second message", 12L);
+        final Message message3 = new Message("This is my third message", 12L);
         GroupImage groupImage = new GroupImage("group.jpg", "file", new byte[12]);
         final Group initialGroup1 = new Group(1L, "PastaGroep", "Leuke pasta groep", 12L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
         final Group initialGroup2 = new Group(2L, "RodeSauzen", "Roder dan rood", 12L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
@@ -139,5 +143,32 @@ class GroupControllerTest {
                 .withBasicAuth("test1@email.com", "test")
                 .postForEntity(uri2, request2, Void.class);
         assertThat(response2.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
+
+        HttpEntity<Message> request3 =
+                new HttpEntity<>(messages.get(1),  headers);
+        URI uri3 = new URI("http://localhost:" + port + "/group/"+ groups.get(0).getId() + "/feed");
+        ResponseEntity response3 = restTemplate
+                .withBasicAuth("test1@email.com", "test")
+                .postForEntity(uri3, request3, Void.class);
+        assertThat(response3.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
+
+        HttpEntity<Message> request4 =
+                new HttpEntity<>(messages.get(1),  headers);
+        URI uri4 = new URI("http://localhost:" + port + "/group/"+ groups.get(0).getId() + "/feed");
+        ResponseEntity response4 = restTemplate
+                .withBasicAuth("test1@email.com", "test")
+                .postForEntity(uri4, request4, Void.class);
+        assertThat(response4.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
+
+        String authStr = "test1@email.com:test";
+        String base64Creds = Base64.getEncoder().encodeToString(authStr.getBytes());
+        headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("Authorization", "Basic " + base64Creds);
+        HttpEntity request5 = new HttpEntity(headers);
+        uri = new URI("http://localhost:" + port + "/group/"+ groups.get(0).getId() + "/feed");
+        ResponseEntity<List<Message>> feedResponse = restTemplate
+                .exchange(uri, HttpMethod.GET, request5,  new ParameterizedTypeReference<List<Message>>() {});
+        assertThat(feedResponse.getBody()).isEqualTo(Collections.EMPTY_LIST);
     }
 }

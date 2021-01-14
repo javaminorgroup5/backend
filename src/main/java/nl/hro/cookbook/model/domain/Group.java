@@ -38,7 +38,7 @@ public class Group {
 
     @OneToMany
     @JoinTable
-    private List<Message> feed;
+    private List<Message> messages;
 
     @ManyToMany
     @JoinTable

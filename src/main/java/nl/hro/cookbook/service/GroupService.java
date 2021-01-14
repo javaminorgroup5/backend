@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 import nl.hro.cookbook.model.domain.*;
 import nl.hro.cookbook.model.exception.ResourceNotFoundException;
-import nl.hro.cookbook.repository.FeedRepository;
+import nl.hro.cookbook.repository.MessageRepository;
 import nl.hro.cookbook.repository.GroupRepository;
 import nl.hro.cookbook.repository.InviteRepository;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class GroupService {
     private final GroupRepository groupRepository;
     private final UserService userService;
     private final TestDataService testDataService;
-    private final FeedRepository feedRepository;
+    private final MessageRepository messageRepository;
 
     public List<Group> findAllGroup() {
         return groupRepository.findAll();
@@ -120,8 +120,8 @@ public class GroupService {
     @Transactional
     public List<Message> findFeedByGroupId(Long id) {
         Optional<Group> group = groupRepository.findById(id);
-        if (group.isPresent() && group.get().getFeed() != null) {
-            return group.get().getFeed();
+        if (group.isPresent() && group.get().getMessages() != null && !group.get().getMessages().isEmpty()) {
+            return group.get().getMessages();
         }
         return Collections.emptyList();
     }
@@ -129,8 +129,8 @@ public class GroupService {
     public void addMessageToFeed(Long groupId, Message message) {
         Optional<Group> groupOptional = groupRepository.findById(groupId);
         if (groupOptional.isPresent()) {
-            groupOptional.get().getFeed().add(message);
-            feedRepository.save(message);
+            groupOptional.get().getMessages().add(message);
+            messageRepository.save(message);
             groupRepository.save(groupOptional.get());
         }
     }

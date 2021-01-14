@@ -3,7 +3,7 @@ package nl.hro.cookbook.service;
 import nl.hro.cookbook.model.domain.GroupImage;
 import nl.hro.cookbook.model.domain.Message;
 import nl.hro.cookbook.model.domain.Group;
-import nl.hro.cookbook.repository.FeedRepository;
+import nl.hro.cookbook.repository.MessageRepository;
 import nl.hro.cookbook.repository.GroupRepository;
 import nl.hro.cookbook.repository.InviteRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -32,7 +33,7 @@ public class GroupServiceTest {
     @Mock
     private UserService userService;
     @Mock
-    private FeedRepository feedRepository;
+    private MessageRepository messageRepository;
     @InjectMocks
     private GroupService groupServiceTest;
 
@@ -41,9 +42,9 @@ public class GroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        final Message message1 = new Message(1L, "This is my first message", 3L);
-        final Message message2 = new Message(2L, "This is my second message", 3L);
-        final Message message3 = new Message(3L, "This is my third message", 3L);
+        final Message message1 = new Message("This is my first message", 3L);
+        final Message message2 = new Message("This is my second message", 3L);
+        final Message message3 = new Message("This is my third message", 3L);
         GroupImage groupImage = new GroupImage("group.jpg", "file", new byte[12]);
         final Group initialGroup1 = new Group(1L, "PastaGroep", "Leuke pasta groep", 1L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
         final Group initialGroup2 = new Group(2L, "RodeSauzen", "Roder dan rood", 1L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
@@ -51,7 +52,6 @@ public class GroupServiceTest {
         groups = Arrays.asList(initialGroup1, initialGroup2, initialGroup3);
         messages = Arrays.asList(message1, message2, message3);
     }
-
 
     @Test
     void addMessageToFeedTest() {
@@ -65,6 +65,19 @@ public class GroupServiceTest {
         List<Message> messageList = groupServiceTest.findFeedByGroupId(1L);
         assertFalse(messageList.isEmpty());
         assertEquals(messageList.get(0).getMessage(), "This is my first message");
+    }
+
+    @Test
+    void testCreationDate() {
+        // Given
+        when(groupRepository.findById(anyLong())).thenReturn(Optional.ofNullable(groups.get(0)));
+
+        // When
+        groupServiceTest.addMessageToFeed(groups.get(0).getId(), messages.get(0));
+
+        // Then
+        List<Message> messageList = groupServiceTest.findFeedByGroupId(1L);
+        assertFalse(messageList.isEmpty());
     }
 
 

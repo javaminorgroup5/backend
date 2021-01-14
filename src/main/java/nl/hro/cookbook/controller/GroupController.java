@@ -8,6 +8,7 @@ import nl.hro.cookbook.model.domain.Message;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.dto.GroupDTO;
 import nl.hro.cookbook.model.mapper.GroupMapper;
+import nl.hro.cookbook.repository.MessageRepository;
 import nl.hro.cookbook.service.CommonService;
 import nl.hro.cookbook.service.GroupService;
 import nl.hro.cookbook.service.UserService;
@@ -31,6 +32,7 @@ public class GroupController {
     private final UserService userService;
     private final GroupMapper groupMapper;
     private final CommonService commonService;
+    private final MessageRepository messageRepository;
 
     @GetMapping()
     public Collection<GroupDTO> getAllGroups() {
@@ -104,7 +106,7 @@ public class GroupController {
     }
 
     @GetMapping("/{group_id}/feed")
-    public ResponseEntity getFeedByForGroup(@PathVariable("group_id") final long groupId) {
+    public ResponseEntity getFeedForGroup(@PathVariable("group_id") final long groupId) {
         List<Message> feedByGroupId = groupService.findFeedByGroupId(groupId);
         if (feedByGroupId.isEmpty()) {
             return ResponseEntity.badRequest().body(HttpStatus.NOT_FOUND);

@@ -52,7 +52,7 @@ public class TestDataService {
         Resource resource3 =resourceLoader.getResource("classpath:kipragout-1.jpg");
         RecipeImage recipeImage2 = new RecipeImage("gerecht3.jpg", "file", commonService.compressBytes(Files.readAllBytes(resource3.getFile().toPath())));
 
-        Recipe recipe = new Recipe(1L, "Budget recept: tomatenrijst met kip" ,
+        Recipe recipe = new Recipe("Budget recept: tomatenrijst met kip" ,
                 "Voor dit recept gebruik ik snelkookrijst, deze is extra snel klaar. " +
                 "Omdat je de rijst niet in alleen water kookt maar ook in tomatenblokjes stoof je als het ware de rijst gaar. " +
                 "Dit duurt iets langer dan normaal. Snelkookrijst is daarom ideaal, en tevens goedkoop. " +
@@ -96,7 +96,7 @@ public class TestDataService {
                 "Het is weer tijd voor een budgetrecept! Deze keer maak ik een 1 pans gerecht van kip in tomatenrijst. " +
                         "Super makkelijk en onder de 2 euro per persoon.",
                 3L, recipeImage, new ArrayList<>());
-        Recipe recipe1 = new Recipe(2L, "Kerst ovenschotel met pompoen",
+        Recipe recipe1 = new Recipe("Kerst ovenschotel met pompoen",
                 "Ingrediënten\n" +
                         "100 gr paddenstoelen\n" +
                         "200 gr spruitjes\n" +
@@ -123,7 +123,7 @@ public class TestDataService {
                 "Heerlijke ovenschotel met spruitjes, pompoen en cranberry en een krokant laagje bladerdeeg met uitgestoken sterren, leuk om te serveren met kerst!",
                 3L, recipeImage1, new ArrayList<>());
 
-        Recipe recipe2 = new Recipe(3L, "Kipragout",
+        Recipe recipe2 = new Recipe("Kipragout",
                 "Ingrediënten\n" +
                         "2 sjalotten\n" +
                         "160 gr kip (vega)\n" +
@@ -161,9 +161,9 @@ public class TestDataService {
     }
 
     public List<Message> getFeeds() {
-        final Message message1 = new Message(1L, "This is my first message", 3L);
-        final Message message2 = new Message(1L, "This is my second message", 3L);
-        final Message message3 = new Message(1L, "This is my third message", 3L);
+        final Message message1 = new Message("This is my first message", 3L);
+        final Message message2 = new Message("This is my second message", 3L);
+        final Message message3 = new Message("This is my third message", 3L);
         return Arrays.asList(message1, message2, message3);
     }
 }
