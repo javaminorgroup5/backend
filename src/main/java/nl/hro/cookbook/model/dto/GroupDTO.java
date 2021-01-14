@@ -13,7 +13,7 @@ import java.util.List;
 public class GroupDTO {
 
     private long id;
-    private String name;
+    private String groupName;
     private String description;
     private Long userId;
     private List<Profile> profiles;

@@ -108,11 +108,20 @@ public class GroupService {
         return groupRepository.findGroupsByUserId(userId);
     }
 
-    @Transactional
+    @Transactional()
     public void updateGroup(final long groupId, final Group updateGroup) {
         Group group = findGroupById(groupId);
         if (group == null || updateGroup == null) {
             return;
+        }
+        if (updateGroup.getGroupName() != null && !updateGroup.getGroupName().isEmpty()) {
+            group.setGroupName(updateGroup.getGroupName());
+        }
+        if (updateGroup.getDescription() != null && !updateGroup.getDescription().isEmpty()) {
+            group.setDescription(updateGroup.getDescription());
+        }
+        if (updateGroup.getGroupImage() != null) {
+            group.setGroupImage(updateGroup.getGroupImage());
         }
         groupRepository.save(group);
     }
