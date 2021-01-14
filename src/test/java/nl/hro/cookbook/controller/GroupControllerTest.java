@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static nl.hro.cookbook.controller.ImageHelper.createTempFileResource;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -152,7 +153,7 @@ class GroupControllerTest {
         assertThat(response3.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
         HttpEntity<Message> request4 =
-                new HttpEntity<>(messages.get(1),  headers);
+                new HttpEntity<>(messages.get(2),  headers);
         URI uri4 = new URI("http://localhost:" + port + "/group/"+ groups.get(0).getId() + "/feed");
         ResponseEntity response4 = restTemplate
                 .withBasicAuth("test2@email.com", "test")
@@ -169,5 +170,15 @@ class GroupControllerTest {
         ResponseEntity<List<Message>> feedResponse = restTemplate
                 .exchange(uri, HttpMethod.GET, request5,  new ParameterizedTypeReference<List<Message>>() {});
         assertThat(feedResponse.getBody()).isNotEmpty();
+        feedResponse.getBody().stream().forEach(System.out::println);
+        System.out.println(feedResponse.getBody().get(0).getCreatedAt());
+        assertThat(feedResponse.getBody().size()).isEqualTo(3);
+
+        uri = new URI("http://localhost:" + port + "/group/" + groups.get(0).getId() + "/user/" + 4);
+        ResponseEntity<Group> groupResponse = restTemplate
+                .withBasicAuth("test2@email.com", "test")
+                .getForEntity(uri,  Group.class);
+        assertThat(groupResponse.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
+        assertThat(Objects.requireNonNull(groupResponse.getBody()).getMessages()).isNull();
     }
 }
