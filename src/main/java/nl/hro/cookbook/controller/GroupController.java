@@ -89,7 +89,6 @@ public class GroupController {
         return ResponseEntity.badRequest().body(HttpStatus.NOT_FOUND);
     }
 
-
     @GetMapping("/{group_id}/enrolled")
     public ResponseEntity getEnrolledUsersForGroup(@PathVariable("group_id") final long groupId) {
         List<String> enrolledUsersForGroup = groupService.findEnrolledUsersForGroup(groupId);

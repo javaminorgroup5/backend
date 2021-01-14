@@ -17,11 +17,12 @@ import javax.validation.constraints.NotNull;
 @Setter
 @ToString
 public class Message extends BaseEntity {
-
     @NotNull
     private String message;
 
     @NotNull
     private Long userId;
 
+    @NotNull
+    private Long groupId;
 }

@@ -42,21 +42,23 @@ public class GroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        final Message message1 = new Message("This is my first message", 3L);
-        final Message message2 = new Message("This is my second message", 3L);
-        final Message message3 = new Message("This is my third message", 3L);
         GroupImage groupImage = new GroupImage("group.jpg", "file", new byte[12]);
         final Group initialGroup1 = new Group(1L, "PastaGroep", "Leuke pasta groep", 1L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
         final Group initialGroup2 = new Group(2L, "RodeSauzen", "Roder dan rood", 1L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
         final Group initialGroup3 = new Group(3L, "Bloemkoollovers", "Bloemkool is een groente die hoort bij het geslacht kool uit de kruisbloemenfamilie (Brassicaceae). De botanische naam voor bloemkool is Brassica oleracea convar. ", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
-        groups = Arrays.asList(initialGroup1, initialGroup2, initialGroup3);
+        final Group initialGroup4 = new Group(4L, "RamsayItes", "Koken net Gordan Ramsay!. ", 3L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
+        final Message message1 = new Message("This is my first message", 3L, 4L);
+        final Message message2 = new Message("This is my second message", 3L, 4L);
+        final Message message3 = new Message("This is my third message", 3L, 4L);
+        groups = Arrays.asList(initialGroup1, initialGroup2, initialGroup3, initialGroup4);
         messages = Arrays.asList(message1, message2, message3);
     }
 
     @Test
     void addMessageToFeedTest() {
         // Given
-        when(groupRepository.findById(eq(1L))).thenReturn(Optional.ofNullable(groups.get(0)));
+        when(groupRepository.findById(anyLong())).thenReturn(Optional.ofNullable(groups.get(0)));
+        when(messageRepository.findMessagesByGroupId(anyLong())).thenReturn(Optional.of(messages));
 
         // When
         groupServiceTest.addMessageToFeed(groups.get(0).getId(), messages.get(0));
@@ -66,19 +68,4 @@ public class GroupServiceTest {
         assertFalse(messageList.isEmpty());
         assertEquals(messageList.get(0).getMessage(), "This is my first message");
     }
-
-    @Test
-    void testCreationDate() {
-        // Given
-        when(groupRepository.findById(anyLong())).thenReturn(Optional.ofNullable(groups.get(0)));
-
-        // When
-        groupServiceTest.addMessageToFeed(groups.get(0).getId(), messages.get(0));
-
-        // Then
-        List<Message> messageList = groupServiceTest.findFeedByGroupId(1L);
-        assertFalse(messageList.isEmpty());
-    }
-
-
 }

@@ -38,7 +38,6 @@ public class GroupService {
     @Transactional
     public Invite generateInvite(final long groupId, long userId) throws Exception {
         Group group = groupRepository.findById(groupId).orElseThrow(() -> new ResourceNotFoundException(String.format("No group exists for id: %d", groupId), Group.class));
-
         if (group.getUserId() == userId) {
             Invite invite = new Invite(null, RandomString.make(12));
             List<Invite> invites = group.getInvites();
@@ -120,18 +119,25 @@ public class GroupService {
     @Transactional
     public List<Message> findFeedByGroupId(Long id) {
         Optional<Group> group = groupRepository.findById(id);
-        if (group.isPresent() && group.get().getMessages() != null && !group.get().getMessages().isEmpty()) {
-            return group.get().getMessages();
+        if (group.isEmpty()) {
+            return Collections.emptyList();
         }
-        return Collections.emptyList();
+        Optional<List<Message>> messagesByGroupId = messageRepository.findMessagesByGroupId(id);
+        if (messagesByGroupId.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return messagesByGroupId.get();
     }
 
+    @Transactional
     public void addMessageToFeed(Long groupId, Message message) {
         Optional<Group> groupOptional = groupRepository.findById(groupId);
         if (groupOptional.isPresent()) {
-            groupOptional.get().getMessages().add(message);
+            Group group = groupOptional.get();
+            group.getMessages().add(message);
+            message.setGroupId(groupId);
             messageRepository.save(message);
-            groupRepository.save(groupOptional.get());
+            groupRepository.save(group);
         }
     }
 
@@ -140,6 +146,7 @@ public class GroupService {
     @PostConstruct
     public void init() throws IOException {
         groupRepository.saveAll(testDataService.getGroups());
+        messageRepository.saveAll(testDataService.getFeeds());
     }
 }
 
