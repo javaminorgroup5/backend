@@ -161,10 +161,13 @@ public class TestDataService {
         return Arrays.asList(initialGroup1, initialGroup2, initialGroup3, initialGroup4, initialGroup5, initialGroup6);
     }
 
-    public List<Message> getFeeds() {
-        final Message message1 = new Message("This is my first message", 3L, 6L);
-        final Message message2 = new Message("This is my second message", 3L, 6L);
-        final Message message3 = new Message("This is my third message", 3L, 6L);
+    public List<Message> getFeeds() throws IOException {
+        ResourceLoader resourceLoader = new DefaultResourceLoader();
+        Resource resource = resourceLoader.getResource("classpath:bananenpannenkoekjes.jpg");
+        Image image = new Image("bananenbrood-met-noten.jpg.jpg", "file", commonService.compressBytes(Files.readAllBytes(resource.getFile().toPath())));
+        final Message message1 = new Message("This is my first message", 3L, 6L, "Test", image);
+        final Message message2 = new Message("This is my second message", 3L, 6L, "Test", image);
+        final Message message3 = new Message("This is my third message", 3L, 6L, "Test", image);
         return Arrays.asList(message1, message2, message3);
     }
 }

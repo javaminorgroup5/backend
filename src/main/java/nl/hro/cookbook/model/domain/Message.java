@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -25,4 +26,11 @@ public class Message extends BaseEntity {
 
     @NotNull
     private Long groupId;
+
+    @NotNull
+    private String profileName;
+
+    @NotNull
+    @Embedded
+    private Image image;
 }

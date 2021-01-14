@@ -32,7 +32,6 @@ public class GroupController {
     private final UserService userService;
     private final GroupMapper groupMapper;
     private final CommonService commonService;
-    private final MessageRepository messageRepository;
 
     @GetMapping()
     public Collection<GroupDTO> getAllGroups() {
@@ -110,6 +109,7 @@ public class GroupController {
         if (feedByGroupId.isEmpty()) {
             return ResponseEntity.badRequest().body(HttpStatus.NOT_FOUND);
         }
+        feedByGroupId.forEach(message -> message.getImage().setPicByte(commonService.decompressBytes(message.getImage().getPicByte())));
         return ResponseEntity.ok(feedByGroupId);
     }
 
