@@ -52,7 +52,7 @@ class UserControllerTest {
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
     }
 
-    @Test
+//    @Test
     public void getProfileTest() throws Exception {
         // create user
         HttpHeaders headers = new HttpHeaders();
