@@ -8,7 +8,6 @@ import nl.hro.cookbook.model.domain.Message;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.dto.GroupDTO;
 import nl.hro.cookbook.model.mapper.GroupMapper;
-import nl.hro.cookbook.repository.MessageRepository;
 import nl.hro.cookbook.service.CommonService;
 import nl.hro.cookbook.service.GroupService;
 import nl.hro.cookbook.service.UserService;
