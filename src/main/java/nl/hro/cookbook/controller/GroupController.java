@@ -106,7 +106,7 @@ public class GroupController {
     public ResponseEntity getFeedForGroup(@PathVariable("group_id") final long groupId) {
         List<Message> feedByGroupId = groupService.findFeedByGroupId(groupId);
         if (feedByGroupId.isEmpty()) {
-            return ResponseEntity.badRequest().body(HttpStatus.NOT_FOUND);
+            return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
         }
         feedByGroupId.forEach(message -> message.getImage().setPicByte(commonService.decompressBytes(message.getImage().getPicByte())));
         return ResponseEntity.ok(feedByGroupId);

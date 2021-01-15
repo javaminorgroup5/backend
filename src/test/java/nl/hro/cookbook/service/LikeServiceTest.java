@@ -29,7 +29,7 @@ class LikeServiceTest {
     private final long userId = 1L;
     private final long messageId = 2L;
     private final long recipeId = 3L;
-    private final Like like = new Like(userId, messageId, recipeId);;
+    private final Like like = new Like(userId, messageId, recipeId);
 
     @Test
     void saveLikeTest()  {

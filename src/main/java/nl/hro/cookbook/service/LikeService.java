@@ -2,9 +2,7 @@ package nl.hro.cookbook.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nl.hro.cookbook.model.domain.Group;
 import nl.hro.cookbook.model.domain.Like;
-import nl.hro.cookbook.model.domain.Message;
 import nl.hro.cookbook.repository.LikeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +19,7 @@ public class LikeService {
 
     private final LikeRepository likeRepository;
 
+    @Transactional
     public List<Like> findLikesByMessageId(final long messageId) {
         Optional<List<Like>> likes = likeRepository.findLikesByMessageId(messageId);
         if (likes.isEmpty()) {
@@ -29,6 +28,7 @@ public class LikeService {
         return likes.get();
     }
 
+    @Transactional
     public void saveLike(Like like) {
         List<Like> likesByMessageId = findLikesByMessageId(like.getMessageId());
         Optional<Like> optionalLike = likesByMessageId.stream()

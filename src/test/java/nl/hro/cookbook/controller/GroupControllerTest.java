@@ -170,9 +170,7 @@ class GroupControllerTest {
         ResponseEntity<List<Message>> feedResponse = restTemplate
                 .exchange(uri, HttpMethod.GET, request5,  new ParameterizedTypeReference<List<Message>>() {});
         assertThat(feedResponse.getBody()).isNotEmpty();
-        feedResponse.getBody().stream().forEach(System.out::println);
-        System.out.println(feedResponse.getBody().get(0).getCreatedAt());
-        assertThat(feedResponse.getBody().size()).isEqualTo(3);
+        assertThat(Objects.requireNonNull(feedResponse.getBody()).size()).isEqualTo(3);
 
         uri = new URI("http://localhost:" + port + "/group/" + groups.get(0).getId() + "/user/" + 4);
         ResponseEntity<Group> groupResponse = restTemplate

@@ -24,18 +24,17 @@ public class LikeController {
 
     private final LikeService likeService;
 
-    @GetMapping("message/{message_id}")
+    @GetMapping("/message/{message_id}")
     public ResponseEntity getLikeByMessageId(@PathVariable("message_id") final long messageId) {
         List<Like> likes = likeService.findLikesByMessageId(messageId);
-        if (!likes.isEmpty()) {
-            return ResponseEntity.ok(likes);
+        if (likes.isEmpty()) {
+            return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
         }
-        return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
+        return ResponseEntity.ok(likes);
     }
 
-    @PostMapping("message/{message_id}")
-    public ResponseEntity saveLike(@RequestBody final Like like) {
-        likeService.saveLike(like);
+    @PostMapping("/message")
+    public ResponseEntity saveLike(@RequestBody final Like like) { likeService.saveLike(like);
         return ResponseEntity.ok(like.getId());
     }
 }
