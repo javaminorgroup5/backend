@@ -1,10 +1,9 @@
 package nl.hro.cookbook.controller;
 
 import lombok.RequiredArgsConstructor;
+import nl.hro.cookbook.model.domain.Image;
 import nl.hro.cookbook.model.domain.Profile;
-import nl.hro.cookbook.model.domain.ProfileImage;
 import nl.hro.cookbook.model.domain.User;
-import nl.hro.cookbook.model.mapper.ProfileMapper;
 import nl.hro.cookbook.service.CommonService;
 import nl.hro.cookbook.service.UserService;
 import nl.hro.cookbook.model.mapper.UserMapper;
@@ -51,9 +50,9 @@ public class UserController {
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void createUser(@RequestPart("user") User user, @RequestPart("file") MultipartFile file) throws IOException {
-        ProfileImage profileImage = new ProfileImage(file.getOriginalFilename(), file.getName(),
+        Image profileImage = new Image(file.getOriginalFilename(), file.getName(),
                 commonService.compressBytes(file.getBytes()));
-        user.getProfile().setProfileImage(profileImage);
+        user.getProfile().setImage(profileImage);
         userService.createUser(user);
     }
 
@@ -61,8 +60,8 @@ public class UserController {
     public ResponseEntity getProfile(@PathVariable("id") final long id) {
         User user = userService.findUserById(id);
         Profile profile = user.getProfile();
-        if (profile != null && profile.getProfileImage() != null) {
-            profile.getProfileImage().setPicByte(commonService.decompressBytes(user.getProfile().getProfileImage().getPicByte()));
+        if (profile != null && profile.getImage() != null) {
+            profile.getImage().setPicByte(commonService.decompressBytes(user.getProfile().getImage().getPicByte()));
             return ResponseEntity.ok(profile);
         }
         return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
@@ -73,9 +72,9 @@ public class UserController {
                               @Valid @RequestPart(value = "profile", required = false) final Profile profile,
                               @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
         if (file != null) {
-            ProfileImage profileImage = new ProfileImage(file.getOriginalFilename(), file.getName(),
+            Image profileImage = new Image(file.getOriginalFilename(), file.getName(),
                     commonService.compressBytes(file.getBytes()));
-            profile.setProfileImage(profileImage);
+            profile.setImage(profileImage);
         }
         userService.updateProfile(id, profile);
     }

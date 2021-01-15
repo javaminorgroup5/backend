@@ -4,30 +4,33 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import lombok.ToString;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "feed")
+@Table(name = "messages")
 @Getter
 @Setter
-@Entity
-public class Message extends Base {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+@ToString
+public class Message extends BaseEntity {
     @NotNull
     private String message;
 
     @NotNull
     private Long userId;
 
+    @NotNull
+    private Long groupId;
+
+    @NotNull
+    private String profileName;
+
+    @NotNull
+    @Embedded
+    private Image image;
 }

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 import nl.hro.cookbook.model.domain.*;
 import nl.hro.cookbook.model.exception.ResourceNotFoundException;
-import nl.hro.cookbook.repository.FeedRepository;
+import nl.hro.cookbook.repository.MessageRepository;
 import nl.hro.cookbook.repository.GroupRepository;
 import nl.hro.cookbook.repository.InviteRepository;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class GroupService {
     private final GroupRepository groupRepository;
     private final UserService userService;
     private final TestDataService testDataService;
-    private final FeedRepository feedRepository;
+    private final MessageRepository messageRepository;
 
     public List<Group> findAllGroup() {
         return groupRepository.findAll();
@@ -38,7 +38,6 @@ public class GroupService {
     @Transactional
     public Invite generateInvite(final long groupId, long userId) throws Exception {
         Group group = groupRepository.findById(groupId).orElseThrow(() -> new ResourceNotFoundException(String.format("No group exists for id: %d", groupId), Group.class));
-
         if (group.getUserId() == userId) {
             Invite invite = new Invite(null, RandomString.make(12));
             List<Invite> invites = group.getInvites();
@@ -120,18 +119,25 @@ public class GroupService {
     @Transactional
     public List<Message> findFeedByGroupId(Long id) {
         Optional<Group> group = groupRepository.findById(id);
-        if (group.isPresent() && group.get().getFeed() != null) {
-            return group.get().getFeed();
+        if (group.isEmpty()) {
+            return Collections.emptyList();
         }
-        return Collections.emptyList();
+        Optional<List<Message>> messagesByGroupId = messageRepository.findMessagesByGroupId(id);
+        if (messagesByGroupId.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return messagesByGroupId.get();
     }
 
+    @Transactional
     public void addMessageToFeed(Long groupId, Message message) {
         Optional<Group> groupOptional = groupRepository.findById(groupId);
         if (groupOptional.isPresent()) {
-            groupOptional.get().getFeed().add(message);
-            feedRepository.save(message);
-            groupRepository.save(groupOptional.get());
+            Group group = groupOptional.get();
+            group.getMessages().add(message);
+            message.setGroupId(groupId);
+            messageRepository.save(message);
+            groupRepository.save(group);
         }
     }
 
@@ -140,6 +146,7 @@ public class GroupService {
     @PostConstruct
     public void init() throws IOException {
         groupRepository.saveAll(testDataService.getGroups());
+        messageRepository.saveAll(testDataService.getFeeds());
     }
 }
 

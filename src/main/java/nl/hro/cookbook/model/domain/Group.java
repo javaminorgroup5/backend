@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 @Table(name = "groups")
 @Getter
 @Setter
+@ToString
 public class Group {
 
     @Id
@@ -38,13 +40,13 @@ public class Group {
 
     @OneToMany
     @JoinTable
-    private List<Message> feed;
+    private List<Message> messages;
 
     @ManyToMany
     @JoinTable
     private List<User> enrolledUsers;
 
     @Embedded
-    private GroupImage groupImage;
+    private Image image;
 
 }

@@ -2,8 +2,8 @@ package nl.hro.cookbook.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nl.hro.cookbook.model.domain.Image;
 import nl.hro.cookbook.model.domain.Profile;
-import nl.hro.cookbook.model.domain.ProfileImage;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.exception.ResourceNotFoundException;
 import nl.hro.cookbook.repository.RecipeRepository;
@@ -61,9 +61,9 @@ public class UserService {
         if (user == null) {
             return;
         }
-        ProfileImage profileImage = newProfile.getProfileImage();
+        Image profileImage = newProfile.getImage();
         if (profileImage != null) {
-            user.getProfile().setProfileImage(newProfile.getProfileImage());
+            user.getProfile().setImage(newProfile.getImage());
         }
         String profileName = newProfile.getProfileName();
         if (profileName != null && user.getProfile() != null) {
