@@ -34,7 +34,6 @@ class LikeControllerTest {
 
     @LocalServerPort
     private int port;
-    private User user;
     private final long userId = 12L;
     private final long messageId = 2L;
     private final long recipeId = 3L;
@@ -51,7 +50,7 @@ class LikeControllerTest {
         MultiValueMap<String, Object> body
                 = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
-        user = new User(12L, "test1@email.com", "test", Role.COMMUNITY_MANAGER,
+        User user = new User(12L, "test33@email.com", "test", Role.COMMUNITY_MANAGER,
                 new Profile("Top Gun", null), new ArrayList<>());
         body.add("user", user);
         HttpEntity<MultiValueMap<String, Object>> request =
@@ -62,7 +61,7 @@ class LikeControllerTest {
 
         uri = new URI("http://localhost:" + port + "/users/login");
         ResponseEntity<String> stringResponse = restTemplate
-                .withBasicAuth("test1@email.com", "test")
+                .withBasicAuth("test33@email.com", "test")
                 .getForEntity(uri,  String.class);
         assertThat(stringResponse.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
@@ -72,12 +71,12 @@ class LikeControllerTest {
                 new HttpEntity<>(like,  headers);
         URI uri1 = new URI("http://localhost:" + port + "/likes/message");
         ResponseEntity response1 = restTemplate
-                .withBasicAuth("test1@email.com", "test")
+                .withBasicAuth("test33@email.com", "test")
                 .postForEntity(uri1, request1, String.class);
         assertThat(response1.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
         assertThat(response1.getBody()).isNotNull();
 
-        String authStr = "test1@email.com:test";
+        String authStr = "test33@email.com:test";
         String base64Creds = Base64.getEncoder().encodeToString(authStr.getBytes());
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -95,7 +94,7 @@ class LikeControllerTest {
                 new HttpEntity<>(like,  headers);
         URI uri2 = new URI("http://localhost:" + port + "/likes/message");
         ResponseEntity response2 = restTemplate
-                .withBasicAuth("test1@email.com", "test")
+                .withBasicAuth("test33@email.com", "test")
                 .postForEntity(uri2, request2, String.class);
         assertThat(response2.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
         assertThat(response2.getBody()).isNotNull();
