@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -28,7 +29,7 @@ public class LikeController {
     public ResponseEntity getLikeByMessageId(@PathVariable("message_id") final long messageId) {
         List<Like> likes = likeService.findLikesByMessageId(messageId);
         if (likes.isEmpty()) {
-            return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok(Collections.EMPTY_LIST);
         }
         return ResponseEntity.ok(likes);
     }

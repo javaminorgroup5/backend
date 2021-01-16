@@ -24,11 +24,11 @@ public class Message extends BaseEntity {
     @NotNull
     private Long userId;
 
-    @NotNull
     private Long groupId;
 
-    @NotNull
     private String profileName;
+
+    private Long recipeId;
 
     @NotNull
     @Embedded

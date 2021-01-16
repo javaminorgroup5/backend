@@ -36,6 +36,7 @@ public class LikeService {
                 .findFirst();
         if (like.getMessageId() > 0 && optionalLike.isPresent()) {
             likeRepository.delete(optionalLike.get());
+            return;
         }
         likeRepository.save(like);
     }
