@@ -30,7 +30,6 @@ public class Message extends BaseEntity {
 
     private Long recipeId;
 
-    @NotNull
     @Embedded
     private Image image;
 }
