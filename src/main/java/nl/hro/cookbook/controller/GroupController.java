@@ -8,7 +8,6 @@ import nl.hro.cookbook.model.domain.Message;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.dto.GroupDTO;
 import nl.hro.cookbook.model.mapper.GroupMapper;
-import nl.hro.cookbook.repository.MessageRepository;
 import nl.hro.cookbook.service.CommonService;
 import nl.hro.cookbook.service.GroupService;
 import nl.hro.cookbook.service.UserService;
@@ -107,7 +106,7 @@ public class GroupController {
     public ResponseEntity getFeedForGroup(@PathVariable("group_id") final long groupId) {
         List<Message> feedByGroupId = groupService.findFeedByGroupId(groupId);
         if (feedByGroupId.isEmpty()) {
-            return ResponseEntity.badRequest().body(HttpStatus.NOT_FOUND);
+            return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
         }
         feedByGroupId.forEach(message -> message.getImage().setPicByte(commonService.decompressBytes(message.getImage().getPicByte())));
         return ResponseEntity.ok(feedByGroupId);

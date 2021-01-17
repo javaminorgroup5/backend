@@ -48,9 +48,9 @@ class GroupControllerTest {
         final Group initialGroup1 = new Group(1L, "PastaGroep", "Leuke pasta groep", 12L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
         final Group initialGroup2 = new Group(2L, "RodeSauzen", "Roder dan rood", 12L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
         final Group initialGroup3 = new Group(3L, "Bloemkoollovers", "Bloemkool is een groente die hoort bij het geslacht kool uit de kruisbloemenfamilie (Brassicaceae). De botanische naam voor bloemkool is Brassica oleracea convar. ", 12L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
-        final Message message1 = new Message("This is my first message", 12L, initialGroup1.getId(), "Test", image);
-        final Message message2 = new Message("This is my second message", 12L, initialGroup1.getId(), "Test", image);
-        final Message message3 = new Message("This is my third message", 12L, initialGroup1.getId(), "Test", image);
+        final Message message1 = new Message("This is my first message", 12L, initialGroup1.getId(), "Test", 1L, image);
+        final Message message2 = new Message("This is my second message", 12L, initialGroup1.getId(), "Test", 1L, image);
+        final Message message3 = new Message("This is my third message", 12L, initialGroup1.getId(), "Test", 1L, image);
         groups = Arrays.asList(initialGroup1, initialGroup2, initialGroup3);
         messages = Arrays.asList(message1, message2, message3);
     }
@@ -170,9 +170,7 @@ class GroupControllerTest {
         ResponseEntity<List<Message>> feedResponse = restTemplate
                 .exchange(uri, HttpMethod.GET, request5,  new ParameterizedTypeReference<List<Message>>() {});
         assertThat(feedResponse.getBody()).isNotEmpty();
-        feedResponse.getBody().stream().forEach(System.out::println);
-        System.out.println(feedResponse.getBody().get(0).getCreatedAt());
-        assertThat(feedResponse.getBody().size()).isEqualTo(3);
+        assertThat(Objects.requireNonNull(feedResponse.getBody()).size()).isEqualTo(3);
 
         uri = new URI("http://localhost:" + port + "/group/" + groups.get(0).getId() + "/user/" + 4);
         ResponseEntity<Group> groupResponse = restTemplate
