@@ -33,6 +33,8 @@ public class GroupServiceTest {
     private UserService userService;
     @Mock
     private MessageRepository messageRepository;
+    @Mock
+    private MessageService messageService;
     @InjectMocks
     private GroupService groupServiceTest;
 
@@ -57,7 +59,7 @@ public class GroupServiceTest {
     void addMessageToFeedTest() {
         // Given
         when(groupRepository.findById(anyLong())).thenReturn(Optional.ofNullable(groups.get(0)));
-        when(messageRepository.findMessagesByGroupId(anyLong())).thenReturn(Optional.of(messages));
+        when(messageService.findMessagesByGroupId(anyLong())).thenReturn(Optional.of(messages));
 
         // When
         groupServiceTest.addMessageToFeed(groups.get(0).getId(), messages.get(0));

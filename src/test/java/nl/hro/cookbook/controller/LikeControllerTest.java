@@ -97,6 +97,6 @@ class LikeControllerTest {
                 .withBasicAuth("test33@email.com", "test")
                 .postForEntity(uri2, request2, String.class);
         assertThat(response2.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response2.getBody()).isNotNull();
+        assertThat(response2.getBody()).isNull();
     }
 }

@@ -58,7 +58,7 @@ class LikeServiceTest {
         likeService.saveLike(like);
 
         // verify
-        verify(likeRepository, times(2)).save(like);
+        verify(likeRepository, times(1)).save(like);
         verify(likeRepository, times(1)).delete(like);
 
         // Then
