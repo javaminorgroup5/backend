@@ -21,4 +21,4 @@ public class GroupDTO {
     private List<User> enrolledUsers;
     private List<Invite> invites;
 
-}
+
