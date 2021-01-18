@@ -46,6 +46,15 @@ public class RecipeController {
         return recipes;
     }
 
+    @GetMapping("/group/{group_id}")
+    public Collection<Recipe> getAllByGroupIdRecipes(@PathVariable("group_id") final long groupId) {
+        Collection<Recipe> recipes = recipeService.findRecipesByGroupId(groupId);
+        for (Recipe recipe : recipes) {
+            recipe.getImage().setPicByte(commonService.decompressBytes(recipe.getImage().getPicByte()));
+        }
+        return recipes;
+    }
+
     @PostMapping(value = "/create/{user_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity createRecipe(@PathVariable("user_id") final long userId,
                                        @RequestPart("recipe") RecipeDto recipeDTO,

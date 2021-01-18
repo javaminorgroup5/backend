@@ -95,7 +95,7 @@ public class TestDataService {
                         "Snijd ondertussen de komkommer in kleine blokjes. Serveer de pan met tomatenrijst met kip met wat gekruimelde witte kaas en blokjes komkommer.",
                 "Het is weer tijd voor een budgetrecept! Deze keer maak ik een 1 pans gerecht van kip in tomatenrijst. " +
                         "Super makkelijk en onder de 2 euro per persoon.",
-                3L, recipeImage, new ArrayList<>());
+                3L, 1L,recipeImage, new ArrayList<>());
         Recipe recipe1 = new Recipe("Kerst ovenschotel met pompoen",
                 "Ingrediënten\n" +
                         "100 gr paddenstoelen\n" +
@@ -121,7 +121,7 @@ public class TestDataService {
                         "Voeg de bloem toe en roer erdoor. Giet de bouillon erbij en roer goed door. " +
                         "Doe de spruitjes, cranberry en pompoenblokjes bij de saus in de pan. Breng het mengsel op smaak met tijm.",
                 "Heerlijke ovenschotel met spruitjes, pompoen en cranberry en een krokant laagje bladerdeeg met uitgestoken sterren, leuk om te serveren met kerst!",
-                3L, recipeImage1, new ArrayList<>());
+                3L, 1L,recipeImage1, new ArrayList<>());
 
         Recipe recipe2 = new Recipe("Kipragout",
                 "Ingrediënten\n" +
@@ -144,7 +144,7 @@ public class TestDataService {
                         "\n" +
                         "",
                 "Heerlijke snelle romige kipragout, die tevens ook heel makkelijk vegetarisch te maken is, in pasteibakjes",
-                3L, recipeImage2, new ArrayList<>());
+                3L, 1L,recipeImage2, new ArrayList<>());
         return Arrays.asList(recipe, recipe1, recipe2);
     }
 
