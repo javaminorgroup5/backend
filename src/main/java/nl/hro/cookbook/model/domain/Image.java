@@ -22,4 +22,5 @@ public class Image {
 
     @Column(name = "picByte", length = 100000000)
     private byte[] picByte;
+
 }

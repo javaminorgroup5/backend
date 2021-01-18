@@ -47,6 +47,17 @@ public class Group {
     private List<User> enrolledUsers;
 
     @Embedded
-    private Image image;
+    Image image;
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "id=" + id +
+                ", groupName='" + groupName + '\'' +
+                ", description='" + description + '\'' +
+                ", userId=" + userId +
+                ", image=" + image +
+                '}';
+    }
 
 }
