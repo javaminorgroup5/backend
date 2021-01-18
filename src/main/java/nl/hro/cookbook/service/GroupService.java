@@ -39,16 +39,20 @@ public class GroupService {
     @Transactional
     public Invite generateInvite(final long groupId, long userId) throws Exception {
         Group group = groupRepository.findById(groupId).orElseThrow(() -> new ResourceNotFoundException(String.format("No group exists for id: %d", groupId), Group.class));
-        if (group.getUserId() == userId) {
-            Invite invite = new Invite(null, RandomString.make(12));
-            List<Invite> invites = group.getInvites();
-            invites.add(invite);
-            group.setInvites(invites);
-            inviteRepository.save(invite);
-            groupRepository.save(group);
-            return invite;
+        if (group.getGroupPrivacy().equals(Group.GroupPrivacy.INVITE)) {
+            if (group.getUserId() == userId) {
+                Invite invite = new Invite(null, RandomString.make(12));
+                List<Invite> invites = group.getInvites();
+                invites.add(invite);
+                group.setInvites(invites);
+                inviteRepository.save(invite);
+                groupRepository.save(group);
+                return invite;
+            } else {
+                throw new Exception("You are not the owner of the group.");
+            }
         } else {
-            throw new Exception("You are not the owner of the group.");
+            throw new Exception("Group is not open to invites.");
         }
     }
 
@@ -113,6 +117,9 @@ public class GroupService {
         Group group = findGroupById(groupId);
         if (group == null || updateGroup == null) {
             return;
+        }
+        if (updateGroup.getGroupPrivacy() != null && !updateGroup.getGroupPrivacy().equals(null)) {
+            group.setGroupPrivacy(updateGroup.getGroupPrivacy());
         }
         if (updateGroup.getGroupName() != null && !updateGroup.getGroupName().isEmpty()) {
             group.setGroupName(updateGroup.getGroupName());
