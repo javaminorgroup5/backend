@@ -28,6 +28,10 @@ public class RecipeService {
             return recipeRepository.findRecipesByUserId(userId).orElse(Collections.emptyList());
     }
 
+    public List<Recipe> findRecipesByGroupId(long groupId) {
+            return recipeRepository.findRecipesByGroupId(groupId).orElse(Collections.emptyList());
+    }
+
     public Recipe findRecipeById(final long recipeId) {
         return recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("No recipe exists for id: %d", recipeId), Recipe.class));

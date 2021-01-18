@@ -57,7 +57,7 @@ class RecipeControllerTest {
                 .postForEntity(uri, request, Void.class);
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
-        recipe = new RecipeDto(1L, "Test", "test", "Eat it raw!", user.getId(), new ImageDTO(), new ArrayList<>());
+        recipe = new RecipeDto(1L, "Test", "test", "Eat it raw!", user.getId(), 1L, new ImageDTO(), new ArrayList<>());
         uri = new URI("http://localhost:" + port + "/users/login");
         ResponseEntity<String> stringResponse = restTemplate
                 .withBasicAuth("test1@email.com", "test")
@@ -96,7 +96,7 @@ class RecipeControllerTest {
         ResponseEntity response = restTemplate
                 .postForEntity(uri, request, Void.class);
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
-        recipe = new RecipeDto(1L, "Test", "test", "Eat it raw!", user.getId(), new ImageDTO(), new ArrayList<>());
+        recipe = new RecipeDto(1L, "Test", "test", "Eat it raw!", user.getId(), 1L, new ImageDTO(), new ArrayList<>());
 
         uri = new URI("http://localhost:" + port + "/users/login");
         ResponseEntity<String> stringResponse = restTemplate

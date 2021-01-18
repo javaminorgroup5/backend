@@ -36,6 +36,9 @@ public class Recipe extends BaseEntity {
     @NotNull
     private Long userId;
 
+    @NotNull
+    private Long groupId;
+
     @Embedded
     Image image;
 

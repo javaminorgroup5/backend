@@ -17,6 +17,7 @@ public class RecipeDto {
     private String recipe;
     private String description;
     private Long userId;
+    private Long groupId;
     private ImageDTO recipeImageDTO;
     private List<ShareLink> shareLinks;
 
