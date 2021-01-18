@@ -23,7 +23,7 @@ public class GroupImage {
 
     @Override
     public String toString() {
-        return "ProfileImage{" +
+        return "GroupImage{" +
                 "name='" + name + '\'' +
                 ", type='" + type + '\'' +
                 ", picByte=" + Arrays.toString(picByte) +

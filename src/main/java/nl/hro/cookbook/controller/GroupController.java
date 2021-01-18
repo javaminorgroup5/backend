@@ -92,15 +92,26 @@ public class GroupController {
         return ResponseEntity.ok(groupService.findEnrolledUsersForGroup(groupId));
     }
 
-    @PutMapping(value = "/{group_id}/user/{user_id}")
-    public void updateRecipe(@PathVariable("group_id") final long groupId,
+    @PutMapping(value = "/{group_id}/user/{user_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void updateGroup(@PathVariable("group_id") final long groupId,
                              @PathVariable("user_id") final long userId,
-                             @RequestPart(value = "group", required = false) GroupDTO groupDTO) {
+                             @RequestPart(value = "group", required = false) GroupDTO groupDTO,
+                             @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
         userService.findUserById(userId);
         Group group = null;
         if(groupDTO != null) {
             group = groupMapper.toModel(groupDTO);
         }
+
+        if (file != null && group != null) {
+            GroupImage groupImage = new GroupImage(
+                    file.getOriginalFilename(),
+                    file.getName(),
+                    commonService.compressBytes(file.getBytes())
+            );
+            group.setGroupImage(groupImage);
+        }
+
         groupService.updateGroup(groupId, group);
     }
 
