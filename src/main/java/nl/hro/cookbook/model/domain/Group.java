@@ -34,6 +34,10 @@ public class Group {
     @Embedded
     private GroupImage groupImage;
 
+    @OneToMany
+    @JoinTable
+    List<Invite> invites;
+
     @ManyToMany
     @JoinTable
     List<User> enrolledUsers;

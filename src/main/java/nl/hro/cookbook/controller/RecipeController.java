@@ -1,8 +1,11 @@
 package nl.hro.cookbook.controller;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import nl.hro.cookbook.model.domain.Recipe;
 import nl.hro.cookbook.model.domain.RecipeImage;
+import nl.hro.cookbook.model.domain.ShareLink;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.dto.RecipeDto;
 import nl.hro.cookbook.model.mapper.RecipeMapper;
@@ -16,8 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.naming.AuthenticationException;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -62,6 +67,19 @@ public class RecipeController {
             return ResponseEntity.ok(recipe);
         }
         return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/{recipe_id}/generate_share_link")
+    public ResponseEntity generateShareLink(@PathVariable("recipe_id") final long recipeId, @RequestBody ObjectNode json) throws Exception {
+        return ResponseEntity.ok(recipeService.generateShareLink(recipeId, json.get("userId").asLong()));
+    }
+
+    @GetMapping("/{recipe_id}/share/{share_link}")
+    public ResponseEntity getRecipeByShareLink(@PathVariable("recipe_id") final long recipeId, @PathVariable("share_link") final String share_link) throws NotFoundException, AuthenticationException {
+        Recipe recipe = recipeService.findRecipeByShareLink(recipeId, share_link);
+        recipe.getRecipeImage().setPicByte(commonService.decompressBytes(recipe.getRecipeImage().getPicByte()));
+
+        return ResponseEntity.ok(recipe);
     }
 
     @PutMapping(value = "/{recipe_id}/user/{user_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

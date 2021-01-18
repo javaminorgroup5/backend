@@ -1,5 +1,6 @@
 package nl.hro.cookbook.controller;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import nl.hro.cookbook.model.domain.Group;
 import nl.hro.cookbook.model.domain.GroupImage;
@@ -60,9 +61,14 @@ public class GroupController {
         return ResponseEntity.ok(group.getId());
     }
 
+    @PostMapping("/{group_id}/generate_invite")
+    public ResponseEntity generateInvite(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) throws Exception {
+        return ResponseEntity.ok(groupService.generateInvite(groupId, json.get("userId").asLong()));
+    }
+
     @PostMapping("/{group_id}/join")
-    public void joinGroup(@PathVariable("group_id") final long groupId, @RequestBody Long userId) {
-        groupService.joinGroup(groupId, userId);
+    public void joinGroup(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) {
+        groupService.joinGroup(groupId, json.get("userId").asLong(), json.get("inviteToken").asText());
     }
 
     @PostMapping("/{group_id}/enroll")
@@ -97,5 +103,22 @@ public class GroupController {
         return ResponseEntity.ok(groupService.findEnrolledUsersForGroup(groupId));
     }
 
+
+    @PutMapping(value = "/{group_id}/user/{user_id}")
+    public void updateRecipe(@PathVariable("group_id") final long groupId,
+                             @PathVariable("user_id") final long userId,
+                             @RequestPart(value = "group", required = false) GroupDTO groupDTO) {
+        userService.findUserById(userId);
+        Group group = null;
+        if(groupDTO != null) {
+            group = groupMapper.toModel(groupDTO);
+        }
+        groupService.updateGroup(groupId, group);
+    }
+
+    @DeleteMapping("/{group_id}/{user_id}")
+    public void deleteGroup(@PathVariable("group_id") final long groupId, @PathVariable("user_id") final long userId) {
+        groupService.deleteById(groupId, userId);
+    }
 
 }

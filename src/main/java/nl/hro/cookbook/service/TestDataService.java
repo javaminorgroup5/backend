@@ -29,9 +29,9 @@ public class TestDataService {
         Resource resource = resourceLoader.getResource("classpath:download.jpeg");
         ProfileImage profileImage = new ProfileImage("test.jpg", "file", commonService.compressBytes(Files.readAllBytes(resource.getFile().toPath())));
 
-        final User initialUser1 = new User(1L, "dion", passwordEncoder.encode("quintor"), Role.ADMIN, new Profile("Top", profileImage), new ArrayList<>());
-        final User initialUser2 = new User(2L, "geoffrey", passwordEncoder.encode("quintor"), Role.COMMUNITY_MANAGER, new Profile("Maverick", profileImage), new ArrayList<>());
-        final User initialUser3 = new User(3L, "testuser", passwordEncoder.encode("testpassword"), Role.COMMUNITY_MANAGER, new Profile("Random guy", profileImage), new ArrayList<>());
+        final User initialUser1 = new User(1L, "dion@quintor.nl", passwordEncoder.encode("quintor"), Role.ADMIN, new Profile("DionRecipeGuy45", profileImage), new ArrayList<>());
+        final User initialUser2 = new User(2L, "geoffrey@quintor.nl", passwordEncoder.encode("quintor"), Role.COMMUNITY_MANAGER, new Profile("Maverick12", profileImage), new ArrayList<>());
+        final User initialUser3 = new User(3L, "testuser@test.nl", passwordEncoder.encode("testpassword"), Role.COMMUNITY_MANAGER, new Profile("TheRecipeTester492", profileImage), new ArrayList<>());
 
 
         return Arrays.asList(initialUser1, initialUser2, initialUser3);
@@ -94,7 +94,7 @@ public class TestDataService {
                         "Snijd ondertussen de komkommer in kleine blokjes. Serveer de pan met tomatenrijst met kip met wat gekruimelde witte kaas en blokjes komkommer.",
                 "Het is weer tijd voor een budgetrecept! Deze keer maak ik een 1 pans gerecht van kip in tomatenrijst. " +
                         "Super makkelijk en onder de 2 euro per persoon.",
-                3L, recipeImage);
+                3L, recipeImage, new ArrayList<>());
         Recipe recipe1 = new Recipe(2L, "Kerst ovenschotel met pompoen",
                 "Ingrediënten\n" +
                         "100 gr paddenstoelen\n" +
@@ -120,7 +120,7 @@ public class TestDataService {
                         "Voeg de bloem toe en roer erdoor. Giet de bouillon erbij en roer goed door. " +
                         "Doe de spruitjes, cranberry en pompoenblokjes bij de saus in de pan. Breng het mengsel op smaak met tijm.",
                 "Heerlijke ovenschotel met spruitjes, pompoen en cranberry en een krokant laagje bladerdeeg met uitgestoken sterren, leuk om te serveren met kerst!",
-                3L, recipeImage1);
+                3L, recipeImage1, new ArrayList<>());
 
         Recipe recipe2 = new Recipe(3L, "Kipragout",
                 "Ingrediënten\n" +
@@ -143,7 +143,7 @@ public class TestDataService {
                         "\n" +
                         "",
                 "Heerlijke snelle romige kipragout, die tevens ook heel makkelijk vegetarisch te maken is, in pasteibakjes",
-                3L, recipeImage2);
+                2L, recipeImage2, new ArrayList<>());
         return Arrays.asList(recipe, recipe1, recipe2);
     }
 
