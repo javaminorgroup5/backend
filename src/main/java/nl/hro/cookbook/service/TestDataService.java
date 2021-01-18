@@ -157,7 +157,7 @@ public class TestDataService {
         final Group initialGroup3 = new Group(3L, "Bloemkoollovers", "Bloemkool is een groente die hoort bij het geslacht kool uit de kruisbloemenfamilie (Brassicaceae). De botanische naam voor bloemkool is Brassica oleracea convar. ", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
         final Group initialGroup4 = new Group(4L, "Italiaanse keukengroep", "De Italiaanse keuken omvat de inheemse kookkunst van het Italiaanse schiereiland. Deze keuken is zeer gevarieerd en seizoensgebonden.", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
         final Group initialGroup5 = new Group(5L, "Marokkaanse keuken", "Couscous Habibi", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
-        final Group initialGroup6 = new Group(6L, "RamsayItes", "Koken net Gordan Ramsay! ", 3L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
+        final Group initialGroup6 = new Group(6L, "RamsayItes", "Koken net Gordon Ramsay! ", 3L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
         return Arrays.asList(initialGroup1, initialGroup2, initialGroup3, initialGroup4, initialGroup5, initialGroup6);
     }
 
