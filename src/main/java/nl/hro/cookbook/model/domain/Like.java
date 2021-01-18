@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -13,24 +12,15 @@ import javax.validation.constraints.NotNull;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "messages")
+@Table(name = "likes")
 @Getter
 @Setter
 @ToString
-public class Message extends BaseEntity {
+public class Like extends BaseEntity {
     @NotNull
-    private String message;
+    private long userId;
 
-    @NotNull
-    private Long userId;
+    private long messageId;
 
-    private Long groupId;
-
-    private String profileName;
-
-    private Long recipeId;
-
-    @NotNull
-    @Embedded
-    private Image image;
+    private long recipeId;
 }
