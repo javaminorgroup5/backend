@@ -32,7 +32,6 @@ public class UserController {
 
     private final UserService userService;
     private final UserMapper userMapper;
-    private final ProfileMapper profileMapper;
     private final CommonService commonService;
 
     @GetMapping("/login")
