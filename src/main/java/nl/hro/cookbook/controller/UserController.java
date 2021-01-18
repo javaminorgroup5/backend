@@ -2,9 +2,11 @@ package nl.hro.cookbook.controller;
 
 import lombok.RequiredArgsConstructor;
 import nl.hro.cookbook.model.domain.Image;
+import nl.hro.cookbook.model.domain.Message;
 import nl.hro.cookbook.model.domain.Profile;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.service.CommonService;
+import nl.hro.cookbook.service.MessageService;
 import nl.hro.cookbook.service.UserService;
 import nl.hro.cookbook.model.mapper.UserMapper;
 import nl.hro.cookbook.model.dto.UserDTO;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -32,6 +35,7 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
     private final CommonService commonService;
+    private MessageService messageService;
 
     @GetMapping("/login")
     public String login() {
@@ -77,6 +81,16 @@ public class UserController {
             profile.setImage(profileImage);
         }
         userService.updateProfile(id, profile);
+    }
+
+    @GetMapping("/{user_id}/feed")
+    public ResponseEntity getFeedForUser(@PathVariable("user_id") final long userId) {
+        List<Message> feedByUserId = userService.findFeedByUserId(userId);
+        if (feedByUserId.isEmpty()) {
+            return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
+        }
+        feedByUserId.forEach(message -> message.getImage().setPicByte(commonService.decompressBytes(message.getImage().getPicByte())));
+        return ResponseEntity.ok(feedByUserId);
     }
 
 }

@@ -2,7 +2,9 @@ package nl.hro.cookbook.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nl.hro.cookbook.model.domain.Group;
 import nl.hro.cookbook.model.domain.Image;
+import nl.hro.cookbook.model.domain.Message;
 import nl.hro.cookbook.model.domain.Profile;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.exception.ResourceNotFoundException;
@@ -18,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -30,6 +34,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final RecipeRepository recipeRepository;
     private final TestDataService testDataService;
+    private final MessageService messageService;
 
     public Collection<User> findAllUsers() {
         return userRepository.findAll();
@@ -53,6 +58,19 @@ public class UserService {
 
     public Optional<User> findUserByUsername(String username) {
         return userRepository.findUserByEmail(username);
+    }
+
+    @Transactional
+    public List<Message> findFeedByUserId(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Optional<List<Message>> messagesByGroupId = messageService.findMessagesByGroupId(id);
+        if (messagesByGroupId.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return messagesByGroupId.get();
     }
 
     @Transactional()
