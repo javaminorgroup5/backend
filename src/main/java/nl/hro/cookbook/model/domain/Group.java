@@ -29,6 +29,7 @@ public class Group {
     private Long userId;
 
     public enum GroupPrivacy {
+        PRIVATE,
         INVITE,
         OPEN;
     }
