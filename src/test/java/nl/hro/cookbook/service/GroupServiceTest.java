@@ -45,11 +45,11 @@ public class GroupServiceTest {
         final Message message2 = new Message(2L, "This is my second message", 3L);
         final Message message3 = new Message(3L, "This is my third message", 3L);
         GroupImage groupImage = new GroupImage("group.jpg", "file", new byte[12]);
-        final Group initialGroup1 = new Group(1L, "PastaGroep", "Leuke pasta groep", 1L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
-        final Group initialGroup2 = new Group(2L, "RodeSauzen", "Roder dan rood", 1L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
-        final Group initialGroup3 = new Group(3L, "Bloemkoollovers", "Bloemkool is een groente die hoort bij het geslacht kool uit de kruisbloemenfamilie (Brassicaceae). De botanische naam voor bloemkool is Brassica oleracea convar. ", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
-        final Group initialGroup4 = new Group(4L, "Italiaanse keukengroep", "De Italiaanse keuken omvat de inheemse kookkunst van het Italiaanse schiereiland. Deze keuken is zeer gevarieerd en seizoensgebonden.", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
-        final Group initialGroup5 = new Group(5L, "Marokkaanse keuken", "Couscous Habibi", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
+        final Group initialGroup1 = new Group(1L, "PastaGroep", "Leuke pasta groep", 1L, Group.GroupPrivacy.OPEN,new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
+        final Group initialGroup2 = new Group(2L, "RodeSauzen", "Roder dan rood", 1L, Group.GroupPrivacy.OPEN,new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
+        final Group initialGroup3 = new Group(3L, "Bloemkoollovers", "Bloemkool is een groente die hoort bij het geslacht kool uit de kruisbloemenfamilie (Brassicaceae). De botanische naam voor bloemkool is Brassica oleracea convar. ", 2L,Group.GroupPrivacy.INVITE, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
+        final Group initialGroup4 = new Group(4L, "Italiaanse keukengroep", "De Italiaanse keuken omvat de inheemse kookkunst van het Italiaanse schiereiland. Deze keuken is zeer gevarieerd en seizoensgebonden.", 2L,Group.GroupPrivacy.INVITE, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
+        final Group initialGroup5 = new Group(5L, "Marokkaanse keuken", "Couscous Habibi", 2L, Group.GroupPrivacy.OPEN,new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
         groups = Arrays.asList(initialGroup1, initialGroup2, initialGroup3, initialGroup4, initialGroup5);
         messages = Arrays.asList(message1, message2, message3);
     }
