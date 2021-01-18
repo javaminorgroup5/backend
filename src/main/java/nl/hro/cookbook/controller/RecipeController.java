@@ -3,12 +3,15 @@ package nl.hro.cookbook.controller;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import nl.hro.cookbook.model.domain.Group;
 import nl.hro.cookbook.model.domain.Image;
 import nl.hro.cookbook.model.domain.Recipe;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.dto.RecipeDto;
 import nl.hro.cookbook.model.mapper.RecipeMapper;
 import nl.hro.cookbook.service.CommonService;
+import nl.hro.cookbook.service.GroupService;
+import nl.hro.cookbook.service.MessageService;
 import nl.hro.cookbook.service.RecipeService;
 import nl.hro.cookbook.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +34,8 @@ public class RecipeController {
     private final UserService userService;
     private final RecipeMapper recipeMapper;
     private final CommonService commonService;
+    private final GroupService groupService;
+    private final MessageService messageService;
 
     @GetMapping("/{user_id}")
     public Collection<Recipe> getAllByUserIdRecipes(@PathVariable("user_id") final long userId) {
@@ -44,12 +51,14 @@ public class RecipeController {
                                        @RequestPart("recipe") RecipeDto recipeDTO,
                                        @RequestPart("file") MultipartFile file) throws IOException {
         User user = userService.findUserById(userId);
+        Optional<List<Group>> groups = groupService.findGroupsByUserId(userId);
         Recipe recipe = recipeMapper.toModel(recipeDTO);
         Image recipeImage = new Image(file.getOriginalFilename(), file.getName(),
-                        commonService.compressBytes(file.getBytes()));
+                commonService.compressBytes(file.getBytes()));
         recipe.setImage(recipeImage);
         recipe.setUserId(user.getId());
         recipeService.createRecipe(recipe);
+        groupService.saveMessageToGroup(user, groups, recipe, recipeImage);
         return ResponseEntity.ok(recipe.getId());
     }
 

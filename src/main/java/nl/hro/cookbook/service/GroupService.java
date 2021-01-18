@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 import nl.hro.cookbook.model.domain.*;
 import nl.hro.cookbook.model.exception.ResourceNotFoundException;
-import nl.hro.cookbook.repository.MessageRepository;
 import nl.hro.cookbook.repository.GroupRepository;
 import nl.hro.cookbook.repository.InviteRepository;
+import nl.hro.cookbook.repository.MessageRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
@@ -25,6 +25,7 @@ public class GroupService {
     private final UserService userService;
     private final TestDataService testDataService;
     private final MessageRepository messageRepository;
+    private final MessageService messageService;
 
     public List<Group> findAllGroup() {
         return groupRepository.findAll();
@@ -122,7 +123,7 @@ public class GroupService {
         if (group.isEmpty()) {
             return Collections.emptyList();
         }
-        Optional<List<Message>> messagesByGroupId = messageRepository.findMessagesByGroupId(id);
+        Optional<List<Message>> messagesByGroupId = messageService.findMessagesByGroupId(id);
         if (messagesByGroupId.isEmpty()) {
             return Collections.emptyList();
         }
@@ -136,8 +137,24 @@ public class GroupService {
             Group group = groupOptional.get();
             group.getMessages().add(message);
             message.setGroupId(groupId);
-            messageRepository.save(message);
+            messageService.saveMessage(message);
             groupRepository.save(group);
+        }
+    }
+
+    @Transactional
+    public void saveMessageToGroup(User user, Optional<List<Group>> groups, Recipe recipe, Image recipeImage) {
+        if (groups.isPresent()) {
+            for (Group group : groups.get()) {
+                Message message = new Message();
+                message.setGroupId(group.getId());
+                message.setUserId(user.getId());
+                message.setImage(recipeImage);
+                message.setMessage(user.getProfile().getProfileName() + " Heeft een nieuw recept toegevoegd! " + recipe.getTitle());
+                message.setRecipeId(recipe.getId());
+                message.setProfileName(user.getProfile().getProfileName());
+                messageService.saveMessage(message);
+            }
         }
     }
 
