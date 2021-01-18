@@ -165,13 +165,13 @@ public class TestDataService {
         ResourceLoader resourceLoader = new DefaultResourceLoader();
         Resource resource1 = resourceLoader.getResource("classpath:bananenpannenkoekjes.jpg");
         Image image1 = new Image("bananenpannenkoekjes", "file", commonService.compressBytes(Files.readAllBytes(resource1.getFile().toPath())));
-        final Message message1 = new Message("Makkelijke en gezonde glutenvrije bananenpannenkoekjes gemaakt van banaan en ei, lekker om mee te ontbijten of als tussendoortje", 3L, 6L, "Test", 1L, image1);
+        final Message message1 = new Message("Makkelijke en gezonde glutenvrije bananenpannenkoekjes gemaakt van banaan en ei, lekker om mee te ontbijten of als tussendoortje", 3L, 6L, "Bananentoetje", 1L, image1);
         Resource resource2 = resourceLoader.getResource("classpath:bananenbrood-met-noten.jpg");
         Image image2 = new Image("bananenbrood-met-noten", "file", commonService.compressBytes(Files.readAllBytes(resource2.getFile().toPath())));
-        final Message message2 = new Message("Gezond bananenbrood met een heerlijke crunch van pecannoten en walnoten", 3L, 6L, "Test", 1L, image2);
+        final Message message2 = new Message("Gezond bananenbrood met een heerlijke crunch van pecannoten en walnoten", 3L, 6L, "Notenspecial", 1L, image2);
         Resource resource3 = resourceLoader.getResource("classpath:kerst-ovenschotel.jpg");
         Image image3 = new Image("kerst-ovenschotel", "file", commonService.compressBytes(Files.readAllBytes(resource3.getFile().toPath())));
-        final Message message3 = new Message("Kerst ovenschotel met pompoen", 3L, 6L, "Test", 1L, image3);
+        final Message message3 = new Message("Kerst ovenschotel met pompoen", 3L, 6L, "Kerst special", 1L, image3);
         return Arrays.asList(message1, message2, message3);
     }
 }
