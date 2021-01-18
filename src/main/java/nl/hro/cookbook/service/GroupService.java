@@ -154,9 +154,27 @@ public class GroupService {
                 message.setRecipeId(recipe.getId());
                 message.setProfileName(user.getProfile().getProfileName());
                 messageService.saveMessage(message);
+                group.getMessages().add(message);
+                groupRepository.save(group);
             }
         }
     }
+
+    @Transactional
+    public void saveInviteSuccesMessageToFeed(long groupId, long userId) {
+        Group group = this.findGroupById(groupId);
+        User user = userService.findUserById(userId);
+        Message message = new Message();
+        message.setGroupId(group.getId());
+        message.setUserId(user.getId());
+        message.setMessage(user.getProfile().getProfileName() + " Heeft zich aangemeld voor de groep " + group.getGroupName() + "!");
+        message.setProfileName(user.getProfile().getProfileName());
+        message.setImage(user.getProfile().getImage());
+        messageService.saveMessage(message);
+        group.getMessages().add(message);
+        groupRepository.save(group);
+    }
+
 
     //    This is a pretty hacky way to have a group available on startup.
     //    This is fine for a demo, but don't do this in real code.

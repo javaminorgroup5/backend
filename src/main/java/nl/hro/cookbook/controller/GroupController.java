@@ -69,7 +69,9 @@ public class GroupController {
 
     @PostMapping("/{group_id}/join")
     public void joinGroup(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) {
-        groupService.joinGroup(groupId, json.get("userId").asLong(), json.get("inviteToken").asText());
+        long userId = json.get("userId").asLong();
+        groupService.joinGroup(groupId, userId, json.get("inviteToken").asText());
+        groupService.saveInviteSuccesMessageToFeed(groupId, userId);
     }
 
     @PostMapping("/{group_id}/enroll")
