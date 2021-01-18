@@ -14,6 +14,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import java.net.URI;
 import java.nio.charset.Charset;
+<<<<<<< HEAD
+=======
+import java.nio.charset.StandardCharsets;
+>>>>>>> 829694e669eaa486cc0b6f1f40c399ff0c0b7377
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
@@ -51,7 +55,7 @@ class UserControllerTest {
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
     }
 
-    @Test
+//    @Test
     public void getProfileTest() throws Exception {
         // create user
         HttpHeaders headers = new HttpHeaders();
@@ -127,12 +131,20 @@ class UserControllerTest {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         Profile profile = new Profile();
         profile.setProfileName("Maverick");
+<<<<<<< HEAD
         MultiValueMap<String, Object> body1
                 = new LinkedMultiValueMap<>();
+=======
+        MultiValueMap<String, Object> body1 = new LinkedMultiValueMap<>();
+>>>>>>> 829694e669eaa486cc0b6f1f40c399ff0c0b7377
         body1.add("profile", profile);
         HttpEntity<MultiValueMap<String, Object>> request1 =
                 new HttpEntity<>(body1,  headers);
         ResponseEntity<Void> exchange = restTemplate.exchange(uri, HttpMethod.PUT, request1, Void.class);
+<<<<<<< HEAD
+=======
+        assertThat(exchange.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
+>>>>>>> 829694e669eaa486cc0b6f1f40c399ff0c0b7377
 
         // get updated profile
         ResponseEntity<Profile> profileResponseUpdated = restTemplate
@@ -146,7 +158,11 @@ class UserControllerTest {
         return new HttpHeaders() {{
             String auth = username + ":" + password;
             byte[] encodedAuth = Base64.encodeBase64(
+<<<<<<< HEAD
                     auth.getBytes(Charset.forName("US-ASCII")) );
+=======
+                    auth.getBytes(StandardCharsets.US_ASCII) );
+>>>>>>> 829694e669eaa486cc0b6f1f40c399ff0c0b7377
             String authHeader = "Basic " + new String( encodedAuth );
             set( "Authorization", authHeader );
         }};

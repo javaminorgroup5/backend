@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 @Table(name = "groups")
 @Getter
 @Setter
+@ToString
 public class Group {
 
     @Id
@@ -27,19 +29,26 @@ public class Group {
     private String description;
 
     private Long userId;
+
     @Column
     @ElementCollection(targetClass=Profile.class)
     private List<Profile> profiles;
 
+    @OneToMany
+    @JoinTable
+    private List<Invite> invites;
 
     @OneToMany
     @JoinTable
-    List<Invite> invites;
+    private List<Message> messages;
+
 
     @ManyToMany
     @JoinTable
-    List<User> enrolledUsers;
+    private List<User> enrolledUsers;
 
     @Embedded
-    private GroupImage groupImage;
+    private Image image;
+
+
 }

@@ -11,4 +11,8 @@ import java.util.Optional;
 @Repository
 public interface InviteRepository extends JpaRepository<Invite, Long> {
     Optional<Invite> findInviteByToken(String token);
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 829694e669eaa486cc0b6f1f40c399ff0c0b7377

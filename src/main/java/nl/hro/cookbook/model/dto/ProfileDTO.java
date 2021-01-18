@@ -13,6 +13,6 @@ import javax.validation.constraints.NotNull;
 public class ProfileDTO {
 
     private String profileName;
-    private ProfileImageDTO profileImageDTO;
+    private ImageDTO profileImageDTO;
 
 }

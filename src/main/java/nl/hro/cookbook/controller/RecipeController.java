@@ -3,14 +3,20 @@ package nl.hro.cookbook.controller;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import nl.hro.cookbook.model.domain.Group;
+import nl.hro.cookbook.model.domain.Image;
 import nl.hro.cookbook.model.domain.Recipe;
+<<<<<<< HEAD
 import nl.hro.cookbook.model.domain.RecipeImage;
 import nl.hro.cookbook.model.domain.ShareLink;
+=======
+>>>>>>> 829694e669eaa486cc0b6f1f40c399ff0c0b7377
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.dto.RecipeDto;
 import nl.hro.cookbook.model.mapper.RecipeMapper;
-
 import nl.hro.cookbook.service.CommonService;
+import nl.hro.cookbook.service.GroupService;
+import nl.hro.cookbook.service.MessageService;
 import nl.hro.cookbook.service.RecipeService;
 import nl.hro.cookbook.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -18,11 +24,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+<<<<<<< HEAD
 
 import javax.naming.AuthenticationException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+=======
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+>>>>>>> 829694e669eaa486cc0b6f1f40c399ff0c0b7377
 
 @RestController
 @RequiredArgsConstructor
@@ -34,12 +47,14 @@ public class RecipeController {
     private final UserService userService;
     private final RecipeMapper recipeMapper;
     private final CommonService commonService;
+    private final GroupService groupService;
+    private final MessageService messageService;
 
     @GetMapping("/{user_id}")
     public Collection<Recipe> getAllByUserIdRecipes(@PathVariable("user_id") final long userId) {
         Collection<Recipe> recipes = recipeService.findRecipesByUserId(userId);
         for (Recipe recipe : recipes) {
-            recipe.getRecipeImage().setPicByte(commonService.decompressBytes(recipe.getRecipeImage().getPicByte()));
+            recipe.getImage().setPicByte(commonService.decompressBytes(recipe.getImage().getPicByte()));
         }
         return recipes;
     }
@@ -49,12 +64,14 @@ public class RecipeController {
                                        @RequestPart("recipe") RecipeDto recipeDTO,
                                        @RequestPart("file") MultipartFile file) throws IOException {
         User user = userService.findUserById(userId);
+        Optional<List<Group>> groups = groupService.findGroupsByUserId(userId);
         Recipe recipe = recipeMapper.toModel(recipeDTO);
-        RecipeImage recipeImage = new RecipeImage(file.getOriginalFilename(), file.getName(),
-                        commonService.compressBytes(file.getBytes()));
-        recipe.setRecipeImage(recipeImage);
+        Image recipeImage = new Image(file.getOriginalFilename(), file.getName(),
+                commonService.compressBytes(file.getBytes()));
+        recipe.setImage(recipeImage);
         recipe.setUserId(user.getId());
         recipeService.createRecipe(recipe);
+        groupService.saveMessageToGroup(user, groups, recipe, recipeImage);
         return ResponseEntity.ok(recipe.getId());
     }
 
@@ -62,7 +79,7 @@ public class RecipeController {
     public ResponseEntity getRecipe(@PathVariable("recipe_id") final long recipeId, @PathVariable("user_id") final long userId) {
         User user = userService.findUserById(userId);
         Recipe recipe = recipeService.findRecipeById(recipeId);
-        recipe.getRecipeImage().setPicByte(commonService.decompressBytes(recipe.getRecipeImage().getPicByte()));
+        recipe.getImage().setPicByte(commonService.decompressBytes(recipe.getImage().getPicByte()));
         if (user.getId() == recipe.getUserId()) {
             return ResponseEntity.ok(recipe);
         }
@@ -75,9 +92,15 @@ public class RecipeController {
     }
 
     @GetMapping("/{recipe_id}/share/{share_link}")
+<<<<<<< HEAD
     public ResponseEntity getRecipeByShareLink(@PathVariable("recipe_id") final long recipeId, @PathVariable("share_link") final String share_link) throws NotFoundException, AuthenticationException {
         Recipe recipe = recipeService.findRecipeByShareLink(recipeId, share_link);
         recipe.getRecipeImage().setPicByte(commonService.decompressBytes(recipe.getRecipeImage().getPicByte()));
+=======
+    public ResponseEntity getRecipeByShareLink(@PathVariable("recipe_id") final long recipeId, @PathVariable("share_link") final String share_link) throws NotFoundException {
+        Recipe recipe = recipeService.findRecipeByShareLink(recipeId, share_link);
+        recipe.getImage().setPicByte(commonService.decompressBytes(recipe.getImage().getPicByte()));
+>>>>>>> 829694e669eaa486cc0b6f1f40c399ff0c0b7377
 
         return ResponseEntity.ok(recipe);
     }
@@ -93,9 +116,9 @@ public class RecipeController {
             recipe = recipeMapper.toModel(recipeDto);
         }
         if (file != null && recipe != null) {
-            RecipeImage recipeImage = new RecipeImage(file.getOriginalFilename(), file.getName(),
+            Image recipeImage = new Image(file.getOriginalFilename(), file.getName(),
                     commonService.compressBytes(file.getBytes()));
-            recipe.setRecipeImage(recipeImage);
+            recipe.setImage(recipeImage);
         }
         recipeService.updateRecipe(recipeId, recipe);
     }

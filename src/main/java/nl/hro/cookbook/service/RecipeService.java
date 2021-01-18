@@ -25,7 +25,10 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final ShareLinkRepository shareLinkRepository;
+<<<<<<< HEAD
     private final CommonService commonService;
+=======
+>>>>>>> 829694e669eaa486cc0b6f1f40c399ff0c0b7377
 
     public List<Recipe> findRecipesByUserId(long userId) {
             return recipeRepository.findRecipesByUserId(userId).orElse(Collections.emptyList());
@@ -55,6 +58,7 @@ public class RecipeService {
     }
 
     @Transactional
+<<<<<<< HEAD
     public Recipe findRecipeByShareLink(final long recipeId, final String shareLink) throws NotFoundException, AuthenticationException {
         Optional<Recipe> recipeById = recipeRepository.findById(recipeId);
 
@@ -65,6 +69,15 @@ public class RecipeService {
             for (ShareLink shareLinkIterated : shareLinks) {
                 String shareLinkDB = shareLinkIterated.getShareLink();
 
+=======
+    public Recipe findRecipeByShareLink(final long recipeId, final String shareLink) throws NotFoundException {
+        Optional<Recipe> recipeById = recipeRepository.findById(recipeId);
+        if (recipeById.isPresent()) {
+            Recipe recipe = recipeById.get();
+            List<ShareLink> shareLinks = recipe.getShareLinks();
+            for (ShareLink shareLinkIterated : shareLinks) {
+                String shareLinkDB = shareLinkIterated.getShareLink();
+>>>>>>> 829694e669eaa486cc0b6f1f40c399ff0c0b7377
                 if (shareLinkDB.equals(shareLink)) {
                     return recipe;
                 }
@@ -98,8 +111,8 @@ public class RecipeService {
         if (updateRecipe.getDescription() != null && !updateRecipe.getDescription().isEmpty()) {
             recipe.setDescription(updateRecipe.getDescription());
         }
-        if (updateRecipe.getRecipeImage() != null) {
-            recipe.setRecipeImage(updateRecipe.getRecipeImage());
+        if (updateRecipe.getImage() != null) {
+            recipe.setImage(updateRecipe.getImage());
         }
         recipeRepository.save(recipe);
     }

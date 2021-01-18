@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import nl.hro.cookbook.security.Role;
 
 import javax.persistence.*;
@@ -19,6 +20,7 @@ import java.util.List;
 @EqualsAndHashCode(exclude = "role")
 @Getter
 @Setter
+@ToString
 public class User {
 
     @Id
@@ -34,6 +36,7 @@ public class User {
     @Embedded
     private Profile profile;
 
+
     @Override
     public String toString() {
         return "User{" +
@@ -44,6 +47,7 @@ public class User {
                 ", profile=" + profile +
                 '}';
     }
+
 
     @ManyToMany(mappedBy = "enrolledUsers")
     List<Group> enrolledGroups;
