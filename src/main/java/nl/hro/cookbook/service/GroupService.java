@@ -65,7 +65,7 @@ public class GroupService {
         Message message = new Message();
         message.setGroupId(group.getId());
         message.setUserId(user.getId());
-        message.setMessage(user.getProfile().getProfileName() + " Heeft u uitgenodigd voor de groep " + group.getGroupName() + " \nUitnodigingslink: <a href="+"http://localhost:4200/group/"+groupId+"?inviteToken="+invite.getToken());
+        message.setMessage(user.getProfile().getProfileName() + " Heeft u uitgenodigd voor de groep " + group.getGroupName() + " \nUitnodigingslink: http://localhost:4200/group/"+groupId+"?inviteToken="+invite.getToken());
         message.setProfileName(user.getProfile().getProfileName());
         message.setImage(user.getProfile().getImage());
         messageService.saveMessage(message);
