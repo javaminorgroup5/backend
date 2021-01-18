@@ -17,7 +17,7 @@ public class GroupDTO {
     private String description;
     private Long userId;
     private List<Profile> profiles;
-    private GroupImageDTO groupImageDTO;
+    private ImageDTO groupImageDTO;
     private List<User> enrolledUsers;
     private List<Invite> invites;
 

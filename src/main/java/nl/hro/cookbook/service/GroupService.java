@@ -119,8 +119,8 @@ public class GroupService {
         if (updateGroup.getDescription() != null && !updateGroup.getDescription().isEmpty()) {
             group.setDescription(updateGroup.getDescription());
         }
-        if (updateGroup.getGroupImage() != null) {
-            group.setGroupImage(updateGroup.getGroupImage());
+        if (updateGroup.getImage() != null) {
+            group.setImage(updateGroup.getImage());
         }
         groupRepository.save(group);
     }

@@ -124,12 +124,12 @@ public class GroupController {
         }
 
         if (file != null && group != null) {
-            GroupImage groupImage = new GroupImage(
+            Image groupImage = new Image(
                     file.getOriginalFilename(),
                     file.getName(),
                     commonService.compressBytes(file.getBytes())
             );
-            group.setGroupImage(groupImage);
+            group.setImage(groupImage);
         }
 
         groupService.updateGroup(groupId, group);
