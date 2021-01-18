@@ -33,9 +33,9 @@ public class TestDataService {
         final User initialUser1 = new User(1L, "dion@quintor.nl", passwordEncoder.encode("quintor"), Role.ADMIN, new Profile("DionRecipeGuy45", profileImage), new ArrayList<>());
         final User initialUser2 = new User(2L, "geoffrey@quintor.nl", passwordEncoder.encode("quintor"), Role.COMMUNITY_MANAGER, new Profile("Maverick12", profileImage), new ArrayList<>());
         final User initialUser3 = new User(3L, "testuser@test.nl", passwordEncoder.encode("testpassword"), Role.COMMUNITY_MANAGER, new Profile("TheRecipeTester492", profileImage), new ArrayList<>());
+        final User initialUser4 = new User(4L, "anuar@test.nl", passwordEncoder.encode("quintor"), Role.COMMUNITY_MANAGER, new Profile("Anuar", profileImage), new ArrayList<>());
 
-
-        return Arrays.asList(initialUser1, initialUser2, initialUser3);
+        return Arrays.asList(initialUser1, initialUser2, initialUser3, initialUser4);
     }
 
     public List<Recipe> getRecipes() throws IOException {

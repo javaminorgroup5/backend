@@ -75,7 +75,8 @@ public class GroupController {
     }
 
     @PostMapping("/{group_id}/enroll")
-    public void enrollInGroup(@PathVariable("group_id") final long groupId, @RequestBody Long userId) {
+    public void enrollInGroup(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) {
+        long userId = json.get("userId").asLong();
         groupService.enrollInGroup(groupId, userId);
     }
 
