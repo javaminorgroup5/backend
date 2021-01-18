@@ -99,7 +99,7 @@ public class GroupService {
         List<User> users = group.getEnrolledUsers();
         users.add(user);
         group.setEnrolledUsers(users);
-        groupRepository.save(group);
+//        groupRepository.save(group);
     }
 
     @Transactional
