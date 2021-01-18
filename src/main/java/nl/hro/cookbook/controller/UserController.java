@@ -87,6 +87,12 @@ public class UserController {
         return ResponseEntity.ok(enrolledGroupsForUser);
     }
 
+    /**
+     * Get all messages for the feed with the gives userId;
+     *
+     * @param userId
+     * @return
+     */
     @GetMapping("/{user_id}/feed")
     public ResponseEntity getFeedForUser(@PathVariable("user_id") final long userId) {
         List<Message> feedByUserId = userService.findFeedByUserId(userId);

@@ -31,10 +31,17 @@ public class GroupService {
         return groupRepository.findAll();
     }
 
+    /**
+     * Find a group bij the given id;
+     *
+     * @param groupId
+     * @return
+     */
     public Group findGroupById(final long groupId) {
         return groupRepository.findById(groupId)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("No group exists for id: %d", groupId), Group.class));
     }
+
 
     @Transactional
     public Invite generateInvite(final long groupId, long userId) throws Exception {
@@ -66,6 +73,12 @@ public class GroupService {
         return userIDs;
     }
 
+    /**
+     * Delete a group by the given id;
+     *
+     * @param id
+     * @param userId
+     */
     @Transactional
     public void deleteById(Long id, long userId) {
         Optional<Group> group = groupRepository.findById(id);
