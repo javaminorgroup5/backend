@@ -67,7 +67,7 @@ public class RecipeController {
         recipe.setImage(recipeImage);
         recipe.setUserId(user.getId());
         recipeService.createRecipe(recipe);
-        groupService.saveMessageToGroup(user, groups, recipe, recipeImage);
+        groupService.saveMessageToGroup(user, recipe.getGroupId(), recipe, recipeImage);
         return ResponseEntity.ok(recipe.getId());
     }
 
