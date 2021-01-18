@@ -37,6 +37,7 @@ class RecipeServiceTest {
         recipe.setRecipe("Pasta");
         recipe.setDescription("Italian dish");
         recipe.setUserId(1L);
+        recipe.setGroupId(1L);
     }
 
     @Test
