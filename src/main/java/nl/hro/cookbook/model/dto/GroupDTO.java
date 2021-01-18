@@ -19,7 +19,7 @@ public class GroupDTO {
     private Long userId;
     private Group.GroupPrivacy groupPrivacy;
     private List<Profile> profiles;
-    private GroupImageDTO groupImageDTO;
+    private ImageDTO groupImageDTO;
     private List<User> enrolledUsers;
     private List<Invite> invites;
 

@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 import nl.hro.cookbook.model.domain.*;
 import nl.hro.cookbook.model.exception.ResourceNotFoundException;
-import nl.hro.cookbook.repository.FeedRepository;
 import nl.hro.cookbook.repository.GroupRepository;
 import nl.hro.cookbook.repository.InviteRepository;
+import nl.hro.cookbook.repository.MessageRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
@@ -24,7 +24,8 @@ public class GroupService {
     private final GroupRepository groupRepository;
     private final UserService userService;
     private final TestDataService testDataService;
-    private final FeedRepository feedRepository;
+    private final MessageRepository messageRepository;
+    private final MessageService messageService;
 
     public List<Group> findAllGroup() {
         return groupRepository.findAll();
@@ -38,7 +39,6 @@ public class GroupService {
     @Transactional
     public Invite generateInvite(final long groupId, long userId) throws Exception {
         Group group = groupRepository.findById(groupId).orElseThrow(() -> new ResourceNotFoundException(String.format("No group exists for id: %d", groupId), Group.class));
-
         if (group.getUserId() == userId) {
             Invite invite = new Invite(null, RandomString.make(12));
             List<Invite> invites = group.getInvites();
@@ -120,8 +120,8 @@ public class GroupService {
         if (updateGroup.getDescription() != null && !updateGroup.getDescription().isEmpty()) {
             group.setDescription(updateGroup.getDescription());
         }
-        if (updateGroup.getGroupImage() != null) {
-            group.setGroupImage(updateGroup.getGroupImage());
+        if (updateGroup.getImage() != null) {
+            group.setImage(updateGroup.getImage());
         }
         groupRepository.save(group);
     }
@@ -129,26 +129,68 @@ public class GroupService {
     @Transactional
     public List<Message> findFeedByGroupId(Long id) {
         Optional<Group> group = groupRepository.findById(id);
-        if (group.isPresent() && group.get().getFeed() != null) {
-            return group.get().getFeed();
+        if (group.isEmpty()) {
+            return Collections.emptyList();
         }
-        return Collections.emptyList();
+        Optional<List<Message>> messagesByGroupId = messageService.findMessagesByGroupId(id);
+        if (messagesByGroupId.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return messagesByGroupId.get();
     }
 
+    @Transactional
     public void addMessageToFeed(Long groupId, Message message) {
         Optional<Group> groupOptional = groupRepository.findById(groupId);
         if (groupOptional.isPresent()) {
-            groupOptional.get().getFeed().add(message);
-            feedRepository.save(message);
-            groupRepository.save(groupOptional.get());
+            Group group = groupOptional.get();
+            group.getMessages().add(message);
+            message.setGroupId(groupId);
+            messageService.saveMessage(message);
+            groupRepository.save(group);
         }
     }
+
+    @Transactional
+    public void saveMessageToGroup(User user, Optional<List<Group>> groups, Recipe recipe, Image recipeImage) {
+        if (groups.isPresent()) {
+            for (Group group : groups.get()) {
+                Message message = new Message();
+                message.setGroupId(group.getId());
+                message.setUserId(user.getId());
+                message.setImage(recipeImage);
+                message.setMessage(user.getProfile().getProfileName() + " Heeft een nieuw recept toegevoegd! " + recipe.getTitle());
+                message.setRecipeId(recipe.getId());
+                message.setProfileName(user.getProfile().getProfileName());
+                messageService.saveMessage(message);
+                group.getMessages().add(message);
+                groupRepository.save(group);
+            }
+        }
+    }
+
+    @Transactional
+    public void saveInviteSuccesMessageToFeed(long groupId, long userId) {
+        Group group = this.findGroupById(groupId);
+        User user = userService.findUserById(userId);
+        Message message = new Message();
+        message.setGroupId(group.getId());
+        message.setUserId(user.getId());
+        message.setMessage(user.getProfile().getProfileName() + " Heeft zich aangemeld voor de groep " + group.getGroupName() + "!");
+        message.setProfileName(user.getProfile().getProfileName());
+        message.setImage(user.getProfile().getImage());
+        messageService.saveMessage(message);
+        group.getMessages().add(message);
+        groupRepository.save(group);
+    }
+
 
     //    This is a pretty hacky way to have a group available on startup.
     //    This is fine for a demo, but don't do this in real code.
     @PostConstruct
     public void init() throws IOException {
         groupRepository.saveAll(testDataService.getGroups());
+        messageRepository.saveAll(testDataService.getFeeds());
     }
 }
 
