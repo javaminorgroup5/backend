@@ -2,6 +2,7 @@ package nl.hro.cookbook.model.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nl.hro.cookbook.model.domain.Group;
 import nl.hro.cookbook.model.domain.Invite;
 import nl.hro.cookbook.model.domain.Profile;
 import nl.hro.cookbook.model.domain.User;
@@ -16,6 +17,7 @@ public class GroupDTO {
     private String groupName;
     private String description;
     private Long userId;
+    private Group.GroupPrivacy groupPrivacy;
     private List<Profile> profiles;
     private ImageDTO groupImageDTO;
     private List<User> enrolledUsers;

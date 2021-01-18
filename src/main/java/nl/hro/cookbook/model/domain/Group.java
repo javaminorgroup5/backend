@@ -30,6 +30,13 @@ public class Group {
 
     private Long userId;
 
+    public enum GroupPrivacy {
+        PRIVATE,
+        INVITE,
+        OPEN;
+    }
+    private GroupPrivacy groupPrivacy;
+
     @Column
     @ElementCollection(targetClass=Profile.class)
     private List<Profile> profiles;
