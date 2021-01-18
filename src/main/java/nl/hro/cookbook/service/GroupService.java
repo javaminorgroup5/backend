@@ -39,7 +39,7 @@ public class GroupService {
     @Transactional
     public Invite generateInvite(final long groupId, long userId) throws Exception {
         Group group = groupRepository.findById(groupId).orElseThrow(() -> new ResourceNotFoundException(String.format("No group exists for id: %d", groupId), Group.class));
-        if (group.getGroupPrivacy().equals(Group.GroupPrivacy.INVITE)) {
+        if (group.getGroupPrivacy().equals(Group.GroupPrivacy.INVITE) || group.getGroupPrivacy().equals(Group.GroupPrivacy.PRIVATE)) {
             if (group.getUserId() == userId) {
                 Invite invite = new Invite(null, RandomString.make(12));
                 List<Invite> invites = group.getInvites();
@@ -56,6 +56,24 @@ public class GroupService {
         }
     }
 
+    @Transactional
+    public void generateInviteForFeed(long groupId, long userId) throws Exception {
+        Invite invite = this.generateInvite(groupId, userId);
+        inviteRepository.save(invite);
+        Group group = this.findGroupById(groupId);
+        User user = userService.findUserById(userId);
+        Message message = new Message();
+        message.setGroupId(group.getId());
+        message.setUserId(user.getId());
+        message.setMessage(user.getProfile().getProfileName() + " Heeft u uitgenodigd voor de groep " + group.getGroupName() + " \nUitnodigingslink: <a href="+"http://localhost:4200/group/"+groupId+"?inviteToken="+invite.getToken());
+        message.setProfileName(user.getProfile().getProfileName());
+        message.setImage(user.getProfile().getImage());
+        messageService.saveMessage(message);
+        group.getMessages().add(message);
+        groupRepository.save(group);
+    }
+
+    @Transactional
     public List<String> findEnrolledUsersForGroup(long groupId) {
         List<String> userIDs = new ArrayList<>();
         Group group = findGroupById(groupId);

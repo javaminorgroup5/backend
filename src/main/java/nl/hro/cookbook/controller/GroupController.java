@@ -67,6 +67,13 @@ public class GroupController {
         return ResponseEntity.ok(groupService.generateInvite(groupId, json.get("userId").asLong()));
     }
 
+    @PostMapping("/{group_id}/generate_feed_invite")
+    public void generateFeedInvite(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) throws Exception {
+        groupService.generateInviteForFeed(groupId, json.get("userId").asLong());
+        // TODO remove me
+        System.out.println(true);
+    }
+
     @PostMapping("/{group_id}/join")
     public void joinGroup(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) {
         long userId = json.get("userId").asLong();
