@@ -8,6 +8,7 @@ import nl.hro.cookbook.model.exception.ResourceNotFoundException;
 import nl.hro.cookbook.repository.GroupRepository;
 import nl.hro.cookbook.repository.InviteRepository;
 import nl.hro.cookbook.repository.MessageRepository;
+import nl.hro.cookbook.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
@@ -26,6 +27,7 @@ public class GroupService {
     private final TestDataService testDataService;
     private final MessageRepository messageRepository;
     private final MessageService messageService;
+    private final UserRepository userRepository;
 
     public List<Group> findAllGroup() {
         return groupRepository.findAll();
@@ -99,7 +101,9 @@ public class GroupService {
         List<User> users = group.getEnrolledUsers();
         users.add(user);
         group.setEnrolledUsers(users);
-//        groupRepository.save(group);
+        user.getEnrolledGroups().add(group);
+        userRepository.save(user);
+        groupRepository.save(group);
     }
 
     @Transactional

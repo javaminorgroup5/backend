@@ -66,7 +66,7 @@ public class GroupController {
     public ResponseEntity generateInvite(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) throws Exception {
         return ResponseEntity.ok(groupService.generateInvite(groupId, json.get("userId").asLong()));
     }
-
+//TO-DO: Word deze ergens voor gebruikt?
     @PostMapping("/{group_id}/join")
     public void joinGroup(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) {
         long userId = json.get("userId").asLong();
