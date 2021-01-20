@@ -159,21 +159,18 @@ public class GroupService {
     }
 
     @Transactional
-    public void saveMessageToGroup(User user, Optional<List<Group>> groups, Recipe recipe, Image recipeImage) {
-        if (groups.isPresent()) {
-            for (Group group : groups.get()) {
-                Message message = new Message();
-                message.setGroupId(group.getId());
-                message.setUserId(user.getId());
-                message.setImage(recipeImage);
-                message.setMessage(user.getProfile().getProfileName() + " Heeft een nieuw recept toegevoegd! " + recipe.getTitle());
-                message.setRecipeId(recipe.getId());
-                message.setProfileName(user.getProfile().getProfileName());
-                messageService.saveMessage(message);
-                group.getMessages().add(message);
-                groupRepository.save(group);
-            }
-        }
+    public void saveMessageToGroup(User user, Long groupId, Recipe recipe, Image recipeImage) {
+        Group group = this.findGroupById(groupId);
+        Message message = new Message();
+        message.setGroupId(group.getId());
+        message.setUserId(user.getId());
+        message.setImage(recipeImage);
+        message.setMessage(user.getProfile().getProfileName() + " Heeft een nieuw recept toegevoegd! " + recipe.getTitle());
+        message.setRecipeId(recipe.getId());
+        message.setProfileName(user.getProfile().getProfileName());
+        messageService.saveMessage(message);
+        group.getMessages().add(message);
+        groupRepository.save(group);
     }
 
     @Transactional
