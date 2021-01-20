@@ -47,7 +47,7 @@ public class RecipeController {
     }
 
     @GetMapping("/group/{group_id}")
-    public Collection<Recipe> getAllByGroupIdRecipes(@PathVariable("group_id") final long groupId) {
+    public Collection<Recipe> getRecipesByGroup(@PathVariable("group_id") final long groupId, @RequestParam("q") final String query) {
         Collection<Recipe> recipes = recipeService.findRecipesByGroupId(groupId);
         for (Recipe recipe : recipes) {
             recipe.getImage().setPicByte(commonService.decompressBytes(recipe.getImage().getPicByte()));

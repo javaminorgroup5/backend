@@ -29,10 +29,12 @@ public class GroupService {
     private final MessageService messageService;
     private final UserRepository userRepository;
 
+    @Transactional
     public List<Group> findAllGroup() {
         return groupRepository.findAll();
     }
 
+    @Transactional
     public Group findGroupById(final long groupId) {
         return groupRepository.findById(groupId)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("No group exists for id: %d", groupId), Group.class));
@@ -58,6 +60,7 @@ public class GroupService {
         }
     }
 
+    @Transactional
     public List<String> findEnrolledUsersForGroup(long groupId) {
         List<String> userIDs = new ArrayList<>();
         Group group = findGroupById(groupId);
@@ -96,13 +99,13 @@ public class GroupService {
 
     @Transactional
     public void enrollInGroup(final long groupId, long userId) {
-        final User user = userService.findUserById(userId);
+        User user = userService.findUserById(userId);
         Group group = findGroupById(groupId);
         List<User> users = group.getEnrolledUsers();
         users.add(user);
-        group.setEnrolledUsers(users);
         user.getEnrolledGroups().add(group);
         userRepository.save(user);
+        group.setEnrolledUsers(users);
         groupRepository.save(group);
     }
 
@@ -122,7 +125,7 @@ public class GroupService {
         if (group == null || updateGroup == null) {
             return;
         }
-        if (updateGroup.getGroupPrivacy() != null && !updateGroup.getGroupPrivacy().equals(null)) {
+        if (updateGroup.getGroupPrivacy() != null) {
             group.setGroupPrivacy(updateGroup.getGroupPrivacy());
         }
         if (updateGroup.getGroupName() != null && !updateGroup.getGroupName().isEmpty()) {

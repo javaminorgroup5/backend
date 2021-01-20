@@ -17,9 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,10 +31,8 @@ public class GroupController {
     private final CommonService commonService;
 
     @GetMapping()
-    public Collection<GroupDTO> getAllGroups() {
-        return groupService.findAllGroup().stream()
-                .map(groupMapper::toDTO)
-                .collect(Collectors.toList());
+    public ResponseEntity getAllGroups() {
+        return ResponseEntity.ok(groupService.findAllGroup());
     }
 
     @GetMapping("/{group_id}")
@@ -75,9 +71,10 @@ public class GroupController {
     }
 
     @PostMapping("/{group_id}/enroll")
-    public void enrollInGroup(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) {
+    public ResponseEntity enrollInGroup(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) {
         long userId = json.get("userId").asLong();
         groupService.enrollInGroup(groupId, userId);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{group_id}/user/{user_id}")

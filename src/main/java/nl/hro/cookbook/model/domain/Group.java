@@ -33,7 +33,7 @@ public class Group {
     public enum GroupPrivacy {
         PRIVATE,
         INVITE,
-        OPEN;
+        OPEN
     }
     private GroupPrivacy groupPrivacy;
 
@@ -55,16 +55,4 @@ public class Group {
 
     @Embedded
     Image image;
-
-    @Override
-    public String toString() {
-        return "Group{" +
-                "id=" + id +
-                ", groupName='" + groupName + '\'' +
-                ", description='" + description + '\'' +
-                ", userId=" + userId +
-                ", image=" + image +
-                '}';
-    }
-
 }
