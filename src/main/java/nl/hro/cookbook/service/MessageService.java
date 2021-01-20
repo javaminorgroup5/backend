@@ -28,4 +28,9 @@ public class MessageService {
          return messageRepository.findMessagesByGroupId(id);
     }
 
+    @Transactional
+    public Optional<List<Message>> findMessagesByUserId(long id) {
+        return messageRepository.findMessagesByUserId(id);
+    }
+
 }
