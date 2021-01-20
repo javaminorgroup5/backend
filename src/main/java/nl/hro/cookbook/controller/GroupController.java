@@ -2,10 +2,7 @@ package nl.hro.cookbook.controller;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
-import nl.hro.cookbook.model.domain.Group;
-import nl.hro.cookbook.model.domain.Image;
-import nl.hro.cookbook.model.domain.Message;
-import nl.hro.cookbook.model.domain.User;
+import nl.hro.cookbook.model.domain.*;
 import nl.hro.cookbook.model.dto.GroupDTO;
 import nl.hro.cookbook.model.mapper.GroupMapper;
 import nl.hro.cookbook.service.CommonService;
@@ -17,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,7 +38,7 @@ public class GroupController {
     }
 
     @GetMapping("/{group_id}")
-    public ResponseEntity getGroupById(@PathVariable("group_id") final long groupId) {
+    public ResponseEntity getGroupById(@PathVariable("group_id") final long groupId) throws Exception {
         Group group = groupService.findGroupById(groupId);
         if (group != null) {
             group.getImage().setPicByte(commonService.decompressBytes(group.getImage().getPicByte()));
@@ -68,20 +66,20 @@ public class GroupController {
     }
 
     @PostMapping("/{group_id}/join")
-    public void joinGroup(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) {
+    public void joinGroup(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) throws Exception {
         long userId = json.get("userId").asLong();
         groupService.joinGroup(groupId, userId, json.get("inviteToken").asText());
         groupService.saveInviteSuccesMessageToFeed(groupId, userId);
     }
 
     @PostMapping("/{group_id}/enroll")
-    public void enrollInGroup(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) {
+    public void enrollInGroup(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) throws Exception {
         long userId = json.get("userId").asLong();
         groupService.enrollInGroup(groupId, userId);
     }
 
     @GetMapping("/{group_id}/user/{user_id}")
-    public ResponseEntity getGroup(@PathVariable("group_id") final long groupId, @PathVariable("user_id") final long userId) {
+    public ResponseEntity getGroup(@PathVariable("group_id") final long groupId, @PathVariable("user_id") final long userId) throws Exception {
         User user = userService.findUserById(userId);
         GroupDTO group = groupMapper.toDTO(groupService.findGroupById(groupId));
         if (user.getId() == group.getUserId()) {
@@ -91,7 +89,7 @@ public class GroupController {
     }
 
     @GetMapping("/{group_id}/enrolled")
-    public ResponseEntity getEnrolledUsersForGroup(@PathVariable("group_id") final long groupId) {
+    public ResponseEntity getEnrolledUsersForGroup(@PathVariable("group_id") final long groupId) throws Exception {
         List<String> enrolledUsersForGroup = groupService.findEnrolledUsersForGroup(groupId);
         if (enrolledUsersForGroup.isEmpty()) {
             return ResponseEntity.badRequest().body(HttpStatus.NOT_FOUND);
@@ -119,7 +117,7 @@ public class GroupController {
     public void updateGroup(@PathVariable("group_id") final long groupId,
                              @PathVariable("user_id") final long userId,
                              @RequestPart(value = "group", required = false) GroupDTO groupDTO,
-                             @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+                             @RequestPart(value = "file", required = false) MultipartFile file) throws Exception {
         userService.findUserById(userId);
         Group group = null;
         if(groupDTO != null) {

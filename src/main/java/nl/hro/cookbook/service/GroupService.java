@@ -26,14 +26,21 @@ public class GroupService {
     private final TestDataService testDataService;
     private final MessageRepository messageRepository;
     private final MessageService messageService;
+    private final CategoryService categoryService;
 
     public List<Group> findAllGroup() {
         return groupRepository.findAll();
     }
 
-    public Group findGroupById(final long groupId) {
-        return groupRepository.findById(groupId)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("No group exists for id: %d", groupId), Group.class));
+    @Transactional
+    public Group findGroupById(final long groupId) throws Exception {
+        Optional<Group> groupFound = groupRepository.findById(groupId);
+
+        if (groupFound.isEmpty()) {
+            throw new Exception("Group not found");
+        } else {
+            return groupFound.get();
+        }
     }
 
     @Transactional
@@ -56,7 +63,7 @@ public class GroupService {
         }
     }
 
-    public List<String> findEnrolledUsersForGroup(long groupId) {
+    public List<String> findEnrolledUsersForGroup(long groupId) throws Exception {
         List<String> userIDs = new ArrayList<>();
         Group group = findGroupById(groupId);
         for (User user : group.getEnrolledUsers()) {
@@ -77,7 +84,7 @@ public class GroupService {
     }
 
     @Transactional
-    public void joinGroup(final long groupId, long userId, String inviteToken) {
+    public void joinGroup(final long groupId, long userId, String inviteToken) throws Exception {
         final User user = userService.findUserById(userId);
         Group group = findGroupById(groupId);
         List<Invite> invites = group.getInvites();
@@ -93,7 +100,7 @@ public class GroupService {
     }
 
     @Transactional
-    public void enrollInGroup(final long groupId, long userId) {
+    public void enrollInGroup(final long groupId, long userId) throws Exception {
         final User user = userService.findUserById(userId);
         Group group = findGroupById(groupId);
         List<User> users = group.getEnrolledUsers();
@@ -113,7 +120,7 @@ public class GroupService {
     }
 
     @Transactional()
-    public void updateGroup(final long groupId, final Group updateGroup) {
+    public void updateGroup(final long groupId, final Group updateGroup) throws Exception {
         Group group = findGroupById(groupId);
         if (group == null || updateGroup == null) {
             return;
@@ -159,7 +166,7 @@ public class GroupService {
     }
 
     @Transactional
-    public void saveMessageToGroup(User user, Long groupId, Recipe recipe, Image recipeImage) {
+    public void saveMessageToGroup(User user, Long groupId, Recipe recipe, Image recipeImage) throws Exception {
         Group group = this.findGroupById(groupId);
         Message message = new Message();
         message.setGroupId(group.getId());
@@ -174,7 +181,7 @@ public class GroupService {
     }
 
     @Transactional
-    public void saveInviteSuccesMessageToFeed(long groupId, long userId) {
+    public void saveInviteSuccesMessageToFeed(long groupId, long userId) throws Exception {
         Group group = this.findGroupById(groupId);
         User user = userService.findUserById(userId);
         Message message = new Message();

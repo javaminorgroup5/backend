@@ -58,7 +58,7 @@ public class RecipeController {
     @PostMapping(value = "/create/{user_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity createRecipe(@PathVariable("user_id") final long userId,
                                        @RequestPart("recipe") RecipeDto recipeDTO,
-                                       @RequestPart("file") MultipartFile file) throws IOException {
+                                       @RequestPart("file") MultipartFile file) throws Exception {
         User user = userService.findUserById(userId);
         Optional<List<Group>> groups = groupService.findGroupsByUserId(userId);
         Recipe recipe = recipeMapper.toModel(recipeDTO);

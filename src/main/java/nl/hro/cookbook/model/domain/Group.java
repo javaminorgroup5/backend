@@ -1,5 +1,6 @@
 package nl.hro.cookbook.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -29,6 +30,11 @@ public class Group {
     private String description;
 
     private Long userId;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn
+    private Category category;
 
     public enum GroupPrivacy {
         PRIVATE,
