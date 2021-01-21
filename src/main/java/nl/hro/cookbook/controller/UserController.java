@@ -1,9 +1,7 @@
 package nl.hro.cookbook.controller;
 
 import lombok.RequiredArgsConstructor;
-import nl.hro.cookbook.model.domain.Image;
-import nl.hro.cookbook.model.domain.Profile;
-import nl.hro.cookbook.model.domain.User;
+import nl.hro.cookbook.model.domain.*;
 import nl.hro.cookbook.service.CommonService;
 import nl.hro.cookbook.service.UserService;
 import nl.hro.cookbook.model.mapper.UserMapper;
@@ -87,6 +85,22 @@ public class UserController {
             return ResponseEntity.badRequest().body(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(enrolledGroupsForUser);
+    }
+
+    /**
+     * Get all messages for the feed with the gives userId;
+     *
+     * @param userId
+     * @return
+     */
+    @GetMapping("/{user_id}/feed")
+    public ResponseEntity getFeedForUser(@PathVariable("user_id") final long userId) {
+        List<Message> feedByUserId = userService.findFeedByUserId(userId);
+        if (feedByUserId.isEmpty()) {
+            return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
+        }
+        feedByUserId.forEach(message -> message.getImage().setPicByte(commonService.decompressBytes(message.getImage().getPicByte())));
+        return ResponseEntity.ok(feedByUserId);
     }
 
 }
