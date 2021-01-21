@@ -2,10 +2,7 @@ package nl.hro.cookbook.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nl.hro.cookbook.model.domain.Group;
-import nl.hro.cookbook.model.domain.Image;
-import nl.hro.cookbook.model.domain.Profile;
-import nl.hro.cookbook.model.domain.User;
+import nl.hro.cookbook.model.domain.*;
 import nl.hro.cookbook.model.exception.ResourceNotFoundException;
 import nl.hro.cookbook.repository.RecipeRepository;
 import nl.hro.cookbook.repository.UserRepository;
@@ -15,13 +12,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import nl.hro.cookbook.repository.MessageRepository;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -33,6 +28,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final RecipeRepository recipeRepository;
     private final TestDataService testDataService;
+    private final MessageRepository messageRepository;
+    private final MessageService messageService;
 
     public Collection<User> findAllUsers() {
         return userRepository.findAll();
@@ -52,6 +49,19 @@ public class UserService {
         } else {
             throw new IOException("Invalid email address");
         }
+    }
+
+    @Transactional
+    public List<Message> findFeedByUserId(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Optional<List<Message>> messagesByUserId = messageService.findMessagesByUserId(id);
+        if (messagesByUserId.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return messagesByUserId.get();
     }
 
     public Optional<User> findUserByUsername(String username) {

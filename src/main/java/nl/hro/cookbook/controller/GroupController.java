@@ -37,6 +37,12 @@ public class GroupController {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Get group by id.
+     *
+     * @param groupId
+     * @return
+     */
     @GetMapping("/{group_id}")
     public ResponseEntity getGroupById(@PathVariable("group_id") final long groupId) throws Exception {
         Group group = groupService.findGroupById(groupId);
@@ -47,6 +53,15 @@ public class GroupController {
         return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
     }
 
+    /**
+     * Create a group.
+     *
+     * @param userId
+     * @param group
+     * @param file
+     * @return
+     * @throws IOException
+     */
     @PostMapping(value = "/create/{user_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity createGroup(@PathVariable("user_id") final long userId,
                                       @RequestPart Group group,
@@ -60,6 +75,14 @@ public class GroupController {
         return ResponseEntity.ok(group.getId());
     }
 
+    /**
+     * Generate de invite link for a group, so they can join the group.
+     *
+     * @param groupId
+     * @param json
+     * @return
+     * @throws Exception
+     */
     @PostMapping("/{group_id}/generate_invite")
     public ResponseEntity generateInvite(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) throws Exception {
         return ResponseEntity.ok(groupService.generateInvite(groupId, json.get("userId").asLong()));
@@ -72,12 +95,25 @@ public class GroupController {
         groupService.saveInviteSuccesMessageToFeed(groupId, userId);
     }
 
+    /**
+     *
+     *
+     * @param groupId
+     * @param json
+     */
     @PostMapping("/{group_id}/enroll")
     public void enrollInGroup(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) throws Exception {
         long userId = json.get("userId").asLong();
         groupService.enrollInGroup(groupId, userId);
     }
 
+    /**
+     * Get a single group by id.
+     *
+     * @param groupId
+     * @param userId
+     * @return
+     */
     @GetMapping("/{group_id}/user/{user_id}")
     public ResponseEntity getGroup(@PathVariable("group_id") final long groupId, @PathVariable("user_id") final long userId) throws Exception {
         User user = userService.findUserById(userId);
@@ -97,12 +133,25 @@ public class GroupController {
         return ResponseEntity.ok(enrolledUsersForGroup);
     }
 
+    /**
+     * Add a message in the feed for the group.
+     *
+     * @param groupId
+     * @param message
+     * @return
+     */
     @PostMapping("/{group_id}/feed")
     public ResponseEntity addTMessageGroupFeed(@PathVariable("group_id") final long groupId, @RequestBody Message message) {
         groupService.addMessageToFeed(groupId, message);
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Get all messages for the feed from the group.
+     *
+     * @param groupId
+     * @return
+     */
     @GetMapping("/{group_id}/feed")
     public ResponseEntity getFeedForGroup(@PathVariable("group_id") final long groupId) {
         List<Message> feedByGroupId = groupService.findFeedByGroupId(groupId);
@@ -113,6 +162,15 @@ public class GroupController {
         return ResponseEntity.ok(feedByGroupId);
     }
 
+    /**
+     * Update the group.
+     *
+     * @param groupId
+     * @param userId
+     * @param groupDTO
+     * @param file
+     * @throws IOException
+     */
     @PutMapping(value = "/{group_id}/user/{user_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void updateGroup(@PathVariable("group_id") final long groupId,
                              @PathVariable("user_id") final long userId,
@@ -124,6 +182,7 @@ public class GroupController {
             group = groupMapper.toModel(groupDTO);
         }
 
+        // Setup the file, so we can update the file in the group.
         if (file != null && group != null) {
             Image groupImage = new Image(
                     file.getOriginalFilename(),
@@ -133,9 +192,16 @@ public class GroupController {
             group.setImage(groupImage);
         }
 
+        // Update the group by groupId with the new values;
         groupService.updateGroup(groupId, group);
     }
 
+    /**
+     * Delete a group.
+     *
+     * @param groupId
+     * @param userId
+     */
     @DeleteMapping("/{group_id}/{user_id}")
     public void deleteGroup(@PathVariable("group_id") final long groupId, @PathVariable("user_id") final long userId) {
         groupService.deleteById(groupId, userId);
