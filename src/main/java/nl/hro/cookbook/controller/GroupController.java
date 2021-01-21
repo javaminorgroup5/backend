@@ -42,7 +42,7 @@ public class GroupController {
         Group group = groupService.findGroupById(groupId);
         if (group != null) {
             group.getImage().setPicByte(commonService.decompressBytes(group.getImage().getPicByte()));
-            return ResponseEntity.ok(group);
+            return ResponseEntity.ok(groupMapper.toDTO(group));
         }
         return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
     }
