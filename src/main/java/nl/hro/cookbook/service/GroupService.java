@@ -8,7 +8,6 @@ import nl.hro.cookbook.model.exception.ResourceNotFoundException;
 import nl.hro.cookbook.repository.GroupRepository;
 import nl.hro.cookbook.repository.InviteRepository;
 import nl.hro.cookbook.repository.MessageRepository;
-import nl.hro.cookbook.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
@@ -27,14 +26,11 @@ public class GroupService {
     private final TestDataService testDataService;
     private final MessageRepository messageRepository;
     private final MessageService messageService;
-    private final UserRepository userRepository;
 
-    @Transactional
     public List<Group> findAllGroup() {
         return groupRepository.findAll();
     }
 
-    @Transactional
     public Group findGroupById(final long groupId) {
         return groupRepository.findById(groupId)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("No group exists for id: %d", groupId), Group.class));
@@ -60,7 +56,6 @@ public class GroupService {
         }
     }
 
-    @Transactional
     public List<String> findEnrolledUsersForGroup(long groupId) {
         List<String> userIDs = new ArrayList<>();
         Group group = findGroupById(groupId);
@@ -99,12 +94,10 @@ public class GroupService {
 
     @Transactional
     public void enrollInGroup(final long groupId, long userId) {
-        User user = userService.findUserById(userId);
+        final User user = userService.findUserById(userId);
         Group group = findGroupById(groupId);
         List<User> users = group.getEnrolledUsers();
         users.add(user);
-        user.getEnrolledGroups().add(group);
-        userRepository.save(user);
         group.setEnrolledUsers(users);
         groupRepository.save(group);
     }
@@ -125,7 +118,7 @@ public class GroupService {
         if (group == null || updateGroup == null) {
             return;
         }
-        if (updateGroup.getGroupPrivacy() != null) {
+        if (updateGroup.getGroupPrivacy() != null && !updateGroup.getGroupPrivacy().equals(null)) {
             group.setGroupPrivacy(updateGroup.getGroupPrivacy());
         }
         if (updateGroup.getGroupName() != null && !updateGroup.getGroupName().isEmpty()) {

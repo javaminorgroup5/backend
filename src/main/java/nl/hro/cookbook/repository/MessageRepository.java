@@ -10,4 +10,5 @@ import java.util.Optional;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
     Optional<List<Message>> findMessagesByGroupId(Long groupId);
+    Optional<List<Message>> findMessagesByUserId(Long groupId);
 }
