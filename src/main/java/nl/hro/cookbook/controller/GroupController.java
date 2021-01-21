@@ -31,12 +31,12 @@ public class GroupController {
     private final CommonService commonService;
 
     @GetMapping()
-    public ResponseEntity getAllGroups() {
+    public ResponseEntity<?> getAllGroups() {
         return ResponseEntity.ok(groupService.findAllGroup());
     }
 
     @GetMapping("/{group_id}")
-    public ResponseEntity getGroupById(@PathVariable("group_id") final long groupId) {
+    public ResponseEntity<?> getGroupById(@PathVariable("group_id") final long groupId) {
         Group group = groupService.findGroupById(groupId);
         if (group != null) {
             group.getImage().setPicByte(commonService.decompressBytes(group.getImage().getPicByte()));
@@ -46,7 +46,7 @@ public class GroupController {
     }
 
     @PostMapping(value = "/create/{user_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity createGroup(@PathVariable("user_id") final long userId,
+    public ResponseEntity<?> createGroup(@PathVariable("user_id") final long userId,
                                       @RequestPart Group group,
                                       @RequestPart("file") MultipartFile file) throws IOException {
         Image image = new Image(file.getOriginalFilename(), file.getName(),
@@ -59,7 +59,7 @@ public class GroupController {
     }
 
     @PostMapping("/{group_id}/generate_invite")
-    public ResponseEntity generateInvite(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) throws Exception {
+    public ResponseEntity<?> generateInvite(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) throws Exception {
         return ResponseEntity.ok(groupService.generateInvite(groupId, json.get("userId").asLong()));
     }
 //TO-DO: Word deze ergens voor gebruikt?
@@ -71,14 +71,14 @@ public class GroupController {
     }
 
     @PostMapping("/{group_id}/enroll")
-    public ResponseEntity enrollInGroup(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) {
+    public ResponseEntity<?> enrollInGroup(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) {
         long userId = json.get("userId").asLong();
         groupService.enrollInGroup(groupId, userId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{group_id}/user/{user_id}")
-    public ResponseEntity getGroup(@PathVariable("group_id") final long groupId, @PathVariable("user_id") final long userId) {
+    public ResponseEntity<?> getGroup(@PathVariable("group_id") final long groupId, @PathVariable("user_id") final long userId) {
         User user = userService.findUserById(userId);
         GroupDTO group = groupMapper.toDTO(groupService.findGroupById(groupId));
         if (user.getId() == group.getUserId()) {
@@ -88,7 +88,7 @@ public class GroupController {
     }
 
     @GetMapping("/{group_id}/enrolled")
-    public ResponseEntity getEnrolledUsersForGroup(@PathVariable("group_id") final long groupId) {
+    public ResponseEntity<?> getEnrolledUsersForGroup(@PathVariable("group_id") final long groupId) {
         List<String> enrolledUsersForGroup = groupService.findEnrolledUsersForGroup(groupId);
         if (enrolledUsersForGroup.isEmpty()) {
             return ResponseEntity.badRequest().body(HttpStatus.NOT_FOUND);
@@ -97,13 +97,13 @@ public class GroupController {
     }
 
     @PostMapping("/{group_id}/feed")
-    public ResponseEntity addTMessageGroupFeed(@PathVariable("group_id") final long groupId, @RequestBody Message message) {
+    public ResponseEntity<?> addTMessageGroupFeed(@PathVariable("group_id") final long groupId, @RequestBody Message message) {
         groupService.addMessageToFeed(groupId, message);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{group_id}/feed")
-    public ResponseEntity getFeedForGroup(@PathVariable("group_id") final long groupId) {
+    public ResponseEntity<?> getFeedForGroup(@PathVariable("group_id") final long groupId) {
         List<Message> feedByGroupId = groupService.findFeedByGroupId(groupId);
         if (feedByGroupId.isEmpty()) {
             return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);

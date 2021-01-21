@@ -17,7 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,7 +60,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/profile")
-    public ResponseEntity getProfile(@PathVariable("id") final long id) {
+    public ResponseEntity<?> getProfile(@PathVariable("id") final long id) {
         User user = userService.findUserById(id);
         Profile profile = user.getProfile();
         if (profile != null && profile.getImage() != null) {
@@ -81,10 +83,10 @@ public class UserController {
     }
 
     @GetMapping("/{id}/enrolled")
-    public ResponseEntity getEnrolledGroupsForUser(@PathVariable("id") final long id) {
+    public ResponseEntity<?> getEnrolledGroupsForUser(@PathVariable("id") final long id) {
         List<String> enrolledGroupsForUser = userService.findEnrolledGroupsForUser(id);
         if (enrolledGroupsForUser.isEmpty()) {
-            return ResponseEntity.badRequest().body(HttpStatus.NOT_FOUND);
+            return ResponseEntity.ok(Collections.EMPTY_LIST);
         }
         return ResponseEntity.ok(enrolledGroupsForUser);
     }
