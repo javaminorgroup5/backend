@@ -10,6 +10,8 @@ import java.util.Optional;
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     Optional<List<Recipe>> findRecipesByUserId(Long userId);
+    Optional<List<Recipe>> findRecipesByUserIdAndTitleContainingIgnoreCase(Long userId, String prefix);
     Optional<List<Recipe>> findRecipesByGroupId(Long groupId);
+    Optional<List<Recipe>> findRecipesByGroupIdAndTitleContainingIgnoreCase(Long groupId, String prefix);
     Optional<Recipe> findRecipeById(Long recipeId);
 }

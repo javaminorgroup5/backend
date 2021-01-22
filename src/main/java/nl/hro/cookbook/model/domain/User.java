@@ -1,5 +1,6 @@
 package nl.hro.cookbook.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -36,6 +37,7 @@ public class User {
     @Embedded
     private Profile profile;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "enrolledUsers")
     List<Group> enrolledGroups;
 }
