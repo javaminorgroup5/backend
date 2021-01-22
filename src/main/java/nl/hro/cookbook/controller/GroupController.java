@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import nl.hro.cookbook.model.domain.*;
 import nl.hro.cookbook.model.dto.GroupDTO;
 import nl.hro.cookbook.model.mapper.GroupMapper;
+import nl.hro.cookbook.service.CategoryService;
 import nl.hro.cookbook.service.CommonService;
 import nl.hro.cookbook.service.GroupService;
 import nl.hro.cookbook.service.UserService;
@@ -29,6 +30,7 @@ public class GroupController {
     private final UserService userService;
     private final GroupMapper groupMapper;
     private final CommonService commonService;
+    private final CategoryService categoryService;
 
     @GetMapping()
     public Collection<GroupDTO> getAllGroups() {
@@ -65,10 +67,13 @@ public class GroupController {
     @PostMapping(value = "/create/{user_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity createGroup(@PathVariable("user_id") final long userId,
                                       @RequestPart Group group,
+                                      @RequestPart("groupCategoryId") Long categoryId,
                                       @RequestPart("file") MultipartFile file) throws IOException {
         Image image = new Image(file.getOriginalFilename(), file.getName(),
                 commonService.compressBytes(file.getBytes()));
         User user = userService.findUserById(userId);
+        Category category = categoryService.findCategoryById(categoryId);
+        group.setCategory(category);
         group.setUserId(user.getId());
         group.setImage(image);
         groupService.createGroup(group);
