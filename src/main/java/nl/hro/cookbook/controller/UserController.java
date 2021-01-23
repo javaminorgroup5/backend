@@ -96,13 +96,16 @@ public class UserController {
      * @return
      */
     @GetMapping("/{user_id}/feed")
-    public ResponseEntity getFeedForUser(@PathVariable("user_id") final long userId) {
+    public ResponseEntity<?> getFeedForUser(@PathVariable("user_id") final long userId) {
         List<Message> feedByUserId = userService.findFeedByUserId(userId);
         if (feedByUserId.isEmpty()) {
-            return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok(Collections.emptyList());
         }
-        feedByUserId.forEach(message -> message.getImage().setPicByte(commonService.decompressBytes(message.getImage().getPicByte())));
+        feedByUserId.forEach(message -> {
+            if (message.getImage() != null) {
+                message.getImage().setPicByte(commonService.decompressBytes(message.getImage().getPicByte()));
+            }
+        });
         return ResponseEntity.ok(feedByUserId);
     }
-
 }
