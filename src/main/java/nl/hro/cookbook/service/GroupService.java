@@ -72,13 +72,13 @@ public class GroupService {
 
     @Transactional
     public List<String> findEnrolledUsersForGroup(long groupId) {
-        List<String> userIDs = new ArrayList<>();
+        List<String> userProfileNames = new ArrayList<>();
         Group group = findGroupById(groupId);
         for (User user : group.getEnrolledUsers()) {
-            long userID = user.getId();
-            userIDs.add(Long.toString(userID));
+            String userProfileName = user.getProfile().getProfileName();
+            userProfileNames.add(userProfileName);
         }
-        return userIDs;
+        return userProfileNames;
     }
 
     /**
