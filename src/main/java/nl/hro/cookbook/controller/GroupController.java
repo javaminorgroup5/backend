@@ -114,7 +114,6 @@ public class GroupController {
                 group.getGroupName(), groupId, invite.getToken());
         message.setMessage(m);
         messageService.saveMessage(message);
-        System.out.println(invite);
         return ResponseEntity.ok(invite);
     }
 

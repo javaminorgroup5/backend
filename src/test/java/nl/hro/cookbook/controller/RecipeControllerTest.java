@@ -78,7 +78,6 @@ class RecipeControllerTest {
         HttpEntity<MultiValueMap<String, Object>> request1 =
                 new HttpEntity<>(body,  headers);
         uri = new URI("http://localhost:" + port + "/recipe/create/" + idResponse.getBody());
-        System.out.println(uri);
         ResponseEntity<?> response1 = restTemplate
                 .withBasicAuth("test1@email.com", "test")
                 .postForEntity(uri, request1, Void.class);
