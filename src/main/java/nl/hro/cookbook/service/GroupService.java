@@ -43,7 +43,6 @@ public class GroupService {
         }
     }
 
-
     @Transactional
     public Invite generateInvite(final long groupId, long userId) throws Exception {
         Group group = groupRepository.findById(groupId).orElseThrow(() -> new ResourceNotFoundException(String.format("No group exists for id: %d", groupId), Group.class));
@@ -74,12 +73,6 @@ public class GroupService {
         return userIDs;
     }
 
-    /**
-     * Delete a group by the given id;
-     *
-     * @param id
-     * @param userId
-     */
     @Transactional
     public void deleteById(Long id, long userId) {
         Optional<Group> group = groupRepository.findById(id);

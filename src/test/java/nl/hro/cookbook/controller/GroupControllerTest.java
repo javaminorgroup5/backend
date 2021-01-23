@@ -72,7 +72,7 @@ class GroupControllerTest {
         HttpEntity<MultiValueMap<String, Object>> request =
                 new HttpEntity<>(body,  headers);
         URI uri = new URI("http://localhost:" + port + "/users/create");
-        ResponseEntity response = restTemplate.postForEntity(uri, request, Void.class);
+        ResponseEntity<?> response = restTemplate.postForEntity(uri, request, Void.class);
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
         uri = new URI("http://localhost:" + port + "/users/login");
@@ -90,7 +90,7 @@ class GroupControllerTest {
         HttpEntity<MultiValueMap<String, Object>> request1 =
                 new HttpEntity<>(body,  headers);
         URI uri1 = new URI("http://localhost:" + port + "/group/create/" + 4);
-        ResponseEntity response1 = restTemplate
+        ResponseEntity<?> response1 = restTemplate
                 .withBasicAuth("test1@email.com", "test")
                 .postForEntity(uri1, request1, Void.class);
         assertThat(response1.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
@@ -110,7 +110,7 @@ class GroupControllerTest {
         HttpEntity<MultiValueMap<String, Object>> request =
                 new HttpEntity<>(body,  headers);
         URI uri = new URI("http://localhost:" + port + "/users/create");
-        ResponseEntity response = restTemplate
+        ResponseEntity<?> response = restTemplate
                 .postForEntity(uri, request, Void.class);
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
@@ -129,7 +129,7 @@ class GroupControllerTest {
         HttpEntity<MultiValueMap<String, Object>> request1 =
                 new HttpEntity<>(body,  headers);
         URI uri1 = new URI("http://localhost:" + port + "/group/create/" + 4);
-        ResponseEntity response1 = restTemplate
+        ResponseEntity<?> response1 = restTemplate
                 .withBasicAuth("test2@email.com", "test")
                 .postForEntity(uri1, request1, Void.class);
         assertThat(response1.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
@@ -139,7 +139,7 @@ class GroupControllerTest {
         HttpEntity<Message> request2 =
                 new HttpEntity<>(messages.get(0),  headers);
         URI uri2 = new URI("http://localhost:" + port + "/group/"+ groups.get(0).getId() + "/feed");
-        ResponseEntity response2 = restTemplate
+        ResponseEntity<?> response2 = restTemplate
                 .withBasicAuth("test2@email.com", "test")
                 .postForEntity(uri2, request2, Void.class);
         assertThat(response2.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
@@ -147,7 +147,7 @@ class GroupControllerTest {
         HttpEntity<Message> request3 =
                 new HttpEntity<>(messages.get(1),  headers);
         URI uri3 = new URI("http://localhost:" + port + "/group/"+ groups.get(0).getId() + "/feed");
-        ResponseEntity response3 = restTemplate
+        ResponseEntity<?> response3 = restTemplate
                 .withBasicAuth("test2@email.com", "test")
                 .postForEntity(uri3, request3, Void.class);
         assertThat(response3.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
@@ -155,7 +155,7 @@ class GroupControllerTest {
         HttpEntity<Message> request4 =
                 new HttpEntity<>(messages.get(2),  headers);
         URI uri4 = new URI("http://localhost:" + port + "/group/"+ groups.get(0).getId() + "/feed");
-        ResponseEntity response4 = restTemplate
+        ResponseEntity<?> response4 = restTemplate
                 .withBasicAuth("test2@email.com", "test")
                 .postForEntity(uri4, request4, Void.class);
         assertThat(response4.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
@@ -165,7 +165,7 @@ class GroupControllerTest {
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Basic " + base64Creds);
-        HttpEntity request5 = new HttpEntity(headers);
+        HttpEntity<?> request5 = new HttpEntity<>(headers);
         uri = new URI("http://localhost:" + port + "/group/"+ groups.get(0).getId() + "/feed");
         ResponseEntity<List<Message>> feedResponse = restTemplate
                 .exchange(uri, HttpMethod.GET, request5,  new ParameterizedTypeReference<List<Message>>() {});
