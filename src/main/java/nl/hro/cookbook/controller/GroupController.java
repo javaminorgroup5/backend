@@ -3,11 +3,17 @@ package nl.hro.cookbook.controller;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import nl.hro.cookbook.model.domain.*;
+import nl.hro.cookbook.model.domain.Group;
+import nl.hro.cookbook.model.domain.Image;
+import nl.hro.cookbook.model.domain.Invite;
+import nl.hro.cookbook.model.domain.Message;
+import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.dto.GroupDTO;
 import nl.hro.cookbook.model.mapper.GroupMapper;
 import nl.hro.cookbook.service.CategoryService;
 import nl.hro.cookbook.service.CommonService;
 import nl.hro.cookbook.service.GroupService;
+import nl.hro.cookbook.service.MessageService;
 import nl.hro.cookbook.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,8 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -29,6 +33,7 @@ public class GroupController {
     private final UserService userService;
     private final GroupMapper groupMapper;
     private final CommonService commonService;
+    private final MessageService messageService;
     private final CategoryService categoryService;
 
     @GetMapping()
@@ -89,6 +94,27 @@ public class GroupController {
     public ResponseEntity<?> generateInvite(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) throws Exception {
         return ResponseEntity.ok(groupService.generateInvite(groupId, json.get("userId").asLong()));
     }
+
+    /**
+     *
+     * @param groupId
+     * @param json
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/{group_id}/generate_feed_invite/{invited_user_id}")
+    public ResponseEntity<?> generateFeedInvite(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json, @PathVariable("invited_user_id") final long invitedUserIsd) throws Exception {
+        Invite invite = groupService.generateInvite(groupId, json.get("userId").asLong());
+        Group group = groupService.findGroupById(groupId);
+        Message message = new Message();
+        message.setUserId(invitedUserIsd);
+        String m = String.format("Je bent uitgenodigd voor de groep %s gebruik de volgende link om de groep te betreden http://localhost:4200/group/%s?inviteToken=%s",
+                group.getGroupName(), groupId, invite.getToken());
+        message.setMessage(m);
+        messageService.saveMessage(message);
+        return ResponseEntity.ok(invite);
+    }
+
 //TO-DO: Word deze ergens voor gebruikt?
     @PostMapping("/{group_id}/join")
     public void joinGroup(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) throws Exception {
@@ -129,7 +155,6 @@ public class GroupController {
 
     @GetMapping("/{group_id}/enrolled")
     public ResponseEntity<?> getEnrolledUsersForGroup(@PathVariable("group_id") final long groupId) throws Exception {
-
         List<String> enrolledUsersForGroup = groupService.findEnrolledUsersForGroup(groupId);
         if (enrolledUsersForGroup.isEmpty()) {
             return ResponseEntity.badRequest().body(HttpStatus.NOT_FOUND);

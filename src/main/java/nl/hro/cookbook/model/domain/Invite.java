@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Table(name = "invites")
 @Getter
 @Setter
+@ToString
 public class Invite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

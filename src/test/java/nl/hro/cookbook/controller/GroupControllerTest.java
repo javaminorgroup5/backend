@@ -87,6 +87,7 @@ class GroupControllerTest {
         body = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
         body.add("group", groups.get(0));
+        body.add("groupCategoryId", 1);
         HttpEntity<MultiValueMap<String, Object>> request1 =
                 new HttpEntity<>(body,  headers);
         URI uri1 = new URI("http://localhost:" + port + "/group/create/" + 4);
@@ -126,6 +127,7 @@ class GroupControllerTest {
         body = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
         body.add("group", groups.get(0));
+        body.add("groupCategoryId", 1);
         HttpEntity<MultiValueMap<String, Object>> request1 =
                 new HttpEntity<>(body,  headers);
         URI uri1 = new URI("http://localhost:" + port + "/group/create/" + 4);
