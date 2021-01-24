@@ -50,7 +50,7 @@ class UserServiceTest {
     void updateUserProfileTest() throws IOException {
         // Given
         User user = new User();
-        user.setId(1);
+        user.setId(1L);
         user.setEmail("john@test.nl");
         user.setPassword(passwordEncoder.encode("password"));
         Profile profile = new Profile();

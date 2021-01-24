@@ -50,7 +50,7 @@ class LikeControllerTest {
         MultiValueMap<String, Object> body
                 = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
-        User user = new User(12L, "test33@email.com", "test", Role.COMMUNITY_MANAGER,
+        User user = new User( "test33@email.com", "test", Role.COMMUNITY_MANAGER,
                 new Profile("Top Gun", null), new ArrayList<>());
         body.add("user", user);
         HttpEntity<MultiValueMap<String, Object>> request =

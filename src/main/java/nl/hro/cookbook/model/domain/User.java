@@ -13,7 +13,6 @@ import nl.hro.cookbook.security.Role;
 import javax.persistence.*;
 import java.util.List;
 
-@Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,11 +21,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+public class User extends BaseEntity {
 
     private String email;
     private String password;
