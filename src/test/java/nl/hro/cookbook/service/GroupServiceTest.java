@@ -44,10 +44,14 @@ public class GroupServiceTest {
     @BeforeEach
     void setUp() {
         Image image = new Image("group.jpg", "file", new byte[12]);
-        final Group initialGroup1 = new Group(1L, "PastaGroep", "Leuke pasta groep", 1L, null, Group.GroupPrivacy.OPEN,new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
-        final Group initialGroup2 = new Group(2L, "RodeSauzen", "Roder dan rood", 1L, null, Group.GroupPrivacy.OPEN,new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
-        final Group initialGroup3 = new Group(3L, "Bloemkoollovers", "Bloemkool is een groente die hoort bij het geslacht kool uit de kruisbloemenfamilie (Brassicaceae). De botanische naam voor bloemkool is Brassica oleracea convar. ", 2L, null, Group.GroupPrivacy.OPEN,new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
-        final Group initialGroup4 = new Group(4L, "RamsayItes", "Koken net Gordon Ramsay!. ", 3L, null, Group.GroupPrivacy.OPEN,new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
+        final Group initialGroup1 = new Group("PastaGroep", "Leuke pasta groep", 1L, null, Group.GroupPrivacy.OPEN,new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
+        initialGroup1.setId(1L);
+        final Group initialGroup2 = new Group("RodeSauzen", "Roder dan rood", 1L, null, Group.GroupPrivacy.OPEN,new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
+        initialGroup2.setId(2L);
+        final Group initialGroup3 = new Group("Bloemkoollovers", "Bloemkool is een groente die hoort bij het geslacht kool uit de kruisbloemenfamilie (Brassicaceae). De botanische naam voor bloemkool is Brassica oleracea convar. ", 2L, null, Group.GroupPrivacy.OPEN,new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
+        initialGroup3.setId(3L);
+        final Group initialGroup4 = new Group("RamsayItes", "Koken net Gordon Ramsay!. ", 3L, null, Group.GroupPrivacy.OPEN,new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
+        initialGroup4.setId(4L);
         final Message message1 = new Message("This is my first message", 3L, 6L, "Test", 1L, image);
         final Message message2 = new Message("This is my second message", 3L, 6L, "Test", 1L, image);
         final Message message3 = new Message("This is my third message", 3L, 6L, "Test", 1L, image);
@@ -62,7 +66,7 @@ public class GroupServiceTest {
         when(messageService.findMessagesByGroupId(anyLong())).thenReturn(Optional.of(messages));
 
         // When
-        groupServiceTest.addMessageToFeed(groups.get(0).getId(), messages.get(0));
+        groupServiceTest.addMessageToGroupFeed(groups.get(0).getId(), messages.get(0));
 
         // Then
         List<Message> messageList = groupServiceTest.findFeedByGroupId(1L);

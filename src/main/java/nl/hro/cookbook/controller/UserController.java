@@ -50,11 +50,12 @@ public class UserController {
     }
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void createUser(@RequestPart("user") User user, @RequestPart("file") MultipartFile file) throws IOException {
+    public ResponseEntity<?> createUser(@RequestPart("user") User user, @RequestPart("file") MultipartFile file) throws IOException {
         Image profileImage = new Image(file.getOriginalFilename(), file.getName(),
                 commonService.compressBytes(file.getBytes()));
         user.getProfile().setImage(profileImage);
         userService.createUser(user);
+        return ResponseEntity.ok(user.getId());
     }
 
     @GetMapping("/{id}/profile")

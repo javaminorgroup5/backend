@@ -1,11 +1,14 @@
 package nl.hro.cookbook.controller;
 
+import nl.hro.cookbook.model.domain.Group;
+import nl.hro.cookbook.model.domain.Image;
 import nl.hro.cookbook.model.domain.Profile;
 import nl.hro.cookbook.model.domain.Recipe;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.dto.RecipeDto;
 import nl.hro.cookbook.model.dto.ImageDTO;
 import nl.hro.cookbook.security.Role;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +25,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
@@ -43,6 +47,20 @@ class RecipeControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    private List<Group> groups;
+
+    @BeforeEach
+    void setUp() {
+        Image image = new Image("group.jpg", "file", new byte[12]);
+        final Group initialGroup1 = new Group("PastaGroep", "Leuke pasta groep", 12L, null, Group.GroupPrivacy.INVITE, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
+        initialGroup1.setId(1L);
+        final Group initialGroup2 = new Group("RodeSauzen", "Roder dan rood", 12L, null, Group.GroupPrivacy.INVITE,new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
+        initialGroup2.setId(2L);
+        final Group initialGroup3 = new Group("Bloemkoollovers", "Bloemkool is een groente die hoort bij het geslacht kool uit de kruisbloemenfamilie (Brassicaceae). De botanische naam voor bloemkool is Brassica oleracea convar. ", 12L, null, Group.GroupPrivacy.INVITE,new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
+        initialGroup3.setId(3L);
+        groups = Arrays.asList(initialGroup1, initialGroup2, initialGroup3);
+    }
+
 //    @Test
     void createRecipeResponse() throws Exception {
         // create user
@@ -52,7 +70,7 @@ class RecipeControllerTest {
         MultiValueMap<String, Object> body
                 = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
-        user = new User(12L, "test1@email.com", "test", Role.COMMUNITY_MANAGER,
+        user = new User( "test1@email.com", "test", Role.COMMUNITY_MANAGER,
                 new Profile("Top Gun", null), new ArrayList<>());
         body.add("user", user);
         HttpEntity<MultiValueMap<String, Object>> request =
@@ -92,16 +110,32 @@ class RecipeControllerTest {
         MultiValueMap<String, Object> body
                 = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
-        user = new User(13L, "test4@email.com", "test", Role.COMMUNITY_MANAGER,
+        user = new User("test4@email.com", "test", Role.COMMUNITY_MANAGER,
                 new Profile("Top Gun", null), new ArrayList<>());
         body.add("user", user);
         HttpEntity<MultiValueMap<String, Object>> request =
                 new HttpEntity<>(body,  headers);
         URI uri = new URI("http://localhost:" + port + "/users/create");
-        ResponseEntity<?> response = restTemplate
-                .postForEntity(uri, request, Void.class);
-        assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
+        ResponseEntity<String> userIdResponse = restTemplate
+                .postForEntity(uri, request, String.class);
+        assertThat(userIdResponse.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
         recipe = new RecipeDto(1L, "Test", "test", "Eat it raw!", user.getId(), 1L, new ImageDTO(), new ArrayList<>());
+
+        headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        body = new LinkedMultiValueMap<>();
+        body.add("file", createTempFileResource("test.jpg".getBytes()));
+        body.add("group", groups.get(0));
+        body.add("groupCategoryId", 1);
+        HttpEntity<MultiValueMap<String, Object>> groupRequest =
+                new HttpEntity<>(body,  headers);
+        URI uri1 = new URI("http://localhost:" + port + "/group/create/" + userIdResponse.getBody());
+        ResponseEntity<Long> groupIdResponse = restTemplate
+                .withBasicAuth("test4@email.com", "test")
+                .postForEntity(uri1, groupRequest, Long.class);
+        assertThat(groupIdResponse.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
+        assertThat(groupIdResponse.getBody()).isNotNull();
 
         uri = new URI("http://localhost:" + port + "/users/login");
         ResponseEntity<String> stringResponse = restTemplate
@@ -113,6 +147,7 @@ class RecipeControllerTest {
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         body = new LinkedMultiValueMap<>();
+        recipe.setGroupId(groupIdResponse.getBody());
         body.add("recipe", recipe);
         body.add("file", createTempFileResource("test.jpg".getBytes()));
         HttpEntity<MultiValueMap<String, Object>> request1 =
@@ -159,7 +194,7 @@ class RecipeControllerTest {
         MultiValueMap<String, Object> body
                 = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
-        user = new User(14L, "test5@email.com", "test", Role.COMMUNITY_MANAGER,
+        user = new User("test5@email.com", "test", Role.COMMUNITY_MANAGER,
                 new Profile("Top Gun", null), new ArrayList<>());
         body.add("user", user);
         HttpEntity<MultiValueMap<String, Object>> request =
@@ -168,14 +203,30 @@ class RecipeControllerTest {
         ResponseEntity<?> response = restTemplate
                 .postForEntity(uri, request, Void.class);
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
-        recipe = new RecipeDto(1L, "Test", "test", "Eat it raw!", user.getId(), 1L, new ImageDTO(), new ArrayList<>());
 
         uri = new URI("http://localhost:" + port + "/users/login");
-        ResponseEntity<String> stringResponse = restTemplate
+        ResponseEntity<String> userIdResponse = restTemplate
                 .withBasicAuth("test5@email.com", "test")
                 .getForEntity(uri,  String.class);
-        assertThat(stringResponse.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
+        assertThat(userIdResponse.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
+        headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        body = new LinkedMultiValueMap<>();
+        body.add("file", createTempFileResource("test.jpg".getBytes()));
+        body.add("group", groups.get(0));
+        body.add("groupCategoryId", 1);
+        HttpEntity<MultiValueMap<String, Object>> groupRequest =
+                new HttpEntity<>(body,  headers);
+        URI uri1 = new URI("http://localhost:" + port + "/group/create/" + userIdResponse.getBody());
+        ResponseEntity<Long> groupIdResponse = restTemplate
+                .withBasicAuth("test5@email.com", "test")
+                .postForEntity(uri1, groupRequest, Long.class);
+        assertThat(groupIdResponse.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
+        assertThat(groupIdResponse.getBody()).isNotNull();
+
+        recipe = new RecipeDto(1L, "Test", "test", "Eat it raw!", user.getId(), groupIdResponse.getBody(), new ImageDTO(), new ArrayList<>());
         headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -185,7 +236,7 @@ class RecipeControllerTest {
         body.add("file", createTempFileResource("test.jpg".getBytes()));
         HttpEntity<MultiValueMap<String, Object>> request1 =
                 new HttpEntity<>(body,  headers);
-        uri = new URI("http://localhost:" + port + "/recipe/create/" + stringResponse.getBody());
+        uri = new URI("http://localhost:" + port + "/recipe/create/" + userIdResponse.getBody());
         ResponseEntity<Long> response1 = restTemplate
                 .withBasicAuth("test5@email.com", "test")
                 .postForEntity(uri, request1, Long.class);
@@ -201,7 +252,7 @@ class RecipeControllerTest {
         body.add("file", createTempFileResource("test.jpg".getBytes()));
         HttpEntity<MultiValueMap<String, Object>> request2 =
                 new HttpEntity<>(body,  headers);
-        uri = new URI("http://localhost:" + port + "/recipe/create/" + stringResponse.getBody());
+        uri = new URI("http://localhost:" + port + "/recipe/create/" + userIdResponse.getBody());
         ResponseEntity<Long> response2 = restTemplate
                 .withBasicAuth("test5@email.com", "test")
                 .postForEntity(uri, request2, Long.class);
@@ -217,7 +268,7 @@ class RecipeControllerTest {
         body.add("file", createTempFileResource("test.jpg".getBytes()));
         HttpEntity<MultiValueMap<String, Object>> request3 =
                 new HttpEntity<>(body,  headers);
-        uri = new URI("http://localhost:" + port + "/recipe/create/" + stringResponse.getBody());
+        uri = new URI("http://localhost:" + port + "/recipe/create/" + userIdResponse.getBody());
         ResponseEntity<Long> response3 = restTemplate
                 .withBasicAuth("test5@email.com", "test")
                 .postForEntity(uri, request3, Long.class);
@@ -233,7 +284,7 @@ class RecipeControllerTest {
         body.add("file", createTempFileResource("test.jpg".getBytes()));
         HttpEntity<MultiValueMap<String, Object>> request4 =
                 new HttpEntity<>(body,  headers);
-        uri = new URI("http://localhost:" + port + "/recipe/create/" + stringResponse.getBody());
+        uri = new URI("http://localhost:" + port + "/recipe/create/" + userIdResponse.getBody());
         ResponseEntity<Long> response4 = restTemplate
                 .withBasicAuth("test5@email.com", "test")
                 .postForEntity(uri, request4, Long.class);
@@ -241,7 +292,7 @@ class RecipeControllerTest {
         assertThat(response4.getBody()).isNotNull();
 
 
-        uri = new URI("http://localhost:" + port + "/recipe/" + response1.getBody() + "/user/" + stringResponse.getBody()+"?q=test");
+        uri = new URI("http://localhost:" + port + "/recipe/" + response1.getBody() + "/user/" + userIdResponse.getBody()+"?q=test");
         ResponseEntity<Recipe> recipeResponse = restTemplate
                 .withBasicAuth("test5@email.com", "test")
                 .getForEntity(uri,  Recipe.class);
@@ -254,7 +305,7 @@ class RecipeControllerTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Basic " + base64Creds);
         HttpEntity<?> request5 = new HttpEntity<>(headers);
-        uri = new URI("http://localhost:" + port + "/recipe/" + stringResponse.getBody());
+        uri = new URI("http://localhost:" + port + "/recipe/" + userIdResponse.getBody());
         ResponseEntity<List<Recipe>> recipesResponse = restTemplate
                 .exchange(uri, HttpMethod.GET, request5,  new ParameterizedTypeReference<List<Recipe>>() {});
         assertThat(recipesResponse.getBody());
@@ -264,7 +315,7 @@ class RecipeControllerTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Basic " + base64Creds);
         HttpEntity<?> request6 = new HttpEntity<>(headers);
-        uri = new URI("http://localhost:" + port + "/recipe/" + stringResponse.getBody() + "?q=first");
+        uri = new URI("http://localhost:" + port + "/recipe/" + userIdResponse.getBody() + "?q=first");
         ResponseEntity<List<Recipe>> recipesResponse1 = restTemplate
                 .exchange(uri, HttpMethod.GET, request6,  new ParameterizedTypeReference<List<Recipe>>() {});
         assertThat(recipesResponse1.getBody());
@@ -274,7 +325,7 @@ class RecipeControllerTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Basic " + base64Creds);
         HttpEntity<?> request7 = new HttpEntity<>(headers);
-        uri = new URI("http://localhost:" + port + "/recipe/" + stringResponse.getBody() + "?q=third");
+        uri = new URI("http://localhost:" + port + "/recipe/" + userIdResponse.getBody() + "?q=third");
         ResponseEntity<List<Recipe>> recipesResponse2 = restTemplate
                 .exchange(uri, HttpMethod.GET, request7,  new ParameterizedTypeReference<List<Recipe>>() {});
         assertThat(recipesResponse2.getBody());
@@ -284,7 +335,7 @@ class RecipeControllerTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Basic " + base64Creds);
         HttpEntity<?> request8 = new HttpEntity<>(headers);
-        uri = new URI("http://localhost:" + port + "/recipe/" + stringResponse.getBody() + "?q=''");
+        uri = new URI("http://localhost:" + port + "/recipe/" + userIdResponse.getBody() + "?q=''");
         ResponseEntity<List<Recipe>> recipesResponse3 = restTemplate
                 .exchange(uri, HttpMethod.GET, request8,  new ParameterizedTypeReference<List<Recipe>>() {});
         assertThat(recipesResponse3.getBody());
@@ -294,7 +345,7 @@ class RecipeControllerTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Basic " + base64Creds);
         HttpEntity<?> request9 = new HttpEntity<>(headers);
-        uri = new URI("http://localhost:" + port + "/recipe/" + stringResponse.getBody() + "?q=");
+        uri = new URI("http://localhost:" + port + "/recipe/" + userIdResponse.getBody() + "?q=");
         ResponseEntity<List<Recipe>> recipesResponse4 = restTemplate
                 .exchange(uri, HttpMethod.GET, request9,  new ParameterizedTypeReference<List<Recipe>>() {});
         assertThat(recipesResponse4.getBody());

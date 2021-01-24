@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -171,8 +172,8 @@ public class GroupController {
      */
     @PostMapping("/{group_id}/feed")
     public ResponseEntity<?> addTMessageGroupFeed(@PathVariable("group_id") final long groupId, @RequestBody Message message) {
-        groupService.addMessageToFeed(groupId, message);
-        return ResponseEntity.ok().build();
+        groupService.addMessageToGroupFeed(groupId, message);
+        return ResponseEntity.ok(message.getId());
     }
 
     /**
@@ -185,9 +186,13 @@ public class GroupController {
     public ResponseEntity<?> getFeedForGroup(@PathVariable("group_id") final long groupId) {
         List<Message> feedByGroupId = groupService.findFeedByGroupId(groupId);
         if (feedByGroupId.isEmpty()) {
-            return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
+            return ResponseEntity.badRequest().body(Collections.emptyList());
         }
-        feedByGroupId.forEach(message -> message.getImage().setPicByte(commonService.decompressBytes(message.getImage().getPicByte())));
+        feedByGroupId.forEach(message -> {
+            if (message.getImage() != null) {
+                message.getImage().setPicByte(commonService.decompressBytes(message.getImage().getPicByte()));
+            }
+        });
         return ResponseEntity.ok(feedByGroupId);
     }
 

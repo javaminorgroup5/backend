@@ -48,7 +48,7 @@ public class GroupService {
         Group group = groupRepository.findById(groupId).orElseThrow(() -> new ResourceNotFoundException(String.format("No group exists for id: %d", groupId), Group.class));
         if (group.getGroupPrivacy().equals(Group.GroupPrivacy.INVITE) || group.getGroupPrivacy().equals(Group.GroupPrivacy.PRIVATE)) {
             if (group.getUserId() == userId) {
-                Invite invite = new Invite(null, RandomString.make(12));
+                Invite invite = new Invite(RandomString.make(12));
                 List<Invite> invites = group.getInvites();
                 invites.add(invite);
                 group.setInvites(invites);
@@ -154,7 +154,7 @@ public class GroupService {
     }
 
     @Transactional
-    public void addMessageToFeed(Long groupId, Message message) {
+    public void addMessageToGroupFeed(Long groupId, Message message) {
         Optional<Group> groupOptional = groupRepository.findById(groupId);
         if (groupOptional.isPresent()) {
             Group group = groupOptional.get();
@@ -166,7 +166,7 @@ public class GroupService {
     }
 
     @Transactional
-    public void saveMessageToGroup(User user, Long groupId, Recipe recipe, Image recipeImage) throws Exception {
+    public void addMessageToGroupFeed(User user, Long groupId, Recipe recipe, Image recipeImage) throws Exception {
         Group group = this.findGroupById(groupId);
         Message message = new Message();
         message.setGroupId(group.getId());
@@ -194,7 +194,6 @@ public class GroupService {
         group.getMessages().add(message);
         groupRepository.save(group);
     }
-
 
     //    This is a pretty hacky way to have a group available on startup.
     //    This is fine for a demo, but don't do this in real code.
