@@ -38,11 +38,6 @@ public class CategoryService {
     }
 
     @Transactional
-    public void deleteCategoryById(long id) {
-        categoryRepository.deleteById(id);
-    }
-
-    @Transactional
     public void updateCategory(final long categoryId, final Category updateCategory) {
         Category category = findCategoryById(categoryId);
         if (category == null || updateCategory == null) {
@@ -54,11 +49,14 @@ public class CategoryService {
         if (updateCategory.getGroups() != null && !updateCategory.getGroups().isEmpty()) {
             category.setGroups(updateCategory.getGroups());
         }
+        if (updateCategory.getActive() != null) {
+            category.setActive(updateCategory.getActive());
+        }
         categoryRepository.save(category);
     }
 
     @PostConstruct
-    public void init() throws IOException {
+    public void init() {
         categoryRepository.saveAll(testDataService.getCategories());
     }
 }

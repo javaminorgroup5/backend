@@ -42,13 +42,21 @@ public class TestDataService {
     }
 
     public List<Category> getCategories() {
-        final Category initialCategory1 = new Category("Italiaanse keuken", new ArrayList<>());
+        final Category initialCategory1 = new Category();
+        initialCategory1.setCategoryName("Italiaanse keuken");
+        initialCategory1.setGroups(new ArrayList<>());
         initialCategory1.setId(1L);
-        final Category initialCategory2 = new Category("Marokkaanse keuken", new ArrayList<>());
+        final Category initialCategory2 = new Category();
+        initialCategory2.setCategoryName("Marokkaanse keuken");
+        initialCategory2.setGroups(new ArrayList<>());
         initialCategory2.setId(2L);
-        final Category initialCategory3 = new Category("Hollandse keuken", new ArrayList<>());
+        final Category initialCategory3 = new Category();
+        initialCategory3.setCategoryName("Hollandse keuken");
+        initialCategory3.setGroups(new ArrayList<>());
         initialCategory3.setId(3L);
-        final Category initialCategory4 = new Category("Chinese keuken", new ArrayList<>());
+        final Category initialCategory4 = new Category();
+        initialCategory4.setCategoryName("Chinese keuken");
+        initialCategory4.setGroups(new ArrayList<>());
         initialCategory4.setId(4L);
         return Arrays.asList(initialCategory1, initialCategory2, initialCategory3, initialCategory4);
     }

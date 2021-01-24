@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import static nl.hro.cookbook.controller.ImageHelper.createTempFileResource;
+import static nl.hro.cookbook.controller.TestHelper.createTempFileResource;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
