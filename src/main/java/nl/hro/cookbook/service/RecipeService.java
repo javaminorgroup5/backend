@@ -79,17 +79,17 @@ public class RecipeService {
         throw new NotFoundException("Recipe not found");
     }
 
-    @Transactional()
+    @Transactional
     public void createRecipe(Recipe recipe) {
         recipeRepository.save(recipe);
     }
 
-    @Transactional()
+    @Transactional
     public void deleteById(Long id) {
         recipeRepository.deleteById(id);
     }
 
-    @Transactional()
+    @Transactional
     public void updateRecipe(final long recipeId, final Recipe updateRecipe) {
         Recipe recipe = findRecipeById(recipeId);
         if (recipe == null || updateRecipe == null) {

@@ -34,14 +34,14 @@ public class TestDataService {
         initialUser1.setId(1L);
         final User initialUser2 = new User("geoffrey@quintor.nl", passwordEncoder.encode("quintor"), Role.COMMUNITY_MANAGER, new Profile("Maverick12", profileImage), new ArrayList<>());
         initialUser2.setId(2L);
-        final User initialUser3 = new User("testuser@test.nl", passwordEncoder.encode("testpassword"), Role.COMMUNITY_MANAGER, new Profile("TheRecipeTester492", profileImage), new ArrayList<>());
+        final User initialUser3 = new User("testuser@test.nl", passwordEncoder.encode("testpassword"), Role.ADMIN, new Profile("TheRecipeTester492", profileImage), new ArrayList<>());
         initialUser3.setId(3L);
         final User initialUser4 = new User("anuar@test.nl", passwordEncoder.encode("quintor"), Role.COMMUNITY_MANAGER, new Profile("Anuar", profileImage), new ArrayList<>());
         initialUser4.setId(4L);
         return Arrays.asList(initialUser1, initialUser2, initialUser3, initialUser4);
     }
 
-    public List<Category> getCategories() throws IOException {
+    public List<Category> getCategories() {
         final Category initialCategory1 = new Category("Italiaanse keuken", new ArrayList<>());
         initialCategory1.setId(1L);
         final Category initialCategory2 = new Category("Marokkaanse keuken", new ArrayList<>());

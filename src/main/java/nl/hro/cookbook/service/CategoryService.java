@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.hro.cookbook.model.domain.Category;
 import nl.hro.cookbook.model.domain.Group;
+import nl.hro.cookbook.model.domain.Recipe;
 import nl.hro.cookbook.model.exception.ResourceNotFoundException;
 import nl.hro.cookbook.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,31 @@ public class CategoryService {
 
     public Category findCategoryById(Long categoryId) throws ResourceNotFoundException {
         return categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException(String.format("No category exists for id: %d", categoryId), Category.class));
+    }
+
+    @Transactional
+    public void saveCategory(Category category) {
+        categoryRepository.save(category);
+    }
+
+    @Transactional
+    public void deleteCategoryById(long id) {
+        categoryRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void updateCategory(final long categoryId, final Category updateCategory) {
+        Category category = findCategoryById(categoryId);
+        if (category == null || updateCategory == null) {
+            return;
+        }
+        if (updateCategory.getCategoryName() != null && !updateCategory.getCategoryName().isEmpty()) {
+            category.setCategoryName(updateCategory.getCategoryName());
+        }
+        if (updateCategory.getGroups() != null && !updateCategory.getGroups().isEmpty()) {
+            category.setGroups(updateCategory.getGroups());
+        }
+        categoryRepository.save(category);
     }
 
     @PostConstruct
