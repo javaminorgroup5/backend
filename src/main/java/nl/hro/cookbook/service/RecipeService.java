@@ -51,7 +51,7 @@ public class RecipeService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("No recipe exists for id: %d", recipeId), Recipe.class));
 
         if (recipe.getUserId() == userId) {
-            ShareLink shareLink = new ShareLink(null, RandomString.make(12));
+            ShareLink shareLink = new ShareLink(RandomString.make(12));
             List<ShareLink> shareLinks = recipe.getShareLinks();
             shareLinks.add(shareLink);
             recipe.setShareLinks(shareLinks);

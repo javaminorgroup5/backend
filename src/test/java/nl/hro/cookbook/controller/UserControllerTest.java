@@ -40,7 +40,7 @@ class UserControllerTest {
         MultiValueMap<String, Object> body
                 = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
-        user = new User(12L, "test1@email.com", "test", Role.COMMUNITY_MANAGER,
+        user = new User("test1@email.com", "test", Role.COMMUNITY_MANAGER,
                 new Profile("Top Gun", null), new ArrayList<>());
         body.add("user", user);
         HttpEntity<MultiValueMap<String, Object>> request =
@@ -60,7 +60,7 @@ class UserControllerTest {
         MultiValueMap<String, Object> body
                 = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
-        user = new User(19L, "test2@email.com", "test", Role.COMMUNITY_MANAGER,
+        user = new User("test2@email.com", "test", Role.COMMUNITY_MANAGER,
                 new Profile("Top Gun", null), new ArrayList<>());
         body.add("user", user);
         HttpEntity<MultiValueMap<String, Object>> request =
@@ -95,7 +95,7 @@ class UserControllerTest {
         MultiValueMap<String, Object> body
                 = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
-        user = new User(13L, "test3@email.com", "test", Role.COMMUNITY_MANAGER,
+        user = new User("test3@email.com", "test", Role.COMMUNITY_MANAGER,
                 new Profile("Top Gun", null), new ArrayList<>());
         body.add("user", user);
         HttpEntity<MultiValueMap<String, Object>> request =

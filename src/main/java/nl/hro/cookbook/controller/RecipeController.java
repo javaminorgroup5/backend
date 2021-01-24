@@ -3,7 +3,6 @@ package nl.hro.cookbook.controller;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import nl.hro.cookbook.model.domain.Group;
 import nl.hro.cookbook.model.domain.Image;
 import nl.hro.cookbook.model.domain.Recipe;
 import nl.hro.cookbook.model.domain.User;
@@ -22,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -72,14 +70,13 @@ public class RecipeController {
                                        @RequestPart("recipe") RecipeDto recipeDTO,
                                        @RequestPart("file") MultipartFile file) throws Exception {
         User user = userService.findUserById(userId);
-        Optional<List<Group>> groups = groupService.findGroupsByUserId(userId);
         Recipe recipe = recipeMapper.toModel(recipeDTO);
         Image recipeImage = new Image(file.getOriginalFilename(), file.getName(),
                 commonService.compressBytes(file.getBytes()));
         recipe.setImage(recipeImage);
         recipe.setUserId(user.getId());
         recipeService.createRecipe(recipe);
-        groupService.saveMessageToGroup(user, recipe.getGroupId(), recipe, recipeImage);
+        groupService.addMessageToGroupFeed(user, recipe.getGroupId(), recipe, recipeImage);
         return ResponseEntity.ok(recipe.getId());
     }
 
@@ -89,7 +86,7 @@ public class RecipeController {
         User user = userService.findUserById(userId);
         Recipe recipe = recipeService.findRecipeById(recipeId);
         recipe.getImage().setPicByte(commonService.decompressBytes(recipe.getImage().getPicByte()));
-        if (user.getId() == recipe.getUserId()) {
+        if (user.getId().equals(recipe.getUserId())) {
             return ResponseEntity.ok(recipe);
         }
         return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
@@ -130,7 +127,7 @@ public class RecipeController {
     public ResponseEntity<?> deleteRecipe(@PathVariable("recipe_id") final long recipeId, @PathVariable("user_id") final long userId) {
         User user = userService.findUserById(userId);
         Recipe recipe = recipeService.findRecipeById(recipeId);
-        if (user.getId() == recipe.getUserId()) {
+        if (user.getId().equals(recipe.getUserId())) {
             recipeService.deleteById(recipeId);
             return ResponseEntity.ok("recipe deleted");
         }

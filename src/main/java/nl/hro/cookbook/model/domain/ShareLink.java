@@ -4,16 +4,12 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "shareLink")
 @Getter
 @Setter
-public class ShareLink {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ShareLink extends BaseEntity {
     private String shareLink;
 }

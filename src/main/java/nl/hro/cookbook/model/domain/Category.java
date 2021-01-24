@@ -5,7 +5,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 
-@Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,11 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class Category {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Category extends BaseEntity {
 
     private String categoryName;
 
