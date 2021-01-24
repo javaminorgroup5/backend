@@ -38,8 +38,14 @@ public class RecipeController {
     private final MessageService messageService;
 
     @GetMapping("/{user_id}")
-    public Collection<Recipe> getAllByUserIdRecipes(@PathVariable("user_id") final long userId) {
-        Collection<Recipe> recipes = recipeService.findRecipesByUserId(userId);
+    public Collection<Recipe> getRecipesByUserId(@PathVariable("user_id") final long userId,
+                                                 @RequestParam(name = "q", required = false) final String queryString) {
+        List<Recipe> recipes;
+        if (queryString != null) {
+            recipes = recipeService.findRecipesByUserId(userId, queryString);
+        } else {
+            recipes = recipeService.findRecipesByUserId(userId);
+        }
         for (Recipe recipe : recipes) {
             recipe.getImage().setPicByte(commonService.decompressBytes(recipe.getImage().getPicByte()));
         }
@@ -47,8 +53,14 @@ public class RecipeController {
     }
 
     @GetMapping("/group/{group_id}")
-    public Collection<Recipe> getRecipesByGroup(@PathVariable("group_id") final long groupId, @RequestParam("q") final String query) {
-        Collection<Recipe> recipes = recipeService.findRecipesByGroupId(groupId);
+    public Collection<Recipe> getRecipesByGroupId(@PathVariable("group_id") final long groupId,
+                                                  @RequestParam(name = "q", required = false) final String queryString) {
+        List<Recipe> recipes;
+        if (queryString != null) {
+            recipes = recipeService.findRecipesByGroupId(groupId, queryString);
+        } else {
+            recipes = recipeService.findRecipesByGroupId(groupId);
+        }
         for (Recipe recipe : recipes) {
             recipe.getImage().setPicByte(commonService.decompressBytes(recipe.getImage().getPicByte()));
         }
@@ -56,9 +68,9 @@ public class RecipeController {
     }
 
     @PostMapping(value = "/create/{user_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity createRecipe(@PathVariable("user_id") final long userId,
+    public ResponseEntity<?> createRecipe(@PathVariable("user_id") final long userId,
                                        @RequestPart("recipe") RecipeDto recipeDTO,
-                                       @RequestPart("file") MultipartFile file) throws IOException {
+                                       @RequestPart("file") MultipartFile file) throws Exception {
         User user = userService.findUserById(userId);
         Optional<List<Group>> groups = groupService.findGroupsByUserId(userId);
         Recipe recipe = recipeMapper.toModel(recipeDTO);
@@ -72,7 +84,8 @@ public class RecipeController {
     }
 
     @GetMapping("/{recipe_id}/user/{user_id}")
-    public ResponseEntity getRecipe(@PathVariable("recipe_id") final long recipeId, @PathVariable("user_id") final long userId) {
+    public ResponseEntity<?> getRecipe(@PathVariable("recipe_id") final long recipeId,
+                                    @PathVariable("user_id") final long userId) {
         User user = userService.findUserById(userId);
         Recipe recipe = recipeService.findRecipeById(recipeId);
         recipe.getImage().setPicByte(commonService.decompressBytes(recipe.getImage().getPicByte()));
@@ -83,12 +96,12 @@ public class RecipeController {
     }
 
     @PostMapping("/{recipe_id}/generate_share_link")
-    public ResponseEntity generateShareLink(@PathVariable("recipe_id") final long recipeId, @RequestBody ObjectNode json) throws Exception {
+    public ResponseEntity<?> generateShareLink(@PathVariable("recipe_id") final long recipeId, @RequestBody ObjectNode json) throws Exception {
         return ResponseEntity.ok(recipeService.generateShareLink(recipeId, json.get("userId").asLong()));
     }
 
     @GetMapping("/{recipe_id}/share/{share_link}")
-    public ResponseEntity getRecipeByShareLink(@PathVariable("recipe_id") final long recipeId, @PathVariable("share_link") final String share_link) throws NotFoundException {
+    public ResponseEntity<?> getRecipeByShareLink(@PathVariable("recipe_id") final long recipeId, @PathVariable("share_link") final String share_link) throws NotFoundException {
         Recipe recipe = recipeService.findRecipeByShareLink(recipeId, share_link);
         recipe.getImage().setPicByte(commonService.decompressBytes(recipe.getImage().getPicByte()));
 
@@ -114,7 +127,7 @@ public class RecipeController {
     }
 
     @DeleteMapping("/{recipe_id}/user/{user_id}")
-    public ResponseEntity deleteRecipe(@PathVariable("recipe_id") final long recipeId, @PathVariable("user_id") final long userId) {
+    public ResponseEntity<?> deleteRecipe(@PathVariable("recipe_id") final long recipeId, @PathVariable("user_id") final long userId) {
         User user = userService.findUserById(userId);
         Recipe recipe = recipeService.findRecipeById(recipeId);
         if (user.getId() == recipe.getUserId()) {

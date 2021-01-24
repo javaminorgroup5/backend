@@ -15,7 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,7 +58,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/profile")
-    public ResponseEntity getProfile(@PathVariable("id") final long id) {
+    public ResponseEntity<?> getProfile(@PathVariable("id") final long id) {
         User user = userService.findUserById(id);
         Profile profile = user.getProfile();
         if (profile != null && profile.getImage() != null) {
@@ -79,10 +81,10 @@ public class UserController {
     }
 
     @GetMapping("/{id}/enrolled")
-    public ResponseEntity getEnrolledGroupsForUser(@PathVariable("id") final long id) {
+    public ResponseEntity<?> getEnrolledGroupsForUser(@PathVariable("id") final long id) {
         List<String> enrolledGroupsForUser = userService.findEnrolledGroupsForUser(id);
         if (enrolledGroupsForUser.isEmpty()) {
-            return ResponseEntity.badRequest().body(HttpStatus.NOT_FOUND);
+            return ResponseEntity.ok(Collections.EMPTY_LIST);
         }
         return ResponseEntity.ok(enrolledGroupsForUser);
     }
@@ -94,13 +96,16 @@ public class UserController {
      * @return
      */
     @GetMapping("/{user_id}/feed")
-    public ResponseEntity getFeedForUser(@PathVariable("user_id") final long userId) {
+    public ResponseEntity<?> getFeedForUser(@PathVariable("user_id") final long userId) {
         List<Message> feedByUserId = userService.findFeedByUserId(userId);
         if (feedByUserId.isEmpty()) {
-            return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
+            return ResponseEntity.ok(Collections.emptyList());
         }
-        feedByUserId.forEach(message -> message.getImage().setPicByte(commonService.decompressBytes(message.getImage().getPicByte())));
+        feedByUserId.forEach(message -> {
+            if (message.getImage() != null) {
+                message.getImage().setPicByte(commonService.decompressBytes(message.getImage().getPicByte()));
+            }
+        });
         return ResponseEntity.ok(feedByUserId);
     }
-
 }

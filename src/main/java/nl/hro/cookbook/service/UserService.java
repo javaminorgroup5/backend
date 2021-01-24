@@ -12,11 +12,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import nl.hro.cookbook.repository.MessageRepository;
-
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,7 +27,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final RecipeRepository recipeRepository;
     private final TestDataService testDataService;
-    private final MessageRepository messageRepository;
     private final MessageService messageService;
 
     public Collection<User> findAllUsers() {
@@ -38,6 +36,11 @@ public class UserService {
     public User findUserById(final long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("No user exists for id: %d", userId), User.class));
+    }
+
+    public List<Profile> getAllUserProfiles() {
+        List<User> users = userRepository.findAll();
+        return users.stream().map(User::getProfile).collect(Collectors.toList());
     }
 
     @Transactional()

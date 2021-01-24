@@ -8,7 +8,6 @@ import nl.hro.cookbook.model.exception.ResourceNotFoundException;
 import nl.hro.cookbook.repository.GroupRepository;
 import nl.hro.cookbook.repository.InviteRepository;
 import nl.hro.cookbook.repository.MessageRepository;
-import nl.hro.cookbook.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
@@ -27,12 +26,12 @@ public class GroupService {
     private final TestDataService testDataService;
     private final MessageRepository messageRepository;
     private final MessageService messageService;
-    private final UserRepository userRepository;
+    private final CategoryService categoryService;
 
-    @Transactional
     public List<Group> findAllGroup() {
         return groupRepository.findAll();
     }
+
 
 
 
@@ -49,11 +48,22 @@ public class GroupService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("No group exists for id: %d", groupId), Group.class));
     }
 
+//    @Transactional
+//    public Group findGroupById(final long groupId) throws Exception {
+//        Optional<Group> groupFound = groupRepository.findById(groupId);
+//
+//
+//        if (groupFound.isEmpty()) {
+//            throw new Exception("Group not found");
+//        } else {
+//            return groupFound.get();
+//        }
+//    }
 
     @Transactional
     public Invite generateInvite(final long groupId, long userId) throws Exception {
         Group group = groupRepository.findById(groupId).orElseThrow(() -> new ResourceNotFoundException(String.format("No group exists for id: %d", groupId), Group.class));
-        if (group.getGroupPrivacy().equals(Group.GroupPrivacy.INVITE)) {
+        if (group.getGroupPrivacy().equals(Group.GroupPrivacy.INVITE) || group.getGroupPrivacy().equals(Group.GroupPrivacy.PRIVATE)) {
             if (group.getUserId() == userId) {
                 Invite invite = new Invite(null, RandomString.make(12));
                 List<Invite> invites = group.getInvites();
@@ -70,6 +80,7 @@ public class GroupService {
         }
     }
 
+
     @Transactional
     public List<String> findEnrolledUsersForGroup(long groupId) {
         List<String> userProfileNames = new ArrayList<>();
@@ -81,12 +92,6 @@ public class GroupService {
         return userProfileNames;
     }
 
-    /**
-     * Delete a group by the given id;
-     *
-     * @param id
-     * @param userId
-     */
     @Transactional
     public void deleteById(Long id, long userId) {
         Optional<Group> group = groupRepository.findById(id);
@@ -98,7 +103,7 @@ public class GroupService {
     }
 
     @Transactional
-    public void joinGroup(final long groupId, long userId, String inviteToken) {
+    public void joinGroup(final long groupId, long userId, String inviteToken) throws Exception {
         final User user = userService.findUserById(userId);
         Group group = findGroupById(groupId);
         List<Invite> invites = group.getInvites();
@@ -114,13 +119,11 @@ public class GroupService {
     }
 
     @Transactional
-    public void enrollInGroup(final long groupId, long userId) {
-        User user = userService.findUserById(userId);
+    public void enrollInGroup(final long groupId, long userId) throws Exception {
+        final User user = userService.findUserById(userId);
         Group group = findGroupById(groupId);
         List<User> users = group.getEnrolledUsers();
         users.add(user);
-        user.getEnrolledGroups().add(group);
-        userRepository.save(user);
         group.setEnrolledUsers(users);
         groupRepository.save(group);
     }
@@ -136,12 +139,12 @@ public class GroupService {
     }
 
     @Transactional()
-    public void updateGroup(final long groupId, final Group updateGroup) {
+    public void updateGroup(final long groupId, final Group updateGroup) throws Exception {
         Group group = findGroupById(groupId);
         if (group == null || updateGroup == null) {
             return;
         }
-        if (updateGroup.getGroupPrivacy() != null) {
+        if (updateGroup.getGroupPrivacy() != null && !updateGroup.getGroupPrivacy().equals(null)) {
             group.setGroupPrivacy(updateGroup.getGroupPrivacy());
         }
         if (updateGroup.getGroupName() != null && !updateGroup.getGroupName().isEmpty()) {
@@ -182,7 +185,7 @@ public class GroupService {
     }
 
     @Transactional
-    public void saveMessageToGroup(User user, Long groupId, Recipe recipe, Image recipeImage) {
+    public void saveMessageToGroup(User user, Long groupId, Recipe recipe, Image recipeImage) throws Exception {
         Group group = this.findGroupById(groupId);
         Message message = new Message();
         message.setGroupId(group.getId());
@@ -197,7 +200,7 @@ public class GroupService {
     }
 
     @Transactional
-    public void saveInviteSuccesMessageToFeed(long groupId, long userId) {
+    public void saveInviteSuccesMessageToFeed(long groupId, long userId) throws Exception {
         Group group = this.findGroupById(groupId);
         User user = userService.findUserById(userId);
         Message message = new Message();

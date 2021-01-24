@@ -56,7 +56,7 @@ class LikeControllerTest {
         HttpEntity<MultiValueMap<String, Object>> request =
                 new HttpEntity<>(body,  headers);
         URI uri = new URI("http://localhost:" + port + "/users/create");
-        ResponseEntity response = restTemplate.postForEntity(uri, request, Void.class);
+        ResponseEntity<?> response = restTemplate.postForEntity(uri, request, Void.class);
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
         uri = new URI("http://localhost:" + port + "/users/login");
@@ -70,7 +70,7 @@ class LikeControllerTest {
         HttpEntity<Like> request1 =
                 new HttpEntity<>(like,  headers);
         URI uri1 = new URI("http://localhost:" + port + "/likes/message");
-        ResponseEntity response1 = restTemplate
+        ResponseEntity<?> response1 = restTemplate
                 .withBasicAuth("test33@email.com", "test")
                 .postForEntity(uri1, request1, String.class);
         assertThat(response1.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
@@ -81,7 +81,7 @@ class LikeControllerTest {
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Basic " + base64Creds);
-        HttpEntity request5 = new HttpEntity(headers);
+        HttpEntity<?> request5 = new HttpEntity<>(headers);
         uri = new URI("http://localhost:" + port + "/likes/message/" + messageId);
         ResponseEntity<List<Like>> likesResponse = restTemplate
                 .exchange(uri, HttpMethod.GET, request5,  new ParameterizedTypeReference<List<Like>>() {});
@@ -93,7 +93,7 @@ class LikeControllerTest {
         HttpEntity<Like> request2 =
                 new HttpEntity<>(like,  headers);
         URI uri2 = new URI("http://localhost:" + port + "/likes/message");
-        ResponseEntity response2 = restTemplate
+        ResponseEntity<?> response2 = restTemplate
                 .withBasicAuth("test33@email.com", "test")
                 .postForEntity(uri2, request2, String.class);
         assertThat(response2.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());

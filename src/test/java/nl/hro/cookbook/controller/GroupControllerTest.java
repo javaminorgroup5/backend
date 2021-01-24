@@ -45,9 +45,9 @@ class GroupControllerTest {
     @BeforeEach
     void setUp() {
         Image image = new Image("group.jpg", "file", new byte[12]);
-        final Group initialGroup1 = new Group(1L, "PastaGroep", "Leuke pasta groep", 12L, Group.GroupPrivacy.INVITE, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
-        final Group initialGroup2 = new Group(2L, "RodeSauzen", "Roder dan rood", 12L, Group.GroupPrivacy.INVITE,new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
-        final Group initialGroup3 = new Group(3L, "Bloemkoollovers", "Bloemkool is een groente die hoort bij het geslacht kool uit de kruisbloemenfamilie (Brassicaceae). De botanische naam voor bloemkool is Brassica oleracea convar. ", 12L, Group.GroupPrivacy.INVITE,new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
+        final Group initialGroup1 = new Group(1L, "PastaGroep", "Leuke pasta groep", 12L, null, Group.GroupPrivacy.INVITE, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
+        final Group initialGroup2 = new Group(2L, "RodeSauzen", "Roder dan rood", 12L, null, Group.GroupPrivacy.INVITE,new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
+        final Group initialGroup3 = new Group(3L, "Bloemkoollovers", "Bloemkool is een groente die hoort bij het geslacht kool uit de kruisbloemenfamilie (Brassicaceae). De botanische naam voor bloemkool is Brassica oleracea convar. ", 12L, null, Group.GroupPrivacy.INVITE,new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
         final Message message1 = new Message("This is my first message", 12L, initialGroup1.getId(), "Test", 1L, image);
         final Message message2 = new Message("This is my second message", 12L, initialGroup1.getId(), "Test", 1L, image);
         final Message message3 = new Message("This is my third message", 12L, initialGroup1.getId(), "Test", 1L, image);
@@ -72,7 +72,7 @@ class GroupControllerTest {
         HttpEntity<MultiValueMap<String, Object>> request =
                 new HttpEntity<>(body,  headers);
         URI uri = new URI("http://localhost:" + port + "/users/create");
-        ResponseEntity response = restTemplate.postForEntity(uri, request, Void.class);
+        ResponseEntity<?> response = restTemplate.postForEntity(uri, request, Void.class);
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
         uri = new URI("http://localhost:" + port + "/users/login");
@@ -87,10 +87,11 @@ class GroupControllerTest {
         body = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
         body.add("group", groups.get(0));
+        body.add("groupCategoryId", 1);
         HttpEntity<MultiValueMap<String, Object>> request1 =
                 new HttpEntity<>(body,  headers);
         URI uri1 = new URI("http://localhost:" + port + "/group/create/" + 4);
-        ResponseEntity response1 = restTemplate
+        ResponseEntity<?> response1 = restTemplate
                 .withBasicAuth("test1@email.com", "test")
                 .postForEntity(uri1, request1, Void.class);
         assertThat(response1.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
@@ -110,7 +111,7 @@ class GroupControllerTest {
         HttpEntity<MultiValueMap<String, Object>> request =
                 new HttpEntity<>(body,  headers);
         URI uri = new URI("http://localhost:" + port + "/users/create");
-        ResponseEntity response = restTemplate
+        ResponseEntity<?> response = restTemplate
                 .postForEntity(uri, request, Void.class);
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
@@ -126,10 +127,11 @@ class GroupControllerTest {
         body = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
         body.add("group", groups.get(0));
+        body.add("groupCategoryId", 1);
         HttpEntity<MultiValueMap<String, Object>> request1 =
                 new HttpEntity<>(body,  headers);
         URI uri1 = new URI("http://localhost:" + port + "/group/create/" + 4);
-        ResponseEntity response1 = restTemplate
+        ResponseEntity<?> response1 = restTemplate
                 .withBasicAuth("test2@email.com", "test")
                 .postForEntity(uri1, request1, Void.class);
         assertThat(response1.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
@@ -139,7 +141,7 @@ class GroupControllerTest {
         HttpEntity<Message> request2 =
                 new HttpEntity<>(messages.get(0),  headers);
         URI uri2 = new URI("http://localhost:" + port + "/group/"+ groups.get(0).getId() + "/feed");
-        ResponseEntity response2 = restTemplate
+        ResponseEntity<?> response2 = restTemplate
                 .withBasicAuth("test2@email.com", "test")
                 .postForEntity(uri2, request2, Void.class);
         assertThat(response2.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
@@ -147,7 +149,7 @@ class GroupControllerTest {
         HttpEntity<Message> request3 =
                 new HttpEntity<>(messages.get(1),  headers);
         URI uri3 = new URI("http://localhost:" + port + "/group/"+ groups.get(0).getId() + "/feed");
-        ResponseEntity response3 = restTemplate
+        ResponseEntity<?> response3 = restTemplate
                 .withBasicAuth("test2@email.com", "test")
                 .postForEntity(uri3, request3, Void.class);
         assertThat(response3.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
@@ -155,7 +157,7 @@ class GroupControllerTest {
         HttpEntity<Message> request4 =
                 new HttpEntity<>(messages.get(2),  headers);
         URI uri4 = new URI("http://localhost:" + port + "/group/"+ groups.get(0).getId() + "/feed");
-        ResponseEntity response4 = restTemplate
+        ResponseEntity<?> response4 = restTemplate
                 .withBasicAuth("test2@email.com", "test")
                 .postForEntity(uri4, request4, Void.class);
         assertThat(response4.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
@@ -165,7 +167,7 @@ class GroupControllerTest {
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Basic " + base64Creds);
-        HttpEntity request5 = new HttpEntity(headers);
+        HttpEntity<?> request5 = new HttpEntity<>(headers);
         uri = new URI("http://localhost:" + port + "/group/"+ groups.get(0).getId() + "/feed");
         ResponseEntity<List<Message>> feedResponse = restTemplate
                 .exchange(uri, HttpMethod.GET, request5,  new ParameterizedTypeReference<List<Message>>() {});

@@ -28,6 +28,14 @@ public class RecipeService {
             return recipeRepository.findRecipesByUserId(userId).orElse(Collections.emptyList());
     }
 
+    public List<Recipe> findRecipesByUserId(long userId, String prefix) {
+        return recipeRepository.findRecipesByUserIdAndTitleContainingIgnoreCase(userId, prefix).orElse(Collections.emptyList());
+    }
+
+    public List<Recipe> findRecipesByGroupId(long groupId, String prefix) {
+        return recipeRepository.findRecipesByGroupIdAndTitleContainingIgnoreCase(groupId, prefix).orElse(Collections.emptyList());
+    }
+
     public List<Recipe> findRecipesByGroupId(long groupId) {
             return recipeRepository.findRecipesByGroupId(groupId).orElse(Collections.emptyList());
     }
