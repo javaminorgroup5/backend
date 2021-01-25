@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -62,7 +61,8 @@ public class UserController {
     public ResponseEntity<?> getProfile(@PathVariable("id") final long id) {
         User user = userService.findUserById(id);
         Profile profile = user.getProfile();
-        if (profile != null && profile.getImage() != null) {
+        profile.setUserRole(user.getRole());
+        if (profile.getImage() != null) {
             profile.getImage().setPicByte(commonService.decompressBytes(user.getProfile().getImage().getPicByte()));
             return ResponseEntity.ok(profile);
         }

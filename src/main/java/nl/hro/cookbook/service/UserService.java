@@ -43,7 +43,7 @@ public class UserService {
         return users.stream().map(User::getProfile).collect(Collectors.toList());
     }
 
-    @Transactional()
+    @Transactional
     public void createUser(User user) throws IOException {
         boolean valid = EmailValidator.getInstance().isValid(user.getEmail());
         if (valid) {
@@ -71,7 +71,7 @@ public class UserService {
         return userRepository.findUserByEmail(username);
     }
 
-    @Transactional()
+    @Transactional
     public void updateProfile(final long userId, final Profile newProfile) {
         User user = findUserById(userId);
         if (user == null) {
