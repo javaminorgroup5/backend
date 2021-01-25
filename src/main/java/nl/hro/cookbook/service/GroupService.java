@@ -32,17 +32,12 @@ public class GroupService {
         return groupRepository.findAll();
     }
 
-
-
-
-
     /**
      * Find a group bij the given id;
      *
      * @param groupId
      * @return
      */
-
 
     @Transactional
     public Group findGroupById(final long groupId) throws Exception {
