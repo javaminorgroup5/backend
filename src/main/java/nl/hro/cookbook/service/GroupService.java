@@ -32,9 +32,17 @@ public class GroupService {
         return groupRepository.findAll();
     }
 
+    /**
+     * Find a group bij the given id;
+     *
+     * @param groupId
+     * @return
+     */
+
     @Transactional
     public Group findGroupById(final long groupId) throws Exception {
         Optional<Group> groupFound = groupRepository.findById(groupId);
+
 
         if (groupFound.isEmpty()) {
             throw new Exception("Group not found");
@@ -63,14 +71,17 @@ public class GroupService {
         }
     }
 
+
+    @Transactional
     public List<String> findEnrolledUsersForGroup(long groupId) throws Exception {
-        List<String> userIDs = new ArrayList<>();
+        List<String> userProfileNames = new ArrayList<>();
         Group group = findGroupById(groupId);
         for (User user : group.getEnrolledUsers()) {
-            long userID = user.getId();
-            userIDs.add(Long.toString(userID));
+            String userProfileName = user.getProfile().getProfileName();
+            userProfileNames.add(userProfileName);
         }
-        return userIDs;
+
+        return userProfileNames;
     }
 
     @Transactional
