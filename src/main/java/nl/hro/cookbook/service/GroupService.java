@@ -195,12 +195,5 @@ public class GroupService {
         groupRepository.save(group);
     }
 
-    //    This is a pretty hacky way to have a group available on startup.
-    //    This is fine for a demo, but don't do this in real code.
-    @PostConstruct
-    public void init() throws IOException {
-        groupRepository.saveAll(testDataService.getGroups());
-        messageRepository.saveAll(testDataService.getFeeds());
-    }
 }
 

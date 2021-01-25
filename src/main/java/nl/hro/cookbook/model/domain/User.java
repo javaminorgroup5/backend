@@ -16,8 +16,6 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
-@EqualsAndHashCode(exclude = "role")
 @Getter
 @Setter
 @ToString

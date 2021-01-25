@@ -13,7 +13,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "messages")
 @Getter
 @Setter
 @ToString

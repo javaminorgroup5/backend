@@ -54,9 +54,4 @@ public class CategoryService {
         }
         categoryRepository.save(category);
     }
-
-    @PostConstruct
-    public void init() {
-        categoryRepository.saveAll(testDataService.getCategories());
-    }
 }
