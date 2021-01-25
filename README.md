@@ -1,5 +1,5 @@
 # backend
-For the backend you need to setup a postgres database server.
+For the backend you need to setup a postgres database server. On port 5432.
 
 # Travis
 We use travis-ci to verify the code of the backend. The the travis file is .travis.yml 
