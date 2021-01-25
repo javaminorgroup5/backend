@@ -206,7 +206,7 @@ public class GroupController {
      * @throws IOException
      */
     @PutMapping(value = "/{group_id}/user/{user_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void updateGroup(@PathVariable("group_id") final long groupId,
+    public ResponseEntity<?> updateGroup(@PathVariable("group_id") final long groupId,
                              @PathVariable("user_id") final long userId,
                             @RequestPart("groupCategoryId") Long categoryId,
                              @RequestPart(value = "group", required = false) GroupDTO groupDTO,
@@ -231,6 +231,8 @@ public class GroupController {
 
         // Update the group by groupId with the new values;
         groupService.updateGroup(groupId, group);
+
+        return ResponseEntity.ok(group);
     }
 
     /**

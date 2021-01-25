@@ -106,7 +106,7 @@ public class RecipeController {
     }
 
     @PutMapping(value = "/{recipe_id}/user/{user_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void updateRecipe(@PathVariable("recipe_id") final long recipeId,
+    public ResponseEntity<?> updateRecipe(@PathVariable("recipe_id") final long recipeId,
                                        @PathVariable("user_id") final long userId,
                                        @RequestPart(value = "recipe", required = false) RecipeDto recipeDto,
                                        @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
@@ -121,6 +121,8 @@ public class RecipeController {
             recipe.setImage(recipeImage);
         }
         recipeService.updateRecipe(recipeId, recipe);
+
+        return ResponseEntity.ok(recipe);
     }
 
     @DeleteMapping("/{recipe_id}/user/{user_id}")
