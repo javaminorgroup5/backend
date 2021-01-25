@@ -9,7 +9,6 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "categories")
 @Getter
 @Setter
 @ToString

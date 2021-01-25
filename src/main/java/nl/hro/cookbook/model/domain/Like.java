@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "likes")
 @Getter
 @Setter
 @ToString

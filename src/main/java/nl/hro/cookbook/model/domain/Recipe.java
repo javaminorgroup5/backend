@@ -16,7 +16,6 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "recipes")
 @Getter
 @Setter
 @ToString

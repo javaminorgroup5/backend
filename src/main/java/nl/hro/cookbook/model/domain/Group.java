@@ -13,7 +13,6 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "groups")
 @Getter
 @Setter
 @ToString

@@ -89,14 +89,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-//    This is a pretty hacky way to have a user available on startup.
-//    This is fine for a demo, but don't do this in real code.
-    @PostConstruct
-    public void init() throws Exception {
-        userRepository.saveAll(testDataService.getUsers());
-        recipeRepository.saveAll(testDataService.getRecipes());
-    }
-
     public static UserDetails getLoggedInUser() {
         return (UserDetails) SecurityContextHolder
                 .getContext()
