@@ -10,9 +10,7 @@ import nl.hro.cookbook.repository.RecipeRepository;
 import nl.hro.cookbook.repository.ShareLinkRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 
-import javax.naming.AuthenticationException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -25,10 +23,21 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
     private final ShareLinkRepository shareLinkRepository;
-    private final CommonService commonService;
 
     public List<Recipe> findRecipesByUserId(long userId) {
             return recipeRepository.findRecipesByUserId(userId).orElse(Collections.emptyList());
+    }
+
+    public List<Recipe> findRecipesByUserId(long userId, String prefix) {
+        return recipeRepository.findRecipesByUserIdAndTitleContainingIgnoreCase(userId, prefix).orElse(Collections.emptyList());
+    }
+
+    public List<Recipe> findRecipesByGroupId(long groupId, String prefix) {
+        return recipeRepository.findRecipesByGroupIdAndTitleContainingIgnoreCase(groupId, prefix).orElse(Collections.emptyList());
+    }
+
+    public List<Recipe> findRecipesByGroupId(long groupId) {
+            return recipeRepository.findRecipesByGroupId(groupId).orElse(Collections.emptyList());
     }
 
     public Recipe findRecipeById(final long recipeId) {
@@ -42,7 +51,7 @@ public class RecipeService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("No recipe exists for id: %d", recipeId), Recipe.class));
 
         if (recipe.getUserId() == userId) {
-            ShareLink shareLink = new ShareLink(null, RandomString.make(12));
+            ShareLink shareLink = new ShareLink(RandomString.make(12));
             List<ShareLink> shareLinks = recipe.getShareLinks();
             shareLinks.add(shareLink);
             recipe.setShareLinks(shareLinks);
@@ -55,16 +64,13 @@ public class RecipeService {
     }
 
     @Transactional
-    public Recipe findRecipeByShareLink(final long recipeId, final String shareLink) throws NotFoundException, AuthenticationException {
+    public Recipe findRecipeByShareLink(final long recipeId, final String shareLink) throws NotFoundException {
         Optional<Recipe> recipeById = recipeRepository.findById(recipeId);
-
         if (recipeById.isPresent()) {
             Recipe recipe = recipeById.get();
             List<ShareLink> shareLinks = recipe.getShareLinks();
-
             for (ShareLink shareLinkIterated : shareLinks) {
                 String shareLinkDB = shareLinkIterated.getShareLink();
-
                 if (shareLinkDB.equals(shareLink)) {
                     return recipe;
                 }
@@ -73,17 +79,17 @@ public class RecipeService {
         throw new NotFoundException("Recipe not found");
     }
 
-    @Transactional()
+    @Transactional
     public void createRecipe(Recipe recipe) {
         recipeRepository.save(recipe);
     }
 
-    @Transactional()
+    @Transactional
     public void deleteById(Long id) {
         recipeRepository.deleteById(id);
     }
 
-    @Transactional()
+    @Transactional
     public void updateRecipe(final long recipeId, final Recipe updateRecipe) {
         Recipe recipe = findRecipeById(recipeId);
         if (recipe == null || updateRecipe == null) {
@@ -98,8 +104,8 @@ public class RecipeService {
         if (updateRecipe.getDescription() != null && !updateRecipe.getDescription().isEmpty()) {
             recipe.setDescription(updateRecipe.getDescription());
         }
-        if (updateRecipe.getRecipeImage() != null) {
-            recipe.setRecipeImage(updateRecipe.getRecipeImage());
+        if (updateRecipe.getImage() != null) {
+            recipe.setImage(updateRecipe.getImage());
         }
         recipeRepository.save(recipe);
     }

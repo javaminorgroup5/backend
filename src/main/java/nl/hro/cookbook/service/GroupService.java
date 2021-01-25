@@ -1,6 +1,5 @@
 package nl.hro.cookbook.service;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
@@ -8,16 +7,11 @@ import nl.hro.cookbook.model.domain.*;
 import nl.hro.cookbook.model.exception.ResourceNotFoundException;
 import nl.hro.cookbook.repository.GroupRepository;
 import nl.hro.cookbook.repository.InviteRepository;
-import nl.hro.cookbook.repository.UserRepository;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
+import nl.hro.cookbook.repository.MessageRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.*;
 
 @Slf4j
@@ -29,53 +23,71 @@ public class GroupService {
     private final InviteRepository inviteRepository;
     private final GroupRepository groupRepository;
     private final UserService userService;
-    private final CommonService commonService;
+    private final TestDataService testDataService;
+    private final MessageRepository messageRepository;
+    private final MessageService messageService;
+    private final CategoryService categoryService;
 
     public List<Group> findAllGroup() {
         return groupRepository.findAll();
     }
 
-    public Group findGroupById(final long groupId) {
-        return groupRepository.findById(groupId)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("No group exists for id: %d", groupId), Group.class));
+    /**
+     * Find a group bij the given id;
+     *
+     * @param groupId
+     * @return
+     */
+
+    @Transactional
+    public Group findGroupById(final long groupId) throws Exception {
+        Optional<Group> groupFound = groupRepository.findById(groupId);
+
+
+        if (groupFound.isEmpty()) {
+            throw new Exception("Group not found");
+        } else {
+            return groupFound.get();
+        }
     }
 
     @Transactional
     public Invite generateInvite(final long groupId, long userId) throws Exception {
         Group group = groupRepository.findById(groupId).orElseThrow(() -> new ResourceNotFoundException(String.format("No group exists for id: %d", groupId), Group.class));
-
-        if (group.getUserId() == userId) {
-            Invite invite = new Invite(null, RandomString.make(12));
-            List<Invite> invites = group.getInvites();
-            invites.add(invite);
-            group.setInvites(invites);
-            inviteRepository.save(invite);
-            groupRepository.save(group);
-            return invite;
+        if (group.getGroupPrivacy().equals(Group.GroupPrivacy.INVITE) || group.getGroupPrivacy().equals(Group.GroupPrivacy.PRIVATE)) {
+            if (group.getUserId() == userId) {
+                Invite invite = new Invite(RandomString.make(12));
+                List<Invite> invites = group.getInvites();
+                invites.add(invite);
+                group.setInvites(invites);
+                inviteRepository.save(invite);
+                groupRepository.save(group);
+                return invite;
+            } else {
+                throw new Exception("You are not the owner of the group.");
+            }
         } else {
-            throw new Exception("You are not the owner of the group.");
+            throw new Exception("Group is not open to invites.");
         }
     }
 
-    public List<String> findEnrolledUsersForGroup(long groupId) {
-        List<String> userIDs = new ArrayList<>();
+
+    @Transactional
+    public List<String> findEnrolledUsersForGroup(long groupId) throws Exception {
+        List<String> userProfileNames = new ArrayList<>();
         Group group = findGroupById(groupId);
-
-        for (Iterator<User> i = group.getEnrolledUsers().iterator(); i.hasNext();) {
-            User item = i.next();
-            Long userID = item.getId();
-            userIDs.add(Long.toString(userID));
-
+        for (User user : group.getEnrolledUsers()) {
+            String userProfileName = user.getProfile().getProfileName();
+            userProfileNames.add(userProfileName);
         }
 
-        return userIDs;
+        return userProfileNames;
     }
 
-    @Transactional()
+    @Transactional
     public void deleteById(Long id, long userId) {
         Optional<Group> group = groupRepository.findById(id);
-
-        if (group != null) {
+        if (group.isPresent()) {
             if (group.get().getUserId() == userId) {
                 groupRepository.deleteById(id);
             }
@@ -83,14 +95,12 @@ public class GroupService {
     }
 
     @Transactional
-    public void joinGroup(final long groupId, long userId, String inviteToken) {
+    public void joinGroup(final long groupId, long userId, String inviteToken) throws Exception {
         final User user = userService.findUserById(userId);
         Group group = findGroupById(groupId);
         List<Invite> invites = group.getInvites();
-
         for (Invite invite : invites) {
             String inviteTokenDB = invite.getToken();
-
             if (inviteTokenDB.equals(inviteToken)) {
                 List<User> users = group.getEnrolledUsers();
                 users.add(user);
@@ -101,48 +111,107 @@ public class GroupService {
     }
 
     @Transactional
-    public void enrollInGroup(final long groupId, long userId) {
-       final User user = userService.findUserById(userId);
-       Group group = findGroupById(groupId);
-       List<User> users = group.getEnrolledUsers();
-       users.add(user);
-       group.setEnrolledUsers(users);
-       groupRepository.save(group);
+    public void enrollInGroup(final long groupId, long userId) throws Exception {
+        final User user = userService.findUserById(userId);
+        Group group = findGroupById(groupId);
+        List<User> users = group.getEnrolledUsers();
+        users.add(user);
+        group.setEnrolledUsers(users);
+        groupRepository.save(group);
     }
 
-    @Transactional()
+    @Transactional
     public void createGroup(Group group) {
         groupRepository.save(group);
     }
 
+    @Transactional
     public Optional<List<Group>> findGroupsByUserId(Long userId) {
         return groupRepository.findGroupsByUserId(userId);
+    }
+
+    @Transactional
+    public void updateGroup(final long groupId, final Group updateGroup) throws Exception {
+        Group group = findGroupById(groupId);
+        if (group == null || updateGroup == null) {
+            return;
+        }
+        if (updateGroup.getGroupPrivacy() != null) {
+            group.setGroupPrivacy(updateGroup.getGroupPrivacy());
+        }
+        if (updateGroup.getGroupName() != null && !updateGroup.getGroupName().isEmpty()) {
+            group.setGroupName(updateGroup.getGroupName());
+        }
+        if (updateGroup.getDescription() != null && !updateGroup.getDescription().isEmpty()) {
+            group.setDescription(updateGroup.getDescription());
+        }
+        if (updateGroup.getImage() != null) {
+            group.setImage(updateGroup.getImage());
+        }
+        groupRepository.save(group);
+    }
+
+    @Transactional
+    public List<Message> findFeedByGroupId(Long id) {
+        Optional<Group> group = groupRepository.findById(id);
+        if (group.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Optional<List<Message>> messagesByGroupId = messageService.findMessagesByGroupId(id);
+        if (messagesByGroupId.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return messagesByGroupId.get();
+    }
+
+    @Transactional
+    public void addMessageToGroupFeed(Long groupId, Message message) {
+        Optional<Group> groupOptional = groupRepository.findById(groupId);
+        if (groupOptional.isPresent()) {
+            Group group = groupOptional.get();
+            group.getMessages().add(message);
+            message.setGroupId(groupId);
+            messageService.saveMessage(message);
+            groupRepository.save(group);
+        }
+    }
+
+    @Transactional
+    public void addMessageToGroupFeed(User user, Long groupId, Recipe recipe, Image recipeImage) throws Exception {
+        Group group = this.findGroupById(groupId);
+        Message message = new Message();
+        message.setGroupId(group.getId());
+        message.setUserId(user.getId());
+        message.setImage(recipeImage);
+        message.setMessage(user.getProfile().getProfileName() + " Heeft een nieuw recept toegevoegd! " + recipe.getTitle());
+        message.setRecipeId(recipe.getId());
+        message.setProfileName(user.getProfile().getProfileName());
+        messageService.saveMessage(message);
+        group.getMessages().add(message);
+        groupRepository.save(group);
+    }
+
+    @Transactional
+    public void saveInviteSuccesMessageToFeed(long groupId, long userId) throws Exception {
+        Group group = this.findGroupById(groupId);
+        User user = userService.findUserById(userId);
+        Message message = new Message();
+        message.setGroupId(group.getId());
+        message.setUserId(user.getId());
+        message.setMessage(user.getProfile().getProfileName() + " Heeft zich aangemeld voor de groep " + group.getGroupName() + "!");
+        message.setProfileName(user.getProfile().getProfileName());
+        message.setImage(user.getProfile().getImage());
+        messageService.saveMessage(message);
+        group.getMessages().add(message);
+        groupRepository.save(group);
     }
 
     //    This is a pretty hacky way to have a group available on startup.
     //    This is fine for a demo, but don't do this in real code.
     @PostConstruct
     public void init() throws IOException {
-
-        ResourceLoader resourceLoader = new DefaultResourceLoader();
-        Resource resource = resourceLoader.getResource("classpath:group.jpg");
-        GroupImage groupImage = new GroupImage("group.jpg", "file", commonService.compressBytes(Files.readAllBytes(resource.getFile().toPath())));
-
-        final Group initialGroup1 = new Group(1L, "PastaGroep", "Leuke pasta groep", 1L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
-        final Group initialGroup2 = new Group(2L, "RodeSauzen", "Roder dan rood", 1L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
-        final Group initialGroup3 = new Group(3L, "Bloemkoollovers", "Bloemkool is een groente die hoort bij het geslacht kool uit de kruisbloemenfamilie (Brassicaceae). De botanische naam voor bloemkool is Brassica oleracea convar. ", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
-        final Group initialGroup4 = new Group(4L, "Italiaanse keukengroep", "De Italiaanse keuken omvat de inheemse kookkunst van het Italiaanse schiereiland. Deze keuken is zeer gevarieerd en seizoensgebonden.", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
-        final Group initialGroup5 = new Group(5L, "Marokkaanse keuken", "Couscous Habibi", 2L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), groupImage);
-        groupRepository.saveAll(Arrays.asList(initialGroup1, initialGroup2, initialGroup3, initialGroup4, initialGroup5));
-    }
-
-    @Transactional()
-    public void updateGroup(final long groupId, final Group updateGroup) {
-        Group group = findGroupById(groupId);
-        if (group == null || updateGroup == null) {
-            return;
-        }
-        groupRepository.save(group);
+        groupRepository.saveAll(testDataService.getGroups());
+        messageRepository.saveAll(testDataService.getFeeds());
     }
 }
 

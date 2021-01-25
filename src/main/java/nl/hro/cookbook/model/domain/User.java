@@ -1,17 +1,18 @@
 package nl.hro.cookbook.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import nl.hro.cookbook.security.Role;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,11 +20,8 @@ import java.util.List;
 @EqualsAndHashCode(exclude = "role")
 @Getter
 @Setter
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+@ToString
+public class User extends BaseEntity {
 
     private String email;
     private String password;
@@ -34,17 +32,7 @@ public class User {
     @Embedded
     private Profile profile;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", role=" + role +
-                ", profile=" + profile +
-                '}';
-    }
-
+    @JsonIgnore
     @ManyToMany(mappedBy = "enrolledUsers")
     List<Group> enrolledGroups;
 }

@@ -4,16 +4,14 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "invites")
 @Getter
 @Setter
-public class Invite {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@ToString
+public class Invite extends BaseEntity {
+
     private String token;
 }

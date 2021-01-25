@@ -3,7 +3,6 @@ package nl.hro.cookbook.controller;
 import nl.hro.cookbook.model.domain.Profile;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.security.Role;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,12 +12,12 @@ import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
 
-import static nl.hro.cookbook.controller.ImageHelper.createTempFileResource;
+import static nl.hro.cookbook.controller.TestHelper.createTempFileResource;
+import static nl.hro.cookbook.controller.TestHelper.createHeaders;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -40,13 +39,13 @@ class UserControllerTest {
         MultiValueMap<String, Object> body
                 = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
-        user = new User(12L, "test1@email.com", "test", Role.COMMUNITY_MANAGER,
+        user = new User("test1@email.com", "test", Role.COMMUNITY_MANAGER,
                 new Profile("Top Gun", null), new ArrayList<>());
         body.add("user", user);
         HttpEntity<MultiValueMap<String, Object>> request =
                 new HttpEntity<>(body,  headers);
         URI uri = new URI("http://localhost:" + port + "/users/create");
-        ResponseEntity response = restTemplate
+        ResponseEntity<?> response = restTemplate
                 .postForEntity(uri, request, Void.class);
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
     }
@@ -60,27 +59,27 @@ class UserControllerTest {
         MultiValueMap<String, Object> body
                 = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
-        user = new User(12L, "test2@email.com", "test", Role.COMMUNITY_MANAGER,
+        user = new User("test93@email.com", "test", Role.COMMUNITY_MANAGER,
                 new Profile("Top Gun", null), new ArrayList<>());
         body.add("user", user);
         HttpEntity<MultiValueMap<String, Object>> request =
                 new HttpEntity<>(body,  headers);
         URI uri = new URI("http://localhost:" + port + "/users/create");
-        ResponseEntity response = restTemplate
+        ResponseEntity<?> response = restTemplate
                 .postForEntity(uri, request, Void.class);
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
         // login
         uri = new URI("http://localhost:" + port + "/users/login");
         ResponseEntity<String> idResponse = restTemplate
-                .withBasicAuth("test2@email.com", "test")
+                .withBasicAuth("test93@email.com", "test")
                 .getForEntity(uri,  String.class);
         assertThat(idResponse.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
         // get profile
         uri = new URI("http://localhost:" + port + "/users/" + idResponse.getBody() +"/profile");
         ResponseEntity<Profile> profileResponse = restTemplate
-                .withBasicAuth("test2@email.com", "test")
+                .withBasicAuth("test93@email.com", "test")
                 .getForEntity(uri,  Profile.class);
         assertThat(profileResponse.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
         assertThat(Objects.requireNonNull(profileResponse.getBody()).getProfileName()).isEqualTo("Top Gun");
@@ -95,13 +94,13 @@ class UserControllerTest {
         MultiValueMap<String, Object> body
                 = new LinkedMultiValueMap<>();
         body.add("file", createTempFileResource("test.jpg".getBytes()));
-        user = new User(12L, "test3@email.com", "test", Role.COMMUNITY_MANAGER,
+        user = new User("test3@email.com", "test", Role.COMMUNITY_MANAGER,
                 new Profile("Top Gun", null), new ArrayList<>());
         body.add("user", user);
         HttpEntity<MultiValueMap<String, Object>> request =
                 new HttpEntity<>(body,  headers);
         URI uri = new URI("http://localhost:" + port + "/users/create");
-        ResponseEntity response = restTemplate
+        ResponseEntity<?> response = restTemplate
                 .postForEntity(uri, request, Void.class);
         assertThat(response.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
@@ -127,12 +126,12 @@ class UserControllerTest {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         Profile profile = new Profile();
         profile.setProfileName("Maverick");
-        MultiValueMap<String, Object> body1
-                = new LinkedMultiValueMap<>();
+        MultiValueMap<String, Object> body1 = new LinkedMultiValueMap<>();
         body1.add("profile", profile);
         HttpEntity<MultiValueMap<String, Object>> request1 =
                 new HttpEntity<>(body1,  headers);
         ResponseEntity<Void> exchange = restTemplate.exchange(uri, HttpMethod.PUT, request1, Void.class);
+        assertThat(exchange.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
 
         // get updated profile
         ResponseEntity<Profile> profileResponseUpdated = restTemplate
@@ -141,15 +140,4 @@ class UserControllerTest {
         assertThat(profileResponseUpdated.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
         assertThat(Objects.requireNonNull(profileResponseUpdated.getBody()).getProfileName()).isEqualTo("Maverick");
     }
-
-    private HttpHeaders createHeaders(String username, String password){
-        return new HttpHeaders() {{
-            String auth = username + ":" + password;
-            byte[] encodedAuth = Base64.encodeBase64(
-                    auth.getBytes(Charset.forName("US-ASCII")) );
-            String authHeader = "Basic " + new String( encodedAuth );
-            set( "Authorization", authHeader );
-        }};
-    }
-
 }

@@ -1,10 +1,7 @@
 package nl.hro.cookbook.controller;
 
 import lombok.RequiredArgsConstructor;
-import nl.hro.cookbook.model.domain.Profile;
-import nl.hro.cookbook.model.domain.ProfileImage;
-import nl.hro.cookbook.model.domain.User;
-import nl.hro.cookbook.model.mapper.ProfileMapper;
+import nl.hro.cookbook.model.domain.*;
 import nl.hro.cookbook.service.CommonService;
 import nl.hro.cookbook.service.UserService;
 import nl.hro.cookbook.model.mapper.UserMapper;
@@ -19,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -50,19 +49,21 @@ public class UserController {
     }
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void createUser(@RequestPart("user") User user, @RequestPart("file") MultipartFile file) throws IOException {
-        ProfileImage profileImage = new ProfileImage(file.getOriginalFilename(), file.getName(),
+    public ResponseEntity<?> createUser(@RequestPart("user") User user, @RequestPart("file") MultipartFile file) throws IOException {
+        Image profileImage = new Image(file.getOriginalFilename(), file.getName(),
                 commonService.compressBytes(file.getBytes()));
-        user.getProfile().setProfileImage(profileImage);
+        user.getProfile().setImage(profileImage);
         userService.createUser(user);
+        return ResponseEntity.ok(user.getId());
     }
 
     @GetMapping("/{id}/profile")
-    public ResponseEntity getProfile(@PathVariable("id") final long id) {
+    public ResponseEntity<?> getProfile(@PathVariable("id") final long id) {
         User user = userService.findUserById(id);
         Profile profile = user.getProfile();
-        if (profile != null && profile.getProfileImage() != null) {
-            profile.getProfileImage().setPicByte(commonService.decompressBytes(user.getProfile().getProfileImage().getPicByte()));
+        profile.setUserRole(user.getRole());
+        if (profile.getImage() != null) {
+            profile.getImage().setPicByte(commonService.decompressBytes(user.getProfile().getImage().getPicByte()));
             return ResponseEntity.ok(profile);
         }
         return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
@@ -73,11 +74,39 @@ public class UserController {
                               @Valid @RequestPart(value = "profile", required = false) final Profile profile,
                               @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
         if (file != null) {
-            ProfileImage profileImage = new ProfileImage(file.getOriginalFilename(), file.getName(),
+            Image profileImage = new Image(file.getOriginalFilename(), file.getName(),
                     commonService.compressBytes(file.getBytes()));
-            profile.setProfileImage(profileImage);
+            profile.setImage(profileImage);
         }
         userService.updateProfile(id, profile);
     }
 
+    @GetMapping("/{id}/enrolled")
+    public ResponseEntity<?> getEnrolledGroupsForUser(@PathVariable("id") final long id) {
+        List<String> enrolledGroupsForUser = userService.findEnrolledGroupsForUser(id);
+        if (enrolledGroupsForUser.isEmpty()) {
+            return ResponseEntity.ok(Collections.EMPTY_LIST);
+        }
+        return ResponseEntity.ok(enrolledGroupsForUser);
+    }
+
+    /**
+     * Get all messages for the feed with the gives userId;
+     *
+     * @param userId
+     * @return
+     */
+    @GetMapping("/{user_id}/feed")
+    public ResponseEntity<?> getFeedForUser(@PathVariable("user_id") final long userId) {
+        List<Message> feedByUserId = userService.findFeedByUserId(userId);
+        if (feedByUserId.isEmpty()) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+        feedByUserId.forEach(message -> {
+            if (message.getImage() != null) {
+                message.getImage().setPicByte(commonService.decompressBytes(message.getImage().getPicByte()));
+            }
+        });
+        return ResponseEntity.ok(feedByUserId);
+    }
 }

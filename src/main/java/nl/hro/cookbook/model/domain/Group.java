@@ -1,45 +1,58 @@
 package nl.hro.cookbook.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "groups")
 @Getter
 @Setter
-public class Group {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@ToString
+public class Group extends BaseEntity {
 
     private String groupName;
 
     private String description;
 
     private Long userId;
+
+    @JsonIgnore
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn
+    private Category category;
+
+    public enum GroupPrivacy {
+        PRIVATE,
+        INVITE,
+        OPEN
+    }
+    private GroupPrivacy groupPrivacy;
+
     @Column
     @ElementCollection(targetClass=Profile.class)
     private List<Profile> profiles;
 
     @OneToMany
     @JoinTable
-    List<Invite> invites;
+    private List<Invite> invites;
+
+    @OneToMany
+    @JoinTable
+    private List<Message> messages;
 
     @ManyToMany
     @JoinTable
-    List<User> enrolledUsers;
+    private List<User> enrolledUsers;
 
     @Embedded
-    private GroupImage groupImage;
-
+    Image image;
 }

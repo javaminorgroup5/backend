@@ -2,9 +2,7 @@ package nl.hro.cookbook.model.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nl.hro.cookbook.model.domain.Invite;
-import nl.hro.cookbook.model.domain.Profile;
-import nl.hro.cookbook.model.domain.User;
+import nl.hro.cookbook.model.domain.*;
 
 import java.util.List;
 
@@ -13,11 +11,13 @@ import java.util.List;
 public class GroupDTO {
 
     private long id;
-    private String name;
+    private String groupName;
     private String description;
+    private Category category;
     private Long userId;
+    private Group.GroupPrivacy groupPrivacy;
     private List<Profile> profiles;
-    private GroupImageDTO groupImageDTO;
+    private ImageDTO image;
     private List<User> enrolledUsers;
     private List<Invite> invites;
 

@@ -2,9 +2,7 @@ package nl.hro.cookbook.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nl.hro.cookbook.model.domain.Profile;
-import nl.hro.cookbook.model.domain.ProfileImage;
-import nl.hro.cookbook.model.domain.User;
+import nl.hro.cookbook.model.domain.*;
 import nl.hro.cookbook.model.exception.ResourceNotFoundException;
 import nl.hro.cookbook.repository.RecipeRepository;
 import nl.hro.cookbook.repository.UserRepository;
@@ -14,11 +12,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -30,6 +27,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final RecipeRepository recipeRepository;
     private final TestDataService testDataService;
+    private final MessageService messageService;
 
     public Collection<User> findAllUsers() {
         return userRepository.findAll();
@@ -40,7 +38,12 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("No user exists for id: %d", userId), User.class));
     }
 
-    @Transactional()
+    public List<Profile> getAllUserProfiles() {
+        List<User> users = userRepository.findAll();
+        return users.stream().map(User::getProfile).collect(Collectors.toList());
+    }
+
+    @Transactional
     public void createUser(User user) throws IOException {
         boolean valid = EmailValidator.getInstance().isValid(user.getEmail());
         if (valid) {
@@ -51,19 +54,32 @@ public class UserService {
         }
     }
 
+    @Transactional
+    public List<Message> findFeedByUserId(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Optional<List<Message>> messagesByUserId = messageService.findMessagesByUserId(id);
+        if (messagesByUserId.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return messagesByUserId.get();
+    }
+
     public Optional<User> findUserByUsername(String username) {
         return userRepository.findUserByEmail(username);
     }
 
-    @Transactional()
+    @Transactional
     public void updateProfile(final long userId, final Profile newProfile) {
         User user = findUserById(userId);
         if (user == null) {
             return;
         }
-        ProfileImage profileImage = newProfile.getProfileImage();
+        Image profileImage = newProfile.getImage();
         if (profileImage != null) {
-            user.getProfile().setProfileImage(newProfile.getProfileImage());
+            user.getProfile().setImage(newProfile.getImage());
         }
         String profileName = newProfile.getProfileName();
         if (profileName != null && user.getProfile() != null) {
@@ -87,4 +103,17 @@ public class UserService {
                 .getAuthentication()
                 .getPrincipal();
     }
+
+
+    public List<String> findEnrolledGroupsForUser(long id) {
+        List<String> groupNames = new ArrayList<>();
+        User user = findUserById(id);
+        for (Group group : user.getEnrolledGroups()) {
+            String groupName = group.getGroupName();
+            groupNames.add(groupName);
+        }
+        return groupNames;
+    }
+
+
 }

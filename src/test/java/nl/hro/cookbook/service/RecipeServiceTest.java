@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RecipeServiceTest {
@@ -36,12 +37,13 @@ class RecipeServiceTest {
         recipe.setRecipe("Pasta");
         recipe.setDescription("Italian dish");
         recipe.setUserId(1L);
+        recipe.setGroupId(1L);
     }
 
     @Test
     void createRecipeTest() {
-        // Give
-        lenient().when(recipeRepository.findRecipesByUserId(eq(1L))).thenReturn(Optional.of(Collections.singletonList(recipe)));
+        // Given
+        when(recipeRepository.findRecipesByUserId(eq(1L))).thenReturn(Optional.of(Collections.singletonList(recipe)));
 
         // When
         recipeServiceTest.createRecipe(recipe);
@@ -53,9 +55,9 @@ class RecipeServiceTest {
     }
 
     @Test
-    void updateRecipeTest() throws NotFoundException {
+    void updateRecipeTest() {
         // Give
-        lenient().when(recipeRepository.findById(eq(1L))).thenReturn(Optional.of((recipe)));
+        when(recipeRepository.findById(eq(1L))).thenReturn(Optional.of((recipe)));
 
         // When
         recipeServiceTest.createRecipe(recipe);
