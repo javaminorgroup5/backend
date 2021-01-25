@@ -119,13 +119,13 @@ public class GroupService {
         return groupRepository.findGroupsByUserId(userId);
     }
 
-    @Transactional()
+    @Transactional
     public void updateGroup(final long groupId, final Group updateGroup) throws Exception {
         Group group = findGroupById(groupId);
         if (group == null || updateGroup == null) {
             return;
         }
-        if (updateGroup.getGroupPrivacy() != null && !updateGroup.getGroupPrivacy().equals(null)) {
+        if (updateGroup.getGroupPrivacy() != null) {
             group.setGroupPrivacy(updateGroup.getGroupPrivacy());
         }
         if (updateGroup.getGroupName() != null && !updateGroup.getGroupName().isEmpty()) {

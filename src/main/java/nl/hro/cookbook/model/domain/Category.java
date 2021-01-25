@@ -3,6 +3,7 @@ package nl.hro.cookbook.model.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -14,7 +15,10 @@ import java.util.List;
 @ToString
 public class Category extends BaseEntity {
 
+    @NotNull
     private String categoryName;
+
+    private Boolean active = true;
 
     @OneToMany
     @JoinTable
