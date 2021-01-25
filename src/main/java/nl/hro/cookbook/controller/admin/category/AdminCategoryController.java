@@ -7,6 +7,7 @@ import nl.hro.cookbook.model.mapper.CategoryMapper;
 import nl.hro.cookbook.service.CategoryService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/admin/category", produces = MediaType.APPLICATION_JSON_VALUE)
+@CrossOrigin(origins = "*")
 public class AdminCategoryController {
 
     private final CategoryService categoryService;
@@ -36,6 +38,7 @@ public class AdminCategoryController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createCategory(@RequestBody final CategoryDTO category) {
         Category categoryModel = categoryMapper.toModel(category);
+        categoryModel.setActive(true);
         categoryService.saveCategory(categoryModel);
         return ResponseEntity.ok(categoryModel.getId());
     }
