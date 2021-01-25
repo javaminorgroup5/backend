@@ -42,23 +42,19 @@ public class GroupService {
      * @param groupId
      * @return
      */
-    @Transactional
-    public Group findGroupById(final long groupId) {
-        return groupRepository.findById(groupId)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("No group exists for id: %d", groupId), Group.class));
-    }
 
-//    @Transactional
-//    public Group findGroupById(final long groupId) throws Exception {
-//        Optional<Group> groupFound = groupRepository.findById(groupId);
-//
-//
-//        if (groupFound.isEmpty()) {
-//            throw new Exception("Group not found");
-//        } else {
-//            return groupFound.get();
-//        }
-//    }
+
+    @Transactional
+    public Group findGroupById(final long groupId) throws Exception {
+        Optional<Group> groupFound = groupRepository.findById(groupId);
+
+
+        if (groupFound.isEmpty()) {
+            throw new Exception("Group not found");
+        } else {
+            return groupFound.get();
+        }
+    }
 
     @Transactional
     public Invite generateInvite(final long groupId, long userId) throws Exception {
@@ -82,13 +78,14 @@ public class GroupService {
 
 
     @Transactional
-    public List<String> findEnrolledUsersForGroup(long groupId) {
+    public List<String> findEnrolledUsersForGroup(long groupId) throws Exception {
         List<String> userProfileNames = new ArrayList<>();
         Group group = findGroupById(groupId);
         for (User user : group.getEnrolledUsers()) {
             String userProfileName = user.getProfile().getProfileName();
             userProfileNames.add(userProfileName);
         }
+
         return userProfileNames;
     }
 
