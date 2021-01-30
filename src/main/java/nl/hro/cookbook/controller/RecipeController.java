@@ -112,9 +112,10 @@ public class RecipeController {
                                        @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
         userService.findUserById(userId);
         Recipe recipe = null;
-        if(recipeDto != null) {
-            recipe = recipeMapper.toModel(recipeDto);
+        if(recipeDto == null) {
+            return ResponseEntity.badRequest().build();
         }
+        recipe = recipeMapper.toModel(recipeDto);
         if (file != null && recipe != null) {
             Image recipeImage = new Image(file.getOriginalFilename(), file.getName(),
                     commonService.compressBytes(file.getBytes()));

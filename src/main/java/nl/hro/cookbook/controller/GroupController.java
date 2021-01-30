@@ -207,15 +207,18 @@ public class GroupController {
      */
     @PutMapping(value = "/{group_id}/user/{user_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateGroup(@PathVariable("group_id") final long groupId,
-                             @PathVariable("user_id") final long userId,
-                            @RequestPart("groupCategoryId") Long categoryId,
-                             @RequestPart(value = "group", required = false) GroupDTO groupDTO,
-                             @RequestPart(value = "file", required = false) MultipartFile file) throws Exception {
+                                         @PathVariable("user_id") final long userId,
+                                         @RequestPart("groupCategoryId") Long categoryId,
+                                         @RequestPart(value = "group", required = false) GroupDTO groupDTO,
+                                         @RequestPart(value = "file", required = false) MultipartFile file) throws Exception {
         userService.findUserById(userId);
-        Group group = null;
-        if(groupDTO != null) {
-            group = groupMapper.toModel(groupDTO);
-            Category category = categoryService.findCategoryById(categoryId);
+        Group group;
+        if(groupDTO == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        group = groupMapper.toModel(groupDTO);
+        Category category = categoryService.findCategoryById(categoryId);
+        if (category != null) {
             group.setCategory(category);
         }
 

@@ -39,8 +39,6 @@ public class GroupService {
     @Transactional
     public Group findGroupById(final long groupId) throws Exception {
         Optional<Group> groupFound = groupRepository.findById(groupId);
-
-
         if (groupFound.isEmpty()) {
             throw new Exception("Group not found");
         } else {
