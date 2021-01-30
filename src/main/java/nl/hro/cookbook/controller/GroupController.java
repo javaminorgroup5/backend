@@ -9,6 +9,7 @@ import nl.hro.cookbook.model.domain.Invite;
 import nl.hro.cookbook.model.domain.Message;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.dto.GroupDTO;
+import nl.hro.cookbook.model.dto.UserDTO;
 import nl.hro.cookbook.model.mapper.GroupMapper;
 import nl.hro.cookbook.service.CategoryService;
 import nl.hro.cookbook.service.CommonService;
@@ -116,7 +117,6 @@ public class GroupController {
         return ResponseEntity.ok(invite);
     }
 
-//TO-DO: Word deze ergens voor gebruikt?
     @PostMapping("/{group_id}/join")
     public void joinGroup(@PathVariable("group_id") final long groupId, @RequestBody ObjectNode json) throws Exception {
         long userId = json.get("userId").asLong();
@@ -148,17 +148,17 @@ public class GroupController {
     public ResponseEntity<?> getGroup(@PathVariable("group_id") final long groupId, @PathVariable("user_id") final long userId) throws Exception {
         User user = userService.findUserById(userId);
         GroupDTO group = groupMapper.toDTO(groupService.findGroupById(groupId));
-        if (user.getId() == group.getUserId()) {
+        if (user.getId().equals(group.getUserId())) {
             return ResponseEntity.ok(group);
         }
-        return ResponseEntity.badRequest().body(HttpStatus.NOT_FOUND);
+        return ResponseEntity.badRequest().body(Collections.emptyList());
     }
 
     @GetMapping("/{group_id}/enrolled")
     public ResponseEntity<?> getEnrolledUsersForGroup(@PathVariable("group_id") final long groupId) throws Exception {
-        List<String> enrolledUsersForGroup = groupService.findEnrolledUsersForGroup(groupId);
+        List<UserDTO> enrolledUsersForGroup = groupService.findEnrolledUsersForGroup(groupId);
         if (enrolledUsersForGroup.isEmpty()) {
-            return ResponseEntity.badRequest().body(HttpStatus.NOT_FOUND);
+            return ResponseEntity.ok(Collections.emptyList());
         }
         return ResponseEntity.ok(enrolledUsersForGroup);
     }
@@ -186,7 +186,7 @@ public class GroupController {
     public ResponseEntity<?> getFeedForGroup(@PathVariable("group_id") final long groupId) {
         List<Message> feedByGroupId = groupService.findFeedByGroupId(groupId);
         if (feedByGroupId.isEmpty()) {
-            return ResponseEntity.badRequest().body(Collections.emptyList());
+            return ResponseEntity.ok(Collections.emptyList());
         }
         feedByGroupId.forEach(message -> {
             if (message.getImage() != null) {

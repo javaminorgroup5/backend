@@ -107,5 +107,9 @@ public class UserService {
         return groupNames;
     }
 
+    @Transactional
+    public void deleteUserById(Long id) {
+        userRepository.deleteById(id);
+    }
 
 }

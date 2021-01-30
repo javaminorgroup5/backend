@@ -19,6 +19,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@Table(name = "user_recipes")
 public class Recipe extends BaseEntity {
 
     @NotNull

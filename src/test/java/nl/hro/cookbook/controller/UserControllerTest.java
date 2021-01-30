@@ -2,7 +2,9 @@ package nl.hro.cookbook.controller;
 
 import nl.hro.cookbook.model.domain.Profile;
 import nl.hro.cookbook.model.domain.User;
+import nl.hro.cookbook.repository.UserRepository;
 import nl.hro.cookbook.security.Role;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +32,15 @@ class UserControllerTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @AfterAll
+    public void cleanup() {
+        userRepository.deleteAll();
+    }
+
 
     @Test
     public void createUserTest() throws Exception {

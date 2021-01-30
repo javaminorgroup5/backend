@@ -3,6 +3,8 @@ package nl.hro.cookbook.controller;
 import nl.hro.cookbook.model.domain.Like;
 import nl.hro.cookbook.model.domain.Profile;
 import nl.hro.cookbook.model.domain.User;
+import nl.hro.cookbook.repository.LikeRepository;
+import nl.hro.cookbook.repository.UserRepository;
 import nl.hro.cookbook.security.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,10 @@ class LikeControllerTest {
     private final long messageId = 2L;
     private final long recipeId = 3L;
     private final Like like = new Like(userId, messageId, recipeId);
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private LikeRepository likeRepository;
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -98,5 +104,7 @@ class LikeControllerTest {
                 .postForEntity(uri2, request2, String.class);
         assertThat(response2.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
         assertThat(response2.getBody()).isNull();
+        likeRepository.deleteAll();
+        userRepository.deleteAll();
     }
 }
