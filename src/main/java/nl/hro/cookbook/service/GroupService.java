@@ -74,6 +74,8 @@ public class GroupService {
         for (User user : group.getEnrolledUsers()) {
             userProfileNames.add(userMapper.toDTO(user));
         }
+        User user = userService.findUserById(group.getUserId());
+        userProfileNames.add(userMapper.toDTO(user));
         return userProfileNames;
     }
 
