@@ -83,13 +83,14 @@ public class RecipeController {
     @GetMapping("/{recipe_id}/user/{user_id}")
     public ResponseEntity<?> getRecipe(@PathVariable("recipe_id") final long recipeId,
                                     @PathVariable("user_id") final long userId) {
-        User user = userService.findUserById(userId);
+        // TODO remove commented code
+//        User user = userService.findUserById(userId);
         Recipe recipe = recipeService.findRecipeById(recipeId);
         recipe.getImage().setPicByte(commonService.decompressBytes(recipe.getImage().getPicByte()));
-        if (user.getId().equals(recipe.getUserId())) {
+//        if (user.getId().equals(recipe.getUserId())) {
             return ResponseEntity.ok(recipe);
-        }
-        return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
+//        }
+//        return ResponseEntity.badRequest().body(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/{recipe_id}/generate_share_link")
@@ -112,9 +113,10 @@ public class RecipeController {
                                        @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
         userService.findUserById(userId);
         Recipe recipe = null;
-        if(recipeDto != null) {
-            recipe = recipeMapper.toModel(recipeDto);
+        if(recipeDto == null) {
+            return ResponseEntity.badRequest().build();
         }
+        recipe = recipeMapper.toModel(recipeDto);
         if (file != null && recipe != null) {
             Image recipeImage = new Image(file.getOriginalFilename(), file.getName(),
                     commonService.compressBytes(file.getBytes()));

@@ -4,14 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 import nl.hro.cookbook.model.domain.*;
+import nl.hro.cookbook.model.dto.UserDTO;
 import nl.hro.cookbook.model.exception.ResourceNotFoundException;
+import nl.hro.cookbook.model.mapper.UserMapper;
 import nl.hro.cookbook.repository.GroupRepository;
 import nl.hro.cookbook.repository.InviteRepository;
-import nl.hro.cookbook.repository.MessageRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.util.*;
 
 @Slf4j
@@ -23,10 +22,8 @@ public class GroupService {
     private final InviteRepository inviteRepository;
     private final GroupRepository groupRepository;
     private final UserService userService;
-    private final TestDataService testDataService;
-    private final MessageRepository messageRepository;
     private final MessageService messageService;
-    private final CategoryService categoryService;
+    private final UserMapper userMapper;
 
     public List<Group> findAllGroup() {
         return groupRepository.findAll();
@@ -42,8 +39,6 @@ public class GroupService {
     @Transactional
     public Group findGroupById(final long groupId) throws Exception {
         Optional<Group> groupFound = groupRepository.findById(groupId);
-
-
         if (groupFound.isEmpty()) {
             throw new Exception("Group not found");
         } else {
@@ -73,14 +68,14 @@ public class GroupService {
 
 
     @Transactional
-    public List<String> findEnrolledUsersForGroup(long groupId) throws Exception {
-        List<String> userProfileNames = new ArrayList<>();
+    public List<UserDTO> findEnrolledUsersForGroup(long groupId) throws Exception {
+        List<UserDTO> userProfileNames = new ArrayList<>();
         Group group = findGroupById(groupId);
         for (User user : group.getEnrolledUsers()) {
-            String userProfileName = user.getProfile().getProfileName();
-            userProfileNames.add(userProfileName);
+            userProfileNames.add(userMapper.toDTO(user));
         }
-
+        User user = userService.findUserById(group.getUserId());
+        userProfileNames.add(userMapper.toDTO(user));
         return userProfileNames;
     }
 

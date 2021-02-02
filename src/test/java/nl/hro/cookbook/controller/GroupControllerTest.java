@@ -5,6 +5,9 @@ import nl.hro.cookbook.model.domain.Image;
 import nl.hro.cookbook.model.domain.Message;
 import nl.hro.cookbook.model.domain.Profile;
 import nl.hro.cookbook.model.domain.User;
+import nl.hro.cookbook.repository.GroupRepository;
+import nl.hro.cookbook.repository.MessageRepository;
+import nl.hro.cookbook.repository.UserRepository;
 import nl.hro.cookbook.security.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,8 +45,18 @@ class GroupControllerTest {
     private List<Group> groups;
     private List<Message> messages;
 
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private GroupRepository groupRepository;
+    @Autowired
+    private MessageRepository messageRepository;
+
     @BeforeEach
     void setUp() {
+        userRepository.deleteAll();
+        groupRepository.deleteAll();
+        messageRepository.deleteAll();
         Image image = new Image("group.jpg", "file", new byte[12]);
         final Group initialGroup1 = new Group("PastaGroep", "Leuke pasta groep", 12L, null, Group.GroupPrivacy.INVITE, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), image);
         initialGroup1.setId(1L);
@@ -98,6 +111,8 @@ class GroupControllerTest {
                 .withBasicAuth("test1@email.com", "test")
                 .postForEntity(uri1, request1, Void.class);
         assertThat(response1.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
+        userRepository.deleteAll();
+        groupRepository.deleteAll();
     }
 
     @Test
@@ -184,5 +199,8 @@ class GroupControllerTest {
                 .getForEntity(uri,  Group.class);
         assertThat(groupResponse.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
         assertThat(Objects.requireNonNull(groupResponse.getBody()).getMessages()).isNull();
+        userRepository.deleteAll();
+        groupRepository.deleteAll();
+        messageRepository.deleteAll();
     }
 }

@@ -7,6 +7,9 @@ import nl.hro.cookbook.model.domain.Recipe;
 import nl.hro.cookbook.model.domain.User;
 import nl.hro.cookbook.model.dto.RecipeDto;
 import nl.hro.cookbook.model.dto.ImageDTO;
+import nl.hro.cookbook.repository.GroupRepository;
+import nl.hro.cookbook.repository.RecipeRepository;
+import nl.hro.cookbook.repository.UserRepository;
 import nl.hro.cookbook.security.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,6 +51,14 @@ class RecipeControllerTest {
     private TestRestTemplate restTemplate;
 
     private List<Group> groups;
+
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private GroupRepository groupRepository;
+    @Autowired
+    private RecipeRepository recipeRepository;
+
 
     @BeforeEach
     void setUp() {
@@ -184,6 +195,10 @@ class RecipeControllerTest {
                 .getForEntity(uri,  Recipe.class);
         assertThat(recipeResponse2.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
         assertThat(Objects.requireNonNull(recipeResponse2.getBody()).getRecipe()).isEqualTo("Something with duck");
+        recipeRepository.deleteAll();
+        groupRepository.deleteAll();
+        userRepository.deleteAll();
+
     }
 
     @Test

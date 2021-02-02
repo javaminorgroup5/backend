@@ -16,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@Table(name = "user_groups")
 public class Group extends BaseEntity {
 
     private String groupName;

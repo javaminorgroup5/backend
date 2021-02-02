@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @ToString
+@Table(name = "likes")
 public class Like extends BaseEntity {
     @NotNull
     private long userId;
